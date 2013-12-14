@@ -16,9 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDebug>
-#include <iostream>
-
 #include <QDirIterator>
 #include <QSettings>
 #include <QNetworkAccessManager>
@@ -94,9 +91,7 @@ InstalledMod *ModManager::parseIni(const QString filename)
 		Authors = var.toStringList();
 	else
 		Authors = QStringList(var.toString().trimmed());
-/*
-	mod->Requires = inifile.value("Requires").toStringList();
-*/
+
 	InstalledMod *mod = new InstalledMod(
 		QFileInfo(filename).baseName(),
 		inifile.value("Name", QString("")).toString().trimmed(),
@@ -106,6 +101,7 @@ InstalledMod *ModManager::parseIni(const QString filename)
 		inifile.value("Version", QString("")).toString().trimmed(),
 		inifile.value("Build", QString("")).toULongLong(),
 		inifile.value("Priority", 100U).toUInt(),
+		inifile.value("Requires").toStringList(),
 		false
 	);
 
@@ -650,6 +646,36 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 		connect(newmod, SIGNAL(modStateChanged()), this, SLOT(modstateChanged()));
 		emit newModInstalled(newmod);
+
+		QStringList requires = newmod->requires();
+		for(QList<InstalledMod *>::const_iterator inmod = installedMods.begin(); inmod != installedMods.end(); ++inmod)
+		{
+			requires.removeAll((*inmod)->key());
+		}
+
+		if(!requires.isEmpty())
+		{
+			QMessageBox installDependenciesMessageBox;
+			installDependenciesMessageBox.setText(newmod->name() + " depends on other mods.");
+			installDependenciesMessageBox.setInformativeText("Do you want to install those?");
+			installDependenciesMessageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+			installDependenciesMessageBox.setDefaultButton(QMessageBox::Yes);
+			int ret = installDependenciesMessageBox.exec();
+			if(ret == QMessageBox::Yes)
+			{
+				for(QStringList::const_iterator req = requires.begin(); req != requires.end(); ++req)
+				{
+					for(QList<AvailableMod *>::const_iterator avmod = availableMods.begin(); avmod != availableMods.end(); ++avmod)
+					{
+						if((*req) == (*avmod)->key())
+						{
+							(*avmod)->installButtonClicked();
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

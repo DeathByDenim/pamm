@@ -30,7 +30,7 @@ class InstalledMod : public Mod
     Q_OBJECT
 
 public:
-    InstalledMod(const QString& Key, const QString& Name, const QStringList& Authors, const QUrl& Link, const QString& Category, const QString& Version, const unsigned int& Build, const unsigned int& Priority, const bool& Enabled);
+    InstalledMod(const QString& Key, const QString& Name, const QStringList& Authors, const QUrl& Link, const QString& Category, const QString& Version, const unsigned int& Build, const unsigned int& Priority, const QStringList &Requires, const bool& Enabled);
     ~InstalledMod();
 	
 	enum scene_t
@@ -59,6 +59,7 @@ public:
 	void setScene(QVariant files, scene_t scene);
 	void setEnabled(bool enabled);
 	bool enabled() {return Enabled;};
+	QStringList requires() {return Requires;};
 	static bool sortPriority(const InstalledMod *m1, const InstalledMod *m2);
 
 public Q_SLOTS:

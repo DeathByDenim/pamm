@@ -138,7 +138,8 @@ void AvailableMod::installButtonClicked()
 	}
 
 	InstallProgressBar = new QProgressBar(ModButtonsWidget);
-	ModButtonsWidget->layout()->addWidget(InstallProgressBar);
+	if(ModButtonsWidget)
+		ModButtonsWidget->layout()->addWidget(InstallProgressBar);
 	InstallProgressBar->setRange(0, 100);
 	InstallProgressBar->setValue(0);
 
