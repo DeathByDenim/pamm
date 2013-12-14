@@ -460,4 +460,4 @@ void PAMM::sortIndexChanged(const QString& text)
 	populateAvailableModsWidget(false);
 }
 
-#include "PAMM.moc"
+#include "pamm.moc"
