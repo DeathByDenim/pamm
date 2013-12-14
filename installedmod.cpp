@@ -28,8 +28,8 @@
 #include <QStringList>
 #include <QString>
 
-InstalledMod::InstalledMod(const QString &Key, const QString &Name, const QStringList &Authors, const QUrl &Link, const QString &Category, const QString &Version, const unsigned int &Build, const unsigned int &Priority, const bool &Enabled)
- : Mod(Key, Name, Authors, Link, Category, Version, Build), Priority(Priority), Enabled(Enabled)
+InstalledMod::InstalledMod(const QString& Key, const QString& Name, const QStringList& Authors, const QUrl& Link, const QString& Category, const QString& Version, const unsigned int& Build, const unsigned int& Priority, const QStringList& Requires, const bool& Enabled)
+ : Mod(Key, Name, Authors, Link, Category, Version, Build), Priority(Priority), Requires(Requires), Enabled(Enabled)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	setLayout(modLayout);
