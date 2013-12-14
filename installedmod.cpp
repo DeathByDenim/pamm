@@ -179,7 +179,10 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 {
 	QStringList filesStringList;
 	if(files.canConvert(QVariant::StringList))
+	{
 		filesStringList = files.toStringList();
+		filesStringList.removeAll("");
+	}
 	else if(files.canConvert(QVariant::String))
 		filesStringList = QStringList(files.toString());
 	else return;
