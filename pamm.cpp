@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define PAMM_VERSION "1.8.1"
+#define PAMM_VERSION "1.8.2"
 
 #include "pamm.h"
 #include "modmanager.h"
