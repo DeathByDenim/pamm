@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define PAMM_VERSION "1.8.2"
+#define PAMM_VERSION "3.0.0"
 
 #include "pamm.h"
 #include "modmanager.h"
@@ -83,6 +83,11 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 	layout->addWidget(Tabs);
 
 	NewsBrowser = new QTextBrowser(this);
+	{
+		QFont font = NewsBrowser->font();
+		font.setBold(false);
+		NewsBrowser->setFont(font);
+	}
 	loadNews();
 	QPalette newsPalette = NewsBrowser->palette();
 	newsPalette.setColor(QPalette::Base, QColor(0, 0, 0, 0));
@@ -111,6 +116,8 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 		{
 			(*m)->setParent(InstalledModsWidget);
 			modsLayout->addWidget(*m);
+			connect(*m, SIGNAL(updateMe()), Manager, SLOT(downloadMod()));
+			connect(*m, SIGNAL(uninstallMe()), Manager, SLOT(uninstallMod()));
 		}
 		modsLayout->addStretch();
 	}
@@ -206,6 +213,8 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 
 	connect(Manager, SIGNAL(availableModsLoaded()), this, SLOT(availableModsLoaded()));
 	connect(Manager, SIGNAL(newModInstalled(InstalledMod *)), this, SLOT(newModInstalled(InstalledMod *)));
+
+	sortIndexChanged("RANDOM");
 }
 
 PAMM::~PAMM()
@@ -265,7 +274,7 @@ void PAMM::clearWidgets(QLayout *layout, bool deleteWidgets)
 			if(mod)
 			{
 				mod->setParent(NULL);
-				disconnect(mod, SIGNAL(installMe(AvailableMod *)), Manager, SLOT(downloadMod(AvailableMod *)));
+				disconnect(mod, SIGNAL(installMe()), Manager, SLOT(downloadMod()));
 			}
 		}
 
@@ -292,27 +301,8 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 	}
 	else
 	{
-		bool alreadyDisplayedIncompatibleHeader = false;
 		for(QList<AvailableMod *>::const_iterator m = Manager->availableMods.constBegin(); m != Manager->availableMods.constEnd(); ++m)
 		{
-			if(!(*m)->pammCompatible() && !alreadyDisplayedIncompatibleHeader)
-			{
-				QLabel *incompatibleModLabel = new QLabel(this);
-				incompatibleModLabel->setText("Stand-alone Mods");
-				QFont font = incompatibleModLabel->font();
-				font.setPointSize(font.pointSize() + 2);
-				incompatibleModLabel->setStyleSheet("QLabel {color: #ffffff}");
-				incompatibleModLabel->setFont(font);
-				modsLayout->addWidget(incompatibleModLabel);
-				QLabel *incompatibleModLabel2 = new QLabel(this);
-				incompatibleModLabel2->setText("These mods are not compatible with the PA Mod Manager and must be installed manually. Further details should be available on the mod's forum thread.");
-				incompatibleModLabel2->setStyleSheet("QLabel {color: #ffffff}");
-				incompatibleModLabel2->setWordWrap(true);
-				modsLayout->addWidget(incompatibleModLabel2);
-
-				alreadyDisplayedIncompatibleHeader = true;
-			}
-
 			if(
 				filter == All ||
 				(filter == Installed && (*m)->state() == AvailableMod::installed) ||
@@ -321,7 +311,7 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 			)
 			{
 				(*m)->setParent(availableModsWidget);
-				connect(*m, SIGNAL(installMe(AvailableMod *)), Manager, SLOT(downloadMod(AvailableMod *)));
+				connect(*m, SIGNAL(installMe()), Manager, SLOT(downloadMod()));
 				modsLayout->addWidget(*m);
 			}
 		}
@@ -333,10 +323,10 @@ void PAMM::loadNews()
 {
 	if(NewsBrowser)
 	{
-		QFileInfo newsFileInfo(Manager->configPath() + "/modcache/news.html");
+		QFileInfo newsFileInfo(Manager->configPath() + "/pamm_cache/news.html");
 		if(newsFileInfo.exists() && newsFileInfo.isFile() && newsFileInfo.lastModified() < QDateTime::currentDateTime().addDays(1))
 		{
-			NewsBrowser->setSource(QUrl(Manager->configPath() + "/modcache/news.html"));
+			NewsBrowser->setSource(QUrl(Manager->configPath() + "/pamm_cache/news.html"));
 		}
 		else
 		{
@@ -355,15 +345,15 @@ void PAMM::replyFinished(QNetworkReply* reply)
 {
 	if(reply)
 	{
-		QDir(Manager->configPath()).mkpath("modcache");
-		QFile newsFile(Manager->configPath() + "/modcache/news.html");
+		QDir(Manager->configPath()).mkpath("pamm_cache");
+		QFile newsFile(Manager->configPath() + "/pamm_cache/news.html");
 		if(newsFile.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
 			QByteArray arr = reply->readAll();
 			newsFile.write(arr);
 			newsFile.flush();
 			newsFile.close();
-			NewsBrowser->setSource(QUrl(Manager->configPath() + "/modcache/news.html"));
+			NewsBrowser->setSource(QUrl(Manager->configPath() + "/pamm_cache/news.html"));
 		}
 		else
 		{
@@ -458,6 +448,11 @@ void PAMM::sortIndexChanged(const QString& text)
 	}
 
 	populateAvailableModsWidget(false);
+}
+
+void PAMM::checkForUpdate()
+{
+// https://api.github.com/repos/DeathByDenim/pamm/releases
 }
 
 #include "pamm.moc"

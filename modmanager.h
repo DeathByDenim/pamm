@@ -29,17 +29,17 @@
 
 class QNetworkAccessManager;
 class QNetworkReply;
+class QDir;
 
 class ModManager : public QObject
 {
 	Q_OBJECT
 
 public:
-	ModManager(QString PApath, QString Modpath);
+	ModManager(QString ConfigPath, QString PAPath, QString ModPath);
 	virtual ~ModManager();
 
 	void findInstalledMods();
-	void readUiModListJS();
 	void writeUiModListJS();
 	QString paPath() { return PAPath; }
 	QString configPath() { return ConfigPath; }
@@ -74,7 +74,7 @@ public:
 		QString Version; // Version Number
 		unsigned long Build; // Build Number
 		unsigned int Priority; // Lower numbers are included in ui_mod_list.js first. Default is 100 if not specified
-		QStringList Requires; // mod ids (name of mod .ini file), comma separated
+		QStringList Requires; // mod ids, comma separated
 		bool Enabled;
 	};
 
@@ -86,18 +86,20 @@ private:
 	QString ModPath;
 	QString ConfigPath;
 	QNetworkAccessManager *Internet;
-	
-	InstalledMod *parseIni(const QString filename);
-	bool isEnabled(const QString Name);
+
+	InstalledMod *parseJson(const QString filename);
 	void sceneToStream(std::ostream& os, const QList< InstalledMod* > modList, const InstalledMod::scene_t scene);
-	void readAvailableModListIni(QString filename);
+	void readAvailableModListJson(QString filename);
 	void installMod(AvailableMod *mod, const QString &filename);
     void updateModCount();
+    void writeModsJson();
+    bool recursiveRemove(const QDir &dir);
 
 public Q_SLOTS:
 	void replyFinished(QNetworkReply* reply = NULL);
-	void downloadMod(AvailableMod *mod);
+	void downloadMod();
 	void modstateChanged();
+	void uninstallMod();
 
 Q_SIGNALS:
 	void availableModsLoaded();

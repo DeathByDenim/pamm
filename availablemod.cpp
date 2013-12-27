@@ -24,65 +24,76 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QProgressBar>
+#include <QPainter>
 
-AvailableMod::AvailableMod(QString Key, QString Name, QStringList Authors, QUrl Link, QString Category, QString Version, unsigned int Build, bool CompatibleWithPAMM, QUrl Download, QString Description, QDate Date, AvailableMod::installstate_t State)
- : Mod(Key, Name, Authors, Link, Category, Version, Build), CompatibleWithPAMM(CompatibleWithPAMM), Download(Download), Description(Description), Date(Date), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), ModDownloadCount(NULL)
+AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State)
+ : Mod(Key, DisplayName, Description, Description, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), ModDownloadCount(NULL)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	this->setLayout(modLayout);
 
 	QLabel *modNameLabel = new QLabel(this);
-	modNameLabel->setText("<a href=\"" + Link.toString() + "\" style=\"text-decoration:none;\">" + Key + "</a>");
+	modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none;\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
 	modNameLabel->setStyleSheet("QLabel {color: #008888; font-family: \"Verdana\"; font-size: 0.95em; text-decoration: none; }");
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	QLabel *modAuthorLabel = new QLabel(this);
-	modAuthorLabel->setText("by " + Authors.join(", "));
+	modAuthorLabel->setText("by " + Author);
 	modAuthorLabel->setStyleSheet("QLabel {color: #F9F9F9; margin-left: 5px; font-style: italic; font-size: 0.7em;}");
 
 	ModStatus = new QLabel(this);
 
-	if(CompatibleWithPAMM)
+	if(State == installed)
 	{
-		if(State == installed)
-		{
-			ModStatus->setText("INSTALLED");
-			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
-		}
-		else if(State == updateavailable)
-		{
-			ModStatus->setText("UPDATE AVAILABLE");
-			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #ff8844;}");
-		}
-		else if(State == notinstalled)
-		{
-			ModStatus->setText("NOT INSTALLED");
-			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
-		}
-	}
-	else
-	{
-		ModStatus->setText("NOT COMPATIBLE WITH PAMM");
+		ModStatus->setText("INSTALLED");
 		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
+	}
+	else if(State == updateavailable)
+	{
+		ModStatus->setText("UPDATE AVAILABLE");
+		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #ff8844;}");
+	}
+	else if(State == notinstalled)
+	{
+		ModStatus->setText("NOT INSTALLED");
+		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
 	}
 
 	QLabel *modInfoLabel = new QLabel(this);
-	modInfoLabel->setText(QString("Version ") + Version + " (" + QString("%1").arg(Build) + "), Category: " + Category);
+	QString modInfoText = QString("Version : ") + Version + ", build " + Build + " (" + Date.toString("yyyy/MM/dd") + ")";
+	if(!Requires.isEmpty())
+		modInfoText += "\nREQUIRES: " + Requires.join(", ");
+	modInfoLabel->setText(modInfoText);
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+	setRelativeFontSizeForLabel(modInfoLabel, .8);
 
 	ModIconLabel = new QLabel(this);
 	QImageReader *reader = new QImageReader("img/generic.png");
 	QImage modIcon = reader->read();
 	delete reader;
+	
+	if(Date >= QDate::currentDate().addDays(-7))
+	{
+		QPainter p(&modIcon);
+		QImageReader *reader = new QImageReader("img/new.png");
+		QImage modNewIcon = reader->read();
+		delete reader;
+		p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+		QRect size(QPoint(0,0), modNewIcon.size());
+		p.drawImage(size, modNewIcon);
+	}
 	ModIconLabel->setPixmap(QPixmap::fromImage(modIcon));
 
 	QLabel *modDescription = new QLabel(this);
 	modDescription->setWordWrap(true);
-	modDescription->setText(Description);
+	if(Description.isEmpty())
+		modDescription->setText("-- No description available --");
+	else
+		modDescription->setText(Description);
 	modDescription->setStyleSheet("QLabel {font-size: 0.8em; color: #ffffff; }");
-	
-	if(CompatibleWithPAMM && State != installed)
+
+	if(State != installed)
 	{
 		ModButtonsWidget = new QWidget(this);
 		QHBoxLayout *modButtonsLayout = new QHBoxLayout(ModButtonsWidget);
@@ -92,16 +103,25 @@ AvailableMod::AvailableMod(QString Key, QString Name, QStringList Authors, QUrl 
 		installButton->setText("Install");
 		modButtonsLayout->addWidget(installButton);
 		modButtonsLayout->addStretch();
-		modLayout->addWidget(ModButtonsWidget, 5, 2, 1, -1);
+		modLayout->addWidget(ModButtonsWidget, 6, 2, 1, -1);
 		connect(installButton, SIGNAL(clicked()), this, SLOT(installButtonClicked()));
+	}
+	
+	if(!Category.isEmpty())
+	{
+		QLabel *modCategoriesLabel = new QLabel(this);
+		modCategoriesLabel->setText(Category.join(", ").toUpper());
+		modCategoriesLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+		setRelativeFontSizeForLabel(modCategoriesLabel, .8);
+		modLayout->addWidget(modCategoriesLabel, 4, 2, 1, -1);
 	}
 
 	modLayout->addWidget(ModIconLabel, 1, 1, -1, 1);
 	modLayout->addWidget(modNameLabel, 1, 2);
 	modLayout->addWidget(modAuthorLabel, 1, 3, Qt::AlignRight);
-	modLayout->addWidget(modDescription, 2, 2, 1, -1);
-	modLayout->addWidget(modInfoLabel, 3, 2, 1, -1);
-	modLayout->addWidget(ModStatus, 4, 2, 1, 1);
+	modLayout->addWidget(modInfoLabel, 2, 2, 1, -1);
+	modLayout->addWidget(modDescription, 3, 2, 1, -1);
+	modLayout->addWidget(ModStatus, 5, 2, 1, 1);
 }
 
 AvailableMod::~AvailableMod()
@@ -116,11 +136,6 @@ void AvailableMod::setPixmap(const QPixmap& pixmap)
 		ModIconLabel->setScaledContents(true);
 		ModIconLabel->setFixedSize(100, 100);
 	}
-}
-
-bool AvailableMod::sortCompatibility(const AvailableMod *m1, const AvailableMod *m2)
-{
-	return (m1->CompatibleWithPAMM && !m2->CompatibleWithPAMM);
 }
 
 void AvailableMod::installButtonClicked()
@@ -143,7 +158,7 @@ void AvailableMod::installButtonClicked()
 	InstallProgressBar->setRange(0, 100);
 	InstallProgressBar->setValue(0);
 
-	emit installMe(this);
+	emit installMe();
 }
 
 void AvailableMod::progress(int percentage)
@@ -186,7 +201,7 @@ bool AvailableMod::sortLastUpdated(const AvailableMod* m1, const AvailableMod* m
 
 bool AvailableMod::sortAuthor(const AvailableMod* m1, const AvailableMod* m2)
 {
-	return (m1->Authors[0].compare(m2->Authors[0], Qt::CaseInsensitive) < 0);
+	return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) < 0);
 }
 
 bool AvailableMod::sortBuild(const AvailableMod* m1, const AvailableMod* m2)
@@ -201,7 +216,7 @@ bool AvailableMod::sortRandom(const AvailableMod* m1, const AvailableMod* m2)
 
 bool AvailableMod::sortTitle(const AvailableMod* m1, const AvailableMod* m2)
 {
-	return (m1->Name.compare(m2->Name, Qt::CaseInsensitive) < 0);
+	return (m1->DisplayName.compare(m2->DisplayName, Qt::CaseInsensitive) < 0);
 }
 
 bool AvailableMod::sortDownloads(const AvailableMod* m1, const AvailableMod* m2)
@@ -222,7 +237,7 @@ void AvailableMod::setCount(int count)
 		ModDownloadCount->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(layout());
 		if(gridlayout)
-			gridlayout->addWidget(ModDownloadCount, 4, 3, 1, -1, Qt::AlignRight);
+			gridlayout->addWidget(ModDownloadCount, 5, 3, 1, -1, Qt::AlignRight);
 	}
 
 	ModDownloadCount->setText(QString("Downloaded %1 times").arg(count));

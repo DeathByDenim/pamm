@@ -24,12 +24,13 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QWidget>
+#include <QPushButton>
 #include <QVariant>
 #include <QStringList>
 #include <QString>
 
-InstalledMod::InstalledMod(const QString& Key, const QString& Name, const QStringList& Authors, const QUrl& Link, const QString& Category, const QString& Version, const unsigned int& Build, const unsigned int& Priority, const QStringList& Requires, const bool& Enabled)
- : Mod(Key, Name, Authors, Link, Category, Version, Build), Priority(Priority), Requires(Requires), Enabled(Enabled)
+InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Context(Context), Identifier(Identifier), Signature(Signature), Priority(Priority), Enabled(Enabled), Id(Id)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	setLayout(modLayout);
@@ -40,23 +41,55 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Name, const QStrin
 	connect(ModCheckbox, SIGNAL(stateChanged(int)), this, SLOT(checkBoxStateChanged(int)));
 
 	QLabel *modNameLabel = new QLabel(this);
-	modNameLabel->setText("<a href=\"" + Link.toString() + "\" style=\"text-decoration:none;\">" + Name + "</a>");
+	modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none;\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
 	modNameLabel->setStyleSheet("QLabel {color: #008888; font-family: \"Verdana\"; font-size: 0.95em; text-decoration: none; }");
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	QLabel *modAuthorLabel = new QLabel(this);
-	modAuthorLabel->setText("by " + Authors.join(", "));
+	modAuthorLabel->setText("by " + Author);
 	modAuthorLabel->setStyleSheet("QLabel {color: #F9F9F9; margin-left: 5px; font-style: italic; font-size: 0.7em;}");
 
 	QLabel *modInfoLabel = new QLabel(this);
-	modInfoLabel->setText(QString("Version ") + Version + " (" + QString("%1").arg(Build) + "), Category: " + Category);
+	modInfoLabel->setText(QString("Version: ") + Version + ", build " + Build + " (" + Date.toString("yyyy/MM/dd") + ")");
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+
+	if(Identifier == "com.pa.deathbydenim.dpamm")
+		ModCheckbox->setDisabled(true);
 
 	modLayout->addWidget(ModCheckbox, 1, 1, 2, 1);
 	modLayout->addWidget(modNameLabel, 1, 2);
 	modLayout->addWidget(modAuthorLabel, 1, 3);
 	modLayout->addWidget(modInfoLabel, 2, 2, 1, -1);
+
+	if(!Requires.isEmpty())
+	{
+		QLabel *modRequires = new QLabel(this);
+		modRequires->setText("REQUIRES: " + Requires.join(", "));
+		modRequires->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+		modLayout->addWidget(modRequires, 3, 2, 1, -1);
+	}
+
+	QWidget *buttonWidget = new QWidget(this);
+	QFont font = buttonWidget->font();
+	font.setBold(false);
+	font.setPointSize(font.pointSize()-1);
+	buttonWidget->setFont(font);
+	QHBoxLayout *buttonLayout = new QHBoxLayout(buttonWidget);
+	ModUpdateButton = new QPushButton(buttonWidget);
+	ModUpdateButton->setText("Update");
+	ModUpdateButton->setEnabled(false);
+	buttonLayout->addWidget(ModUpdateButton);
+	QPushButton *modUninstallButton = new QPushButton(buttonWidget);
+	modUninstallButton->setText("Uninstall");
+	if(Identifier == "com.pa.deathbydenim.dpamm")
+		modUninstallButton->setDisabled(true);
+	buttonLayout->addWidget(modUninstallButton);
+	buttonLayout->addStretch();
+	modLayout->addWidget(buttonWidget, 4, 2, 1, -1);
+	
+	connect(ModUpdateButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked()));
+	connect(modUninstallButton, SIGNAL(clicked()), this, SLOT(uninstallButtonClicked()));
 }
 
 InstalledMod::~InstalledMod()
@@ -66,6 +99,7 @@ InstalledMod::~InstalledMod()
 void InstalledMod::checkBoxStateChanged(int state)
 {
 	Enabled = (state == Qt::Checked);
+	CompleteJson["enabled"] = Enabled;
 	emit modStateChanged();
 }
 
@@ -103,8 +137,14 @@ QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
 		case server_browser:
 			return Scene_server_browser;
 			break;
+		case replay_browser:
+			return Scene_replay_browser;
+			break;
 		case settings:
 			return Scene_settings;
+			break;
+		case social:
+			return Scene_social;
 			break;
 		case special_icon_atlas:
 			return Scene_special_icon_atlas;
@@ -127,11 +167,11 @@ QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
 QString InstalledMod::getModUiJsInfoString()
 {
 	return "    {"
-			"name: '" + Name + "', "
-			"author: '" + Authors.join(", ") + "', "
+			"name: '" + DisplayName + "', "
+			"author: '" + Author + "', "
 			"version: '" + Version + "', "
 			"build: '" + QString("%1").arg(Build) + "', "
-			"category: '" + Category + "'"
+			"category: '" + Category.join(", ") + "'"
 			"}";
 }
 
@@ -216,11 +256,17 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 		case new_game:
 			Scene_new_game = filesStringList;
 			break;
+		case replay_browser:
+			Scene_replay_browser = filesStringList;
+			break;
 		case server_browser:
 			Scene_server_browser = filesStringList;
 			break;
 		case settings:
 			Scene_settings = filesStringList;
+			break;
+		case social:
+			Scene_social = filesStringList;
 			break;
 		case special_icon_atlas:
 			Scene_special_icon_atlas = filesStringList;
@@ -241,6 +287,7 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 
 void InstalledMod::setEnabled(bool enabled)
 {
+	CompleteJson["enabled"] = enabled;
 	if(ModCheckbox)
 	{
 		ModCheckbox->setCheckState(enabled ? Qt::Checked : Qt::Unchecked);
@@ -251,6 +298,30 @@ void InstalledMod::setEnabled(bool enabled)
 bool InstalledMod::sortPriority(const InstalledMod* m1, const InstalledMod* m2)
 {
 	return (m1->Priority < m2->Priority);
+}
+
+void InstalledMod::uninstallButtonClicked()
+{
+	QPushButton *button = dynamic_cast<QPushButton *>( sender() );
+	if(button)
+		button->setEnabled(false);
+	
+	emit uninstallMe();
+}
+
+void InstalledMod::updateButtonClicked()
+{
+	QPushButton *button = dynamic_cast<QPushButton *>( sender() );
+	if(button)
+		button->setEnabled(false);
+	
+	emit updateMe();
+}
+
+void InstalledMod::setUpdateAvailable(bool updateavailable)
+{
+	if(ModUpdateButton)
+		ModUpdateButton->setEnabled(updateavailable);
 }
 
 #include "installedmod.moc"

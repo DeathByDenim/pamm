@@ -2,9 +2,10 @@ INSTALLATION
 
 Linux:
 Copy pamm_linux and the directory "img" to whereever you want. It will find PA automatically if you at least started it once.
-You need to have the QT4 libraries installed as well as libzip.
+You need to have the QT4 libraries installed as well as libzip and libqjson.
 
 Mac OS:
 Copy pamm_mac and the directory "img" to whereever you want.
 Since I'm not sure how to bundle, you need to manually download the QT libraries: http://download.qt-project.org/official_releases/qt/4.8/4.8.5/qt-mac-opensource-4.8.5.dmg
 Also libzip needs to be installed, but I think this is present by default? Sorry, I'm not a maccy.
+It also requires libqjson which may come with the Qt stuff? But maybe not.

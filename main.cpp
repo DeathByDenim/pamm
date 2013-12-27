@@ -21,19 +21,32 @@
 #include <QDir>
 #include <QString>
 #include <QStringList>
+#include <QMessageBox>
 #include <iostream>
 #include "pamm.h"
 #include "modmanager.h"
 
-QString findPAPath()
+const char *strModInfoJson =
+	"{\n"
+	"    \"context\": \"client\",\n"
+	"    \"identifier\": \"com.pa.deathbydenim.dpamm\",\n"
+	"    \"display_name\": \"PA Mod Manager UI Mods List\",\n"
+	"    \"description\": \"Install and manage mods with ease. Based heavily on raevn's mod manager\",\n"
+	"    \"forum\": \"https://forums.uberent.com/threads/rel-raevns-ui-mod-manager-for-linux-and-mac-os-x-version-1-8-1.50958/\",\n"
+	"    \"author\": \"DeathByDenim\",\n"
+	"    \"version\": \"3.0\",\n"
+	"    \"date\": \"2013/12/27\",\n"
+	"    \"build\": \"58772\",\n"
+	"    \"signature\": \"not yet implemented\",\n"
+	"    \"priority\": 1,\n"
+	"    \"enabled\": true,\n"
+	"    \"id\": \"dPAMM\"\n"
+	"}\n";
+
+QString findPAPath(QString configPath)
 {
 	QString papath;
-	QString logdir(QDir::homePath());
-#ifdef __APPLE__
-	logdir += "/Library/Application Support/Uber Entertainment/Planetary Annihilation/log";
-#else
-	logdir += "/.local/Uber Entertainment/Planetary Annihilation/log";
-#endif
+	QString logdir = configPath + "/log";
 
 	QDir dir(logdir, "PA*.txt", QDir::NoSort, QDir::Files);
 	QStringList filelist = dir.entryList();
@@ -63,6 +76,13 @@ int main(int argc, char** argv)
 {
 	QApplication app(argc, argv);
 
+	QString configPath = QDir::homePath();
+#ifdef __APPLE__
+	configPath += "/Library/Application Support/Uber Entertainment/Planetary Annihilation/";
+#else
+	configPath += "/.local/Uber Entertainment/Planetary Annihilation/";
+#endif
+
 	// Where is this program installed?
 	QString progdir(argv[0]);
 	int pos = progdir.lastIndexOf(QRegExp("[/\\\\]"));
@@ -74,38 +94,55 @@ int main(int argc, char** argv)
 		progdir = ".";
 
 	// Where is PA installed? Check the log files first
-	QString papath = findPAPath();
-	if(papath.isEmpty())
+	QString paPath = findPAPath(configPath);
+	if(paPath.isEmpty())
 	{
 		// Not found in the log files, eh? Then assume the same dir as pamm.
-		papath = progdir;
+		paPath = progdir;
 	}
 
 	for(int i = 0; i < argc; i++)
 	{
 		if(QString(argv[i]).compare("--papath", Qt::CaseInsensitive) == 0 && i+1 < argc)
 		{
-			papath = QString(argv[i+1]);
+			paPath = QString(argv[i+1]);
 		}
 	}
 
-#ifdef __APPLE__
-	QString modpath = papath + "/../Resources/ui/mods/";
-#else
-	QString modpath = papath + "/media/ui/mods/";
-#endif
+	QString modPath = configPath + "/mods";
 	for(int i = 0; i < argc; i++)
 	{
 		if(QString(argv[i]).compare("--modpath", Qt::CaseInsensitive) == 0 && i+1 < argc)
 		{
-			modpath = QString(argv[i+1]);
+			modPath = QString(argv[i+1]);
 		}
 	}
 
-	std::cout << "Expecting executable in: \"" << papath.toStdString() << "\"." << std::endl;
-	std::cout << "Expecting moddir at: \"" << modpath.toStdString() << "\"." << std::endl;
-	ModManager manager(papath, modpath);
-	manager.readUiModListJS();
+	std::cout << "Expecting configdir in: \"" << configPath.toStdString() << "\"." << std::endl;
+	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
+	std::cout << "Expecting moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
+	
+	// Install the pamm mod.
+	QDir modDir(modPath);
+	modDir.mkdir("PAMM");
+	modDir.mkdir("PAMM/ui");
+	modDir.mkdir("PAMM/ui/mods");
+	
+	QFile modinfojson(modPath + "/PAMM/modinfo.json");
+	if(modinfojson.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		modinfojson.write(strModInfoJson);
+		modinfojson.close();
+	}
+	else
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Couldn't write to \"" + modPath + "\"");
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.exec();
+	}
+
+	ModManager manager(configPath, paPath, modPath);
 	manager.findInstalledMods();
 	manager.loadAvailableMods(false);
 
