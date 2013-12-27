@@ -34,13 +34,11 @@ class AvailableMod : public Mod
 public:
 	enum installstate_t{installed, notinstalled, updateavailable};
 
-	AvailableMod(QString Key, QString Name, QStringList Authors, QUrl Link, QString Category, QString Version, unsigned int Build, bool CompatibleWithPAMM, QUrl Download, QString Description, QDate Date, installstate_t State);
+	AvailableMod(const QString &Key, const QString &DisplayName, const QString &Description, const QString &Author, const QString &Version, const QString &Build, const QDate &Date, const QUrl &Forum, const QUrl &Url, const QStringList &Category, const QStringList &Requires, const installstate_t State);
 	~AvailableMod();
 
 	void setPixmap(const QPixmap &pixmap);
 	void setCount(int count);
-	static bool sortCompatibility(const AvailableMod *m1, const AvailableMod *m2);
-	bool pammCompatible() {return CompatibleWithPAMM;};
 	QUrl downloadLink() {return Download;};
 	installstate_t state() {return State;};
 
@@ -53,10 +51,7 @@ public:
 
 private:
 	const QUrl Download;
-	const QString Description;
 	QPixmap Icon;
-	const QDate Date;
-	const bool CompatibleWithPAMM; // Compatible with PAMM?
 	const installstate_t State;
 	int NumDownloaded;
 
@@ -72,7 +67,7 @@ public Q_SLOTS:
 	void downloadProgress( qint64 bytesReceived, qint64 bytesTotal);
 
 Q_SIGNALS:
-	void installMe(AvailableMod *mod);
+	void installMe();
 };
 
 #endif // AVAILABLEMOD_H

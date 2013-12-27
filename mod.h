@@ -24,29 +24,35 @@
 #include <QString>
 #include <QStringList>
 #include <QUrl>
+#include <QDate>
 
+class QLabel;
 class Mod : public QWidget
 {
     Q_OBJECT
 
 public:
-	Mod(const QString &Key, const QString &Name, const QStringList &Authors, const QUrl &Link, const QString &Category, const QString &Version, const unsigned int &Build);
+	Mod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QUrl& Forum, const QStringList& Category, const QString& Version, const QStringList& Requires, const QDate& Date, const QString& Build);
 	~Mod();
 
-	QString name() {return Name;};
+	QString displayName() {return DisplayName;};
 	QString key() {return Key;};
+	QStringList requires() {return Requires;};
+
 
 protected:
 	const QString Key;
-	const QString Name; // Name of Mod (avoid special characters, and be mindful of the length)
-	const QStringList Authors; // Your Name
-	const QUrl Link; // Forum Link to Mod
-	const QString Category; // Category
+	const QString DisplayName; // Name of Mod (avoid special characters, and be mindful of the length)
+	const QString Description; // Name of Mod (avoid special characters, and be mindful of the length)
+	const QString Author; // Your Name
+	const QUrl Forum; // Forum Link to Mod
+	const QStringList Category; // Category
 	const QString Version; // Version Number
-	const unsigned int Build; // Build Number
+	const QStringList Requires;
+	const QDate Date;
+	const QString Build; // Build Number
 
-private:
-
+	void setRelativeFontSizeForLabel(QLabel *label, qreal size);
 };
 
 #endif // MOD_H

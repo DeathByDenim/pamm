@@ -26,6 +26,7 @@ class QLayout;
 class QTextBrowser;
 class QNetworkReply;
 class QPushButton;
+class QComboBox;
 
 class PAMM : public QMainWindow
 {
@@ -51,6 +52,7 @@ private:
 	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All);
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
     void loadNews();
+	void checkForUpdate();
 
 public Q_SLOTS:
 	void exitButtonClicked();

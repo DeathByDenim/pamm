@@ -18,14 +18,22 @@
  */
 
 #include "mod.h"
+#include <QLabel>
 
-Mod::Mod(const QString& Key, const QString& Name, const QStringList& Authors, const QUrl& Link, const QString& Category, const QString& Version, const unsigned int& Build)
- : QWidget(), Key(Key), Name(Name), Authors(Authors), Link(Link), Category(Category), Version(Version), Build(Build)
+Mod::Mod(const QString &Key, const QString &DisplayName, const QString &Description, const QString &Author, const QUrl &Forum, const QStringList &Category, const QString &Version, const QStringList &Requires, const QDate &Date, const QString &Build)
+ : QWidget(), Key(Key), DisplayName(DisplayName), Description(Description), Author(Author), Forum(Forum), Category(Category), Version(Version), Requires(Requires), Date(Date), Build(Build)
 {
 }
 
 Mod::~Mod()
 {
+}
+
+void Mod::setRelativeFontSizeForLabel(QLabel* label, qreal size)
+{
+	QFont font = label->font();
+	font.setPointSizeF(size * font.pointSizeF());
+	label->setFont(font);
 }
 
 #include "mod.moc"

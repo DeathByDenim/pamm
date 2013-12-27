@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QDebug>
+
 #include <QDirIterator>
 #include <QSettings>
 #include <QNetworkAccessManager>
@@ -24,26 +26,23 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QMetaType>
+#include <QFile>
+#include <QTextStream>
 #include <fstream>
 #include <sstream>
 #include <exception>
 #include <zip.h>
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
 #include <cerrno>
 #include "modmanager.h"
 #include "installedmod.h"
 
-ModManager::ModManager(QString PAPath, QString ModPath)
- : PAPath(PAPath), ModPath(ModPath)
+ModManager::ModManager(QString ConfigPath, QString PAPath, QString ModPath)
+ : ConfigPath(ConfigPath), PAPath(PAPath), ModPath(ModPath)
 {
-	ConfigPath = QDir::homePath();
-#ifdef __APPLE__
-	ConfigPath += "/Library/Application Support/Uber Entertainment/Planetary Annihilation/";
-#else
-	ConfigPath += "/.local/Uber Entertainment/Planetary Annihilation/";
-#endif
-
 	// Clean up zip files in cache
-	QDirIterator it(ConfigPath + "modcache/", QStringList("*.zip"), QDir::Files);
+	QDirIterator it(ConfigPath + "pamm_cache/", QStringList("*.zip"), QDir::Files);
 	while(it.hasNext())
 		QFile::remove(it.next());
 	
@@ -63,12 +62,11 @@ void ModManager::findInstalledMods()
 	while (it.hasNext())
 	{
 		QString filename = it.next();
-		if(filename.right(4).compare(".ini", Qt::CaseInsensitive) == 0 && it.fileInfo().isFile())
+		if(QFileInfo(filename).fileName().compare("modinfo.json", Qt::CaseInsensitive) == 0)
 		{
-			InstalledMod *mod = parseIni(filename);
+			InstalledMod *mod = parseJson(filename);
 			if(mod != NULL)
 			{
-				mod->setEnabled(isEnabled(mod->name()));
 				connect(mod, SIGNAL(modStateChanged()), this, SLOT(modstateChanged()));
 				installedMods.append(mod);
 			}
@@ -76,85 +74,80 @@ void ModManager::findInstalledMods()
 	}
 }
 
-InstalledMod *ModManager::parseIni(const QString filename)
+InstalledMod *ModManager::parseJson(const QString filename)
 {
-	QSettings inifile(filename, QSettings::IniFormat);
+	QJson::Parser parser;
 
-	inifile.beginGroup("PAMM");
-	if(!inifile.contains("Name"))
+	QFile jsonFile(filename);
+	if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
 		return NULL;
 
-	unsigned int Priority = 100;
-	QStringList Authors;
-	QVariant var = inifile.value("Author", QString(""));
-	if(var.type() == QVariant::StringList)
-		Authors = var.toStringList();
-	else
-		Authors = QStringList(var.toString().trimmed());
+	bool ok;
+	QVariantMap result = parser.parse(&jsonFile, &ok).toMap();
+	if(!ok)
+		return NULL;
+
+	unsigned int priority = result["priority"].toUInt(&ok);
+	if(!ok || priority == 0)
+		priority = 100;
 
 	InstalledMod *mod = new InstalledMod(
-		QFileInfo(filename).baseName(),
-		inifile.value("Name", QString("")).toString().trimmed(),
-		Authors,
-		QUrl(inifile.value("Link", QString("")).toString().trimmed()),
-		inifile.value("Category", QString("")).toString().trimmed(),
-		inifile.value("Version", QString("")).toString().trimmed(),
-		inifile.value("Build", QString("")).toULongLong(),
-		inifile.value("Priority", 100U).toUInt(),
-		inifile.value("Requires").toStringList(),
-		false
+		QFileInfo(filename).absoluteDir().dirName(),
+		result["context"].toString(),
+		result["identifier"].toString(),
+		result["display_name"].toString(),
+		result["description"].toString(),
+		result["author"].toString(),
+		result["version"].toString(),
+		result["signature"].toString(),
+		priority,
+		result["enabled"].toBool(),
+		result["id"].toString(),
+		result["forum"].toUrl(),
+		result["category"].toStringList(),
+		result["requires"].toStringList(),
+		QDate::fromString(result["date"].toString(), "yyyy/MM/dd"),
+		result["build"].toString()
 	);
 
-	if(inifile.contains("global_mod_list"))
-		mod->setScene(inifile.value("global_mod_list"), InstalledMod::global_mod_list);
-	if(inifile.contains("connect_to_game"))
-		mod->setScene(inifile.value("connect_to_game"), InstalledMod::connect_to_game);
-	if(inifile.contains("game_over"))
-		mod->setScene(inifile.value("game_over"), InstalledMod::game_over);
-	if(inifile.contains("icon_atlas"))
-		mod->setScene(inifile.value("icon_atlas"), InstalledMod::icon_atlas);
-	if(inifile.contains("live_game"))
-		mod->setScene(inifile.value("live_game"), InstalledMod::live_game);
-	if(inifile.contains("load_planet"))
-		mod->setScene(inifile.value("load_planet"), InstalledMod::load_planet);
-	if(inifile.contains("lobby"))
-		mod->setScene(inifile.value("lobby"), InstalledMod::lobby);
-	if(inifile.contains("matchmaking"))
-		mod->setScene(inifile.value("matchmaking"), InstalledMod::matchmaking);
-	if(inifile.contains("new_game"))
-		mod->setScene(inifile.value("new_game"), InstalledMod::new_game);
-	if(inifile.contains("server_browser"))
-		mod->setScene(inifile.value("server_browser"), InstalledMod::server_browser);
-	if(inifile.contains("settings"))
-		mod->setScene(inifile.value("settings"), InstalledMod::settings);
-	if(inifile.contains("special_icon_atlas"))
-		mod->setScene(inifile.value("special_icon_atlas"), InstalledMod::special_icon_atlas);
-	if(inifile.contains("start"))
-		mod->setScene(inifile.value("start"), InstalledMod::start);
-	if(inifile.contains("system_editor"))
-		mod->setScene(inifile.value("system_editor"), InstalledMod::system_editor);
-	if(inifile.contains("transit"))
-		mod->setScene(inifile.value("transit"), InstalledMod::transit);
+	if(result.contains("global_mod_list"))
+		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
+	if(result.contains("connect_to_game"))
+		mod->setScene(result["connect_to_game"], InstalledMod::connect_to_game);
+	if(result.contains("game_over"))
+		mod->setScene(result["game_over"], InstalledMod::game_over);
+	if(result.contains("icon_atlas"))
+		mod->setScene(result["icon_atlas"], InstalledMod::icon_atlas);
+	if(result.contains("live_game"))
+		mod->setScene(result["live_game"], InstalledMod::live_game);
+	if(result.contains("load_planet"))
+		mod->setScene(result["load_planet"], InstalledMod::load_planet);
+	if(result.contains("lobby"))
+		mod->setScene(result["lobby"], InstalledMod::lobby);
+	if(result.contains("matchmaking"))
+		mod->setScene(result["matchmaking"], InstalledMod::matchmaking);
+	if(result.contains("new_game"))
+		mod->setScene(result["new_game"], InstalledMod::new_game);
+	if(result.contains("replay_browser"))
+		mod->setScene(result["replay_browser"], InstalledMod::replay_browser);
+	if(result.contains("server_browser"))
+		mod->setScene(result["server_browser"], InstalledMod::server_browser);
+	if(result.contains("settings"))
+		mod->setScene(result["settings"], InstalledMod::settings);
+	if(result.contains("social"))
+		mod->setScene(result["social"], InstalledMod::social);
+	if(result.contains("special_icon_atlas"))
+		mod->setScene(result["special_icon_atlas"], InstalledMod::special_icon_atlas);
+	if(result.contains("start"))
+		mod->setScene(result["start"], InstalledMod::start);
+	if(result.contains("system_editor"))
+		mod->setScene(result["system_editor"], InstalledMod::system_editor);
+	if(result.contains("transit"))
+		mod->setScene(result["transit"], InstalledMod::transit);
+
+	mod->setCompleteJson(result);
 
 	return mod;
-}
-
-bool ModManager::isEnabled(const QString Name)
-{
-	std::ifstream UiModListJS((ModPath + "/ui_mod_list.js").toStdString().c_str());
-	if(!UiModListJS.good())
-		return false;
-
-	char buffer[100000];
-	do
-	{
-		UiModListJS.getline(buffer, 100000);
-		if(QString(buffer).contains("/* " + Name + " */"))
-			return true;
-	}
-	while(!UiModListJS.eof());
-	
-	return false;
 }
 
 void ModManager::sceneToStream(std::ostream& os, const QList<InstalledMod *> modList, const InstalledMod::scene_t scene)
@@ -173,57 +166,37 @@ void ModManager::sceneToStream(std::ostream& os, const QList<InstalledMod *> mod
 		{
 			if(firstpass)
 			{
-				str << "        /* PAMM BEGIN (do not edit below) */" << std::endl;
 				firstpass = false;
 			}
 			else
 				str << ',' << std::endl;
 
-			str << "        /* " << (*m)->name().toStdString() << " */" << std::endl;
+			str << "        /* " << (*m)->displayName().toStdString() << " */" << std::endl;
 			for(QStringList::const_iterator s = sceneList.constBegin(); s != sceneList.constEnd(); ++s)
 			{
 				if(s != sceneList.constBegin())
 				{
 					str << "," << std::endl;
 				}
-				str << "        " << s->toStdString();
+				str << "        '" << s->toStdString() << "'";
 			}
 		}
 	}
 	str << std::endl;
-	if(!firstpass)
-		str << "        /* PAMM END (do not edit above) */" << std::endl;
-
 
 	os << str.str();
 }
 
-void ModManager::readUiModListJS()
-{
-	std::ifstream UiModListJS((ModPath + "/ui_mod_list.js").toStdString().c_str());
-	if(!UiModListJS.good())
-		return;
-
-	char buffer[2048];
-	while(!UiModListJS.eof())
-	{
-		UiModListJS.getline(buffer, 2048);
-		QString line(buffer);
-
-		if(line.contains("global_mod_list"))
-		{
-		}
-	}
-}
-
 void ModManager::writeUiModListJS()
 {
-	std::ofstream UiModListJS((ModPath + "/ui_mod_list.js").toStdString().c_str());
+	std::ofstream UiModListJS((ModPath + "/PAMM/ui/mods/ui_mod_list.js").toStdString().c_str());
 	if(!UiModListJS.good())
 		return;
 
 	QList<InstalledMod *> prioritySorted(installedMods);
 	qSort(prioritySorted.begin(), prioritySorted.end(), InstalledMod::sortPriority);
+
+	UiModListJS << "/* DO NOT EDIT. This file is overwritten by pamm. */" << std::endl << std::endl;
 
 	UiModListJS <<
 		"/* start ui_mod_list */\n"
@@ -282,6 +255,12 @@ void ModManager::writeUiModListJS()
 
 	UiModListJS <<
 		"    ],\n"
+		"    'replay_browser': [\n";
+	
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::replay_browser);
+
+	UiModListJS <<
+		"    ],\n"
 		"    'server_browser': [\n";
 	
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::server_browser);
@@ -291,6 +270,12 @@ void ModManager::writeUiModListJS()
 		"    'settings': [\n";
 	
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::settings);
+
+	UiModListJS <<
+		"    ],\n"
+		"    'social': [\n";
+	
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::social);
 
 	UiModListJS <<
 		"    ],\n"
@@ -341,11 +326,11 @@ void ModManager::writeUiModListJS()
 	UiModListJS << "\n];\n";
 }
 
-AvailableMod::installstate_t ModManager::isInstalled(QString modName, QString modVersion)
+AvailableMod::installstate_t ModManager::isInstalled(QString modKey, QString modVersion)
 {
 	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
 	{
-		if((*mod)->name() == modName)
+		if((*mod)->key() == modKey)
 		{
 			if((*mod)->isOlderThan(modVersion))
 				return AvailableMod::updateavailable;
@@ -359,22 +344,23 @@ AvailableMod::installstate_t ModManager::isInstalled(QString modName, QString mo
 
 void ModManager::loadAvailableMods(bool refresh)
 {
-	QFileInfo inifile(ConfigPath + "modcache/modlist.ini");
-	if(!inifile.exists() || !inifile.isFile() || inifile.lastModified() > QDateTime::currentDateTime().addDays(2) || refresh)
+	QFileInfo jsonfile(ConfigPath + "/pamm_cache/modlist.json");
+	if(!jsonfile.exists() || !jsonfile.isFile() || jsonfile.lastModified() >= QDateTime::currentDateTime().addDays(2) || refresh)
 	{
 
-		QNetworkRequest request(QUrl("http://pamods.github.io/modlist.ini"));
+		QNetworkRequest request(QUrl("http://pa.raevn.com/modlist.json"));
+		request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
 		request.setAttribute(QNetworkRequest::User, QVariant("modlist"));
 		Internet->get(request);
 	}
 	else
 	{
 		availableMods.clear();
-		readAvailableModListIni(ConfigPath + "modcache/modlist.ini");
+		readAvailableModListJson(ConfigPath + "/pamm_cache/modlist.json");
 	}
 	
 	// Get the mod count.
-	QNetworkRequest request(QUrl("http://pa.raevn.com/modcount.php"));
+	QNetworkRequest request(QUrl("http://pa.raevn.com/modcount_json.php"));
 
 	// Raevn's website doesn't like Qt4 downloading its modcount! Darn you, mod_security!
 	// Pretend to be Opera! Everybody loves Opera, right?
@@ -400,27 +386,27 @@ void ModManager::replyFinished(QNetworkReply* reply)
 		}
 		else if(type == "modlist" || type == "modcount")
 		{
-			QDir(ConfigPath).mkdir("modcache");
-			QString inifilename(ConfigPath + "modcache/");
+			QDir(ConfigPath).mkdir("pamm_cache");
+			QString jsonfilename(ConfigPath + "/pamm_cache/");
 			if(type == "modlist")
-				inifilename += "modlist.ini";
+				jsonfilename += "modlist.json";
 			else if(type == "modcount")
-				inifilename += "modcount.ini";
+				jsonfilename += "modcount.json";
 			else
 				return;
 
-			QFile inifile(inifilename);
-			if(inifile.open(QIODevice::WriteOnly | QIODevice::Text))
+			QFile jsonfile(jsonfilename);
+			if(jsonfile.open(QIODevice::WriteOnly | QIODevice::Text))
 			{
 				QByteArray arr = reply->readAll();
-				inifile.write(arr);
-				inifile.flush();
-				inifile.close();
+				jsonfile.write(arr);
+				jsonfile.flush();
+				jsonfile.close();
 
 				if(type == "modlist")
 				{
 					availableMods.clear();
-					readAvailableModListIni(inifilename);
+					readAvailableModListJson(jsonfilename);
 				}
 				else if(type == "modcount")
 				{
@@ -430,7 +416,7 @@ void ModManager::replyFinished(QNetworkReply* reply)
 			else
 			{
 				QMessageBox msgBox;
-				msgBox.setText("Couldn't write to \"" + inifilename + "\"");
+				msgBox.setText("Couldn't write to \"" + jsonfilename + "\"");
 				msgBox.setIcon(QMessageBox::Warning);
 				msgBox.exec();
 			}
@@ -441,8 +427,8 @@ void ModManager::replyFinished(QNetworkReply* reply)
 			if(mod)
 			{
 				QStringList urlpath = reply->url().path().split('/');
-				QDir(ConfigPath).mkdir("modcache");
-				QString modfilename(ConfigPath + "/modcache/" + urlpath[urlpath.count()-1]);
+				QDir(ConfigPath).mkdir("pamm_cache");
+				QString modfilename(ConfigPath + "/pamm_cache/" + urlpath[urlpath.count()-1]);
 				QFile modfile(modfilename);
 				if(modfile.open(QIODevice::WriteOnly | QIODevice::Text))
 				{
@@ -457,86 +443,82 @@ void ModManager::replyFinished(QNetworkReply* reply)
 	}
 }
 
-void ModManager::readAvailableModListIni(QString filename)
+void ModManager::readAvailableModListJson(QString filename)
 {
-	QSettings modcacheini(filename, QSettings::IniFormat);
-	modcacheini.beginGroup("PAMODS");
-	QStringList modssections = modcacheini.allKeys();
-	modcacheini.endGroup();
-	for(QStringList::const_iterator modentry = modssections.constBegin(); modentry != modssections.constEnd(); ++modentry)
+	QJson::Parser parser;
+	bool ok;
+
+	QFile jsonFile(filename);
+	if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+
+	QVariantMap result = parser.parse(&jsonFile, &ok).toMap();
+	if(!ok)
+		return;
+
+	QMapIterator<QString, QVariant> modentry(result);
+	while(modentry.hasNext())
 	{
-		if(modentry->compare("nonpamm") == 0)
-			continue;
+		modentry.next();
+		QVariantMap moddata = modentry.value().toMap();
 
-		modcacheini.beginGroup(*modentry);
-
-		QStringList authors;
-		QVariant var = modcacheini.value("Author", QString(""));
-		if(var.type() == QVariant::StringList)
-			authors = var.toStringList();
-		else
-			authors = QStringList(var.toString().trimmed());
-
-		QString description;
-		var = modcacheini.value("Description", QString(""));
-		if(var.type() == QVariant::StringList)
-			// Comma's confuse QSettings.
-			description = var.toStringList().join(", ");
-		else
-			description = var.toString().trimmed();
-
-		QString datestring = modcacheini.value("Date").toString();
-
-		/* Hack, because QSettings doesn't care about ordering and raevn bases
-		 * the compatibility of a mod on the fact if it is listed before or
-		 * after the fake mod, "nonpamm". For now, TOUM is the only noncompatible
-		 * mod out there.
-		 */ 
-		bool compatible = (modentry->compare("TOUM") != 0);
-		
-		QString name = modcacheini.value("Name", QString("")).toString().trimmed();
-		QString version = modcacheini.value("Version", QString("")).toString().trimmed();
+		QString display_name = moddata["display_name"].toString();
+		QString version = moddata["version"].toString();
+		AvailableMod::installstate_t state = isInstalled(modentry.key(), version);
 
 		AvailableMod *mod = new AvailableMod(
-			*modentry,
-			name,
-			authors,
-			QUrl(modcacheini.value("Link", QString("")).toString().trimmed()),
-			modcacheini.value("Category", QString("")).toString().trimmed(),
+			modentry.key(),
+			display_name,
+			moddata["description"].toString(),
+			moddata["author"].toString(),
 			version,
-			modcacheini.value("Build", QString("")).toUInt(),
-			compatible,
-			QUrl(modcacheini.value("Download", QString("")).toString().trimmed()),
-			description,
-			QDate::fromString(datestring, "yyyy/MM/dd"),
-			isInstalled(name, version)
+			moddata["build"].toString(),
+			QDate::fromString(moddata["date"].toString(), "yyyy/MM/dd"),
+			moddata["forum"].toUrl(),
+			moddata["url"].toUrl(),
+			moddata["category"].toStringList(),
+			moddata["requires"].toStringList(),
+			state
 		);
 		availableMods.append(mod);
 
-		if(modcacheini.contains("Icon"))
+		for(QList<InstalledMod *>::iterator instmod = installedMods.begin(); instmod != installedMods.end(); ++instmod)
 		{
-			// If it is the default icon. Don't bother downloading.
-			if(modcacheini.value("Icon").toString() != "http://pamods.github.io/icons/default.png")
+			if((*instmod)->key() == mod->key())
 			{
-				QNetworkRequest request(QUrl(modcacheini.value("Icon").toUrl()));
-				request.setAttribute(QNetworkRequest::User, "icon");
-				request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), availableMods.size()-1);
-				Internet->get(request);
+				if(state == AvailableMod::updateavailable)
+					(*instmod)->setUpdateAvailable(true);
 			}
 		}
-
-		modcacheini.endGroup();
 	}
 
 	emit availableModsLoaded();
 }
 
-void ModManager::downloadMod(AvailableMod* mod)
+void ModManager::downloadMod()
 {
+	AvailableMod *mod = dynamic_cast<AvailableMod *>( sender() );
+	if(mod == NULL)
+	{
+		InstalledMod *instmod = dynamic_cast<InstalledMod *>( sender() );
+		if(instmod)
+		{
+			for(QList<AvailableMod *>::const_iterator avmod = availableMods.constBegin(); avmod != availableMods.constEnd(); ++avmod)
+			{
+				if(instmod->key() == (*avmod)->key())
+				{
+					mod = (*avmod);
+					break;
+				}
+			}
+		}
+	}
+
 	if(mod)
 	{
 		QNetworkRequest request(mod->downloadLink());
 		request.setAttribute(QNetworkRequest::User, "moddownload");
+		request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
 		request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant::fromValue((QWidget *)mod));
 		QNetworkReply *reply = Internet->get(request);
 		connect(reply, SIGNAL(downloadProgress(qint64, qint64)), mod, SLOT(downloadProgress(qint64,qint64)));
@@ -549,7 +531,7 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 {
 	connect(this, SIGNAL(progress(int)), mod, SLOT(progress(int)));
 
-	QString inifilename;
+	QString jsonfilename;
 
 	int error;
 	struct zip *zippedMod = zip_open(filename.toStdString().c_str(), 0, &error);
@@ -565,9 +547,9 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 				continue;
 			}
 
-			if(filename.right(4).compare(".ini", Qt::CaseInsensitive) == 0)
+			if(filename.right(13).compare("/modinfo.json", Qt::CaseInsensitive) == 0)
 			{
-				inifilename = filename;
+				jsonfilename = filename;
 			}
 			
 			struct zip_file *zippedFile = zip_fopen_index(zippedMod, i, 0);
@@ -579,10 +561,10 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 			zip_fclose(zippedFile);
 
-			QFileInfo outFileInfo(ModPath + filename);
+			QFileInfo outFileInfo(ModPath + '/' + filename);
 			if(QDir::root().mkpath(outFileInfo.absolutePath()))
 			{
-				QFile outFile(ModPath + filename);
+				QFile outFile(ModPath + '/' + filename);
 				if(outFile.open(QIODevice::WriteOnly | QIODevice::Text))
 				{
 					outFile.write(data);
@@ -623,13 +605,13 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 	disconnect(this, SIGNAL(progress(int)), mod, SLOT(progress(int)));
 
-	InstalledMod *newmod = parseIni(ModPath + inifilename);
+	InstalledMod *newmod = parseJson(ModPath + jsonfilename);
 	if(newmod)
 	{
 		// Remove the old outdated mod from the list
 		for(size_t i = 0; i < installedMods.count(); i++)
 		{
-			if(installedMods[i]->name() == newmod->name())
+			if(installedMods[i]->displayName() == newmod->displayName())
 			{
 				delete installedMods[i];
 				installedMods.removeAt(i);
@@ -656,7 +638,7 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 		if(!requires.isEmpty())
 		{
 			QMessageBox installDependenciesMessageBox;
-			installDependenciesMessageBox.setText(newmod->name() + " depends on other mods.");
+			installDependenciesMessageBox.setText(newmod->displayName() + " depends on other mods.");
 			installDependenciesMessageBox.setInformativeText("Do you want to install those?");
 			installDependenciesMessageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 			installDependenciesMessageBox.setDefaultButton(QMessageBox::Yes);
@@ -681,19 +663,105 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 void ModManager::modstateChanged()
 {
+	InstalledMod *mod = dynamic_cast<InstalledMod *>( sender() );
+	if(mod)
+	{
+		QFile modinfoJsonFile(ModPath + "/" + mod->key() + "/modinfo.json");
+		if(modinfoJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			QJson::Serializer serializer;
+			bool ok;
+			modinfoJsonFile.write(serializer.serialize(mod->completeJson(), &ok));
+			modinfoJsonFile.close();
+		}
+	}
+	writeModsJson();
 	writeUiModListJS();
 }
 
 void ModManager::updateModCount()
 {
-	QSettings modCountSettings(ConfigPath + "modcache/modcount.ini", QSettings::IniFormat);
-	modCountSettings.beginGroup("PAMM");
+	QFile modCountFile(ConfigPath + "/pamm_cache/modcount.json");
+	if(!modCountFile.open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+	
+	QJson::Parser parser;
+	bool ok;
+
+	QVariantMap result = parser.parse(&modCountFile, &ok).toMap();
+	if(!ok)
+		return;
+
 	for(QList<AvailableMod *>::iterator mod = availableMods.begin(); mod != availableMods.end(); ++mod)
 	{
-		if(modCountSettings.contains((*mod)->key()))
-			(*mod)->setCount(modCountSettings.value((*mod)->name()).toInt());
+		(*mod)->setCount(result[(*mod)->key()].toInt());
 	}
-	modCountSettings.endGroup();
+}
+
+void ModManager::writeModsJson()
+{
+	QFile modsJsonFile(ModPath + "/mods.json");
+	if(!modsJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		return;
+	}
+	
+	QTextStream stream(&modsJsonFile);
+	
+	QList<InstalledMod *> prioritySorted(installedMods);
+	qSort(prioritySorted.begin(), prioritySorted.end(), InstalledMod::sortPriority);
+	
+	stream << "{" << endl << "\t\"mount_order\":" << endl << "\t[" << endl;
+	bool firstpass = true;
+	for(QList<InstalledMod *>::const_iterator mod = prioritySorted.begin(); mod != prioritySorted.end(); ++mod)
+	{
+		if(!(*mod)->enabled())
+			continue;
+
+		if(firstpass)
+			firstpass = false;
+		else
+			stream << ',' << endl;
+		
+		stream << "\t\t\"" << (*mod)->identifier() << "\"";
+	}
+	stream << endl << "\t]" << endl << "}" << endl;
+	modsJsonFile.close();
+}
+
+bool ModManager::recursiveRemove(const QDir &dir)
+{
+	QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
+
+	for(QFileInfoList::const_iterator item = list.constBegin(); item != list.constEnd(); ++item)
+	{
+		if(item->isDir())
+		{
+			recursiveRemove(QDir(item->filePath()));
+			dir.rmdir(item->fileName());
+		}
+		else
+			QDir(dir).remove(item->fileName());
+	}
+}
+
+void ModManager::uninstallMod()
+{
+	InstalledMod *mod = dynamic_cast<InstalledMod *>( sender() );
+	if(mod)
+	{
+		installedMods.removeOne(mod);
+		recursiveRemove(QDir(ModPath + '/' + mod->key()));
+		if(!QDir(ModPath).rmdir(mod->key()))
+		{
+			QMessageBox msgBox;
+			msgBox.setText("Couldn't delete all of the files.");
+			msgBox.setInformativeText("See \"" + ModPath + '/' + mod->key() + "\"");
+			msgBox.setIcon(QMessageBox::Warning);
+			msgBox.exec();
+		}
+		delete mod;
+	}
 }
 
 
