@@ -3,6 +3,8 @@ INSTALLATION
 Linux:
 Copy pamm_linux and the directory "img" to whereever you want. It will find PA automatically if you at least started it once.
 You need to have the QT4 libraries installed as well as libzip and libqjson.
+On Ubuntu just type:
+sudo apt-get install libqt4-core libqt4-network libqt4-gui libzip2 libqjson0
 
 Mac OS:
 Copy pamm_mac and the directory "img" to whereever you want.
