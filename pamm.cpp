@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define PAMM_VERSION "3.0.0"
+#define PAMM_VERSION "3.0.1"
 
 #include "pamm.h"
 #include "modmanager.h"
@@ -31,6 +31,43 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+
+const char *strNewsStyleSheet =
+	".news_container {\n"
+	"\tpadding: 4px;\n"
+	"}\n"
+	"\n"
+	".news_item {\n"
+	"\tborder-bottom: 1px solid #515151;\n"
+	"\tpadding-left: 3px;\n"
+	"\tpadding-right: 3px;\n"
+	"\tpadding-top: 3px;\n"
+	"\tpadding-bottom: 14px;\n"
+	"\tmargin-bottom: 14px;\n"
+	"}\n"
+	"\n"
+	".news_title {\n"
+	"\tcolor: #008888;\n"
+	"\tfont-family: \"Verdana\";\n"
+	"\tfont-size: 1.0em;\n"
+	"}\n"
+	"\n"
+	".news_date {\n"
+	"\tfont-size: 0.7em;\n"
+	"\tcolor: #888888;\n"
+	"\tfont-style: italic;\n"
+	"\tpadding-bottom: 3px;\n"
+	"}\n"
+	"\n"
+	".news_body {\n"
+	"\tfont-size: 0.8em;\n"
+	"\tcolor: #F9F9F9;\n"
+	"}\n"
+	"\n"
+	".brackets {\n"
+	"\tcolor: #888888;\n"
+	"}\n";
+
 
 PAMM::PAMM(ModManager* manager, QString progdir)
  : Manager(manager)
@@ -91,6 +128,7 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 	loadNews();
 	QPalette newsPalette = NewsBrowser->palette();
 	newsPalette.setColor(QPalette::Base, QColor(0, 0, 0, 0));
+	newsPalette.setColor(QPalette::Text, QColor(200, 200, 200, 255));
 	NewsBrowser->setPalette(newsPalette);
 	NewsBrowser->document()->setIndentWidth(10);
 	NewsBrowser->setOpenLinks(true);
@@ -251,7 +289,7 @@ void PAMM::refreshButtonClicked()
 			QNetworkAccessManager *newsManager = new QNetworkAccessManager(this);
 			connect(newsManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
-			QNetworkRequest request(QUrl("http://pa.raevn.com/news.html"));
+			QNetworkRequest request(QUrl("http://pamods.github.io/news.html"));
 			request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
 			newsManager->get(request);
 		}
@@ -353,7 +391,15 @@ void PAMM::loadNews()
 		QFileInfo newsFileInfo(Manager->configPath() + "/pamm_cache/news.html");
 		if(newsFileInfo.exists() && newsFileInfo.isFile() && newsFileInfo.lastModified() < QDateTime::currentDateTime().addDays(1))
 		{
-			NewsBrowser->setSource(QUrl(Manager->configPath() + "/pamm_cache/news.html"));
+			QTextDocument *newsDocument = new QTextDocument(this);
+			newsDocument->addResource(QTextDocument::StyleSheetResource, QUrl("format.css"), strNewsStyleSheet);
+			QFile newsFile(Manager->configPath() + "/pamm_cache/news.html");
+			if(newsFile.open(QIODevice::ReadOnly | QIODevice::Text))
+			{
+				QString html(newsFile.readAll());
+				newsDocument->setHtml(html);
+				NewsBrowser->setDocument(newsDocument);
+			}
 		}
 		else
 		{
@@ -376,11 +422,31 @@ void PAMM::replyFinished(QNetworkReply* reply)
 		QFile newsFile(Manager->configPath() + "/pamm_cache/news.html");
 		if(newsFile.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
+			newsFile.write(
+				"<html>"
+				"<head>"
+				"<link rel=\"stylesheet\" type=\"text/css\" href=\"format.css\">"
+				"</head>"
+				"<body>"
+			);
 			QByteArray arr = reply->readAll();
 			newsFile.write(arr);
+			newsFile.write(
+				"</body>"
+				"</html>"
+			);
 			newsFile.flush();
 			newsFile.close();
-			NewsBrowser->setSource(QUrl(Manager->configPath() + "/pamm_cache/news.html"));
+
+			QTextDocument *newsDocument = new QTextDocument(this);
+			newsDocument->addResource(QTextDocument::StyleSheetResource, QUrl("format.css"), strNewsStyleSheet);
+			QFile newsFile(Manager->configPath() + "/pamm_cache/news.html");
+			if(newsFile.open(QIODevice::ReadOnly | QIODevice::Text))
+			{
+				QString html(newsFile.readAll());
+				newsDocument->setHtml(html);
+				NewsBrowser->setDocument(newsDocument);
+			}
 		}
 		else
 		{
