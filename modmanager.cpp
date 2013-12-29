@@ -72,6 +72,8 @@ void ModManager::findInstalledMods()
 			}
 		}
 	}
+
+	refreshReverseRequirements();
 }
 
 InstalledMod *ModManager::parseJson(const QString filename)
@@ -605,7 +607,7 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 	disconnect(this, SIGNAL(progress(int)), mod, SLOT(progress(int)));
 
-	InstalledMod *newmod = parseJson(ModPath + jsonfilename);
+	InstalledMod *newmod = parseJson(ModPath + '/' + jsonfilename);
 	if(newmod)
 	{
 		// Remove the old outdated mod from the list
@@ -659,6 +661,8 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 			}
 		}
 	}
+	
+	refreshReverseRequirements();
 }
 
 void ModManager::modstateChanged()
@@ -677,6 +681,39 @@ void ModManager::modstateChanged()
 	}
 	writeModsJson();
 	writeUiModListJS();
+	
+	if(mod)
+	{
+		if(mod->enabled())
+		{
+			QStringList requires = mod->requires();
+			if(!requires.isEmpty())
+			{
+				for(QStringList::const_iterator reqstr = requires.constBegin(); reqstr != requires.constEnd(); ++reqstr)
+				{
+					bool found = false;
+					for(QList<InstalledMod *>::iterator reqmod = installedMods.begin(); reqmod != installedMods.end(); ++reqmod)
+					{
+						if((*reqmod)->key() == *reqstr)
+						{
+							found = true;
+							(*reqmod)->enable();
+						}
+					}
+					if(!found)
+					{
+						QMessageBox msgBox;
+						msgBox.setText("Unmet requirements!");
+						msgBox.setInformativeText((*reqstr) + " is not installed, but is needed for this mod. Mod will not work.");
+						msgBox.setIcon(QMessageBox::Critical);
+						msgBox.exec();
+					}
+				}
+			}
+		}
+		else
+			mod->disableReverseRequirements();
+	}
 }
 
 void ModManager::updateModCount()
@@ -761,8 +798,34 @@ void ModManager::uninstallMod()
 			msgBox.exec();
 		}
 		delete mod;
+		
+		refreshReverseRequirements();
 	}
 }
 
+void ModManager::refreshReverseRequirements()
+{
+	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
+	{
+		QStringList requirements = (*mod)->requires();
+		for(QStringList::const_iterator requirement = requirements.constBegin(); requirement != requirements.constEnd(); ++requirement)
+		{
+			for(QList<InstalledMod *>::iterator reqmod = installedMods.begin(); reqmod != installedMods.end(); ++reqmod)
+			{
+				if((*reqmod)->key() == *requirement)
+					(*reqmod)->addReverseRequirement(*mod);
+			}
+		}
+	}
+}
+
+void ModManager::installAllUpdates()
+{
+	for(QList<AvailableMod *>::iterator m = availableMods.begin(); m != availableMods.end(); ++m)
+	{
+		if((*m)->state() == AvailableMod::updateavailable)
+			(*m)->installButtonClicked();
+	}
+}
 
 #include "modmanager.moc"

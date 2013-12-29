@@ -45,6 +45,7 @@ public:
 	QString configPath() { return ConfigPath; }
 	AvailableMod::installstate_t isInstalled(QString modName, QString modVersion);
 	void loadAvailableMods(bool refresh);
+	void installAllUpdates();
 
 	struct mod_t
 	{
@@ -94,6 +95,7 @@ private:
     void updateModCount();
     void writeModsJson();
     bool recursiveRemove(const QDir &dir);
+	void refreshReverseRequirements();
 
 public Q_SLOTS:
 	void replyFinished(QNetworkReply* reply = NULL);
@@ -105,6 +107,7 @@ Q_SIGNALS:
 	void availableModsLoaded();
 	void progress(int);
 	void newModInstalled(InstalledMod *);
+	void updatedMod();
 };
 
 #endif // MODMANAGER_H

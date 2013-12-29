@@ -63,11 +63,14 @@ public:
 	void setScene(QVariant files, scene_t scene);
 	void setEnabled(bool enabled);
 	bool enabled() {return Enabled;};
+	void enable();
 	QString identifier() {return Identifier;};
 	static bool sortPriority(const InstalledMod *m1, const InstalledMod *m2);
 	QVariantMap completeJson() {return CompleteJson;};
 	void setCompleteJson(QVariantMap &json) {CompleteJson = json;};
 	void setUpdateAvailable(bool updateavailable);
+	void addReverseRequirement(InstalledMod *mod);
+	void disableReverseRequirements();
 
 public Q_SLOTS:
 	void checkBoxStateChanged(int state);
@@ -106,6 +109,7 @@ private:
 	const QString Identifier;
 	const QString Signature;
 	const QString Id;
+	QList<InstalledMod *> ReverseRequirements;
 
 	QVariantMap CompleteJson;
 };
