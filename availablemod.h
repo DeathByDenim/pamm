@@ -52,7 +52,7 @@ public:
 private:
 	const QUrl Download;
 	QPixmap Icon;
-	const installstate_t State;
+	installstate_t State;
 	int NumDownloaded;
 
 	QLabel *ModIconLabel;

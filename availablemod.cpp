@@ -182,6 +182,7 @@ void AvailableMod::progress(int percentage)
 		
 		if(ModStatus)
 		{
+			State = installed;
 			ModStatus->setText("INSTALLED");
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
 		}

@@ -25,6 +25,7 @@
 #include <QCheckBox>
 #include <QWidget>
 #include <QPushButton>
+#include <QMessageBox>
 #include <QVariant>
 #include <QStringList>
 #include <QString>
@@ -67,6 +68,7 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 		QLabel *modRequires = new QLabel(this);
 		modRequires->setText("REQUIRES: " + Requires.join(", "));
 		modRequires->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+		setRelativeFontSizeForLabel(modRequires, .8);
 		modLayout->addWidget(modRequires, 3, 2, 1, -1);
 	}
 
@@ -302,6 +304,34 @@ bool InstalledMod::sortPriority(const InstalledMod* m1, const InstalledMod* m2)
 
 void InstalledMod::uninstallButtonClicked()
 {
+	if(!ReverseRequirements.isEmpty())
+	{
+		QString revreq;
+		for(int i = 0; i < ReverseRequirements.length(); i++)
+		{
+			if(i > 0)
+			{
+				if(i == ReverseRequirements.length() - 1)
+				{
+					revreq += " and ";
+				}
+				else
+				{
+					revreq += ", ";
+				}
+			}
+			revreq += "\"" + ReverseRequirements[i]->displayName() + "\"";
+		}
+
+		QMessageBox msgBox;
+		msgBox.setText(revreq + " depend on this mod.");
+		msgBox.setInformativeText("Are you sure you want to uninstall?");
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		if(msgBox.exec() != QMessageBox::Yes)
+			return;
+	}
+
 	QPushButton *button = dynamic_cast<QPushButton *>( sender() );
 	if(button)
 		button->setEnabled(false);
@@ -323,5 +353,26 @@ void InstalledMod::setUpdateAvailable(bool updateavailable)
 	if(ModUpdateButton)
 		ModUpdateButton->setEnabled(updateavailable);
 }
+
+void InstalledMod::addReverseRequirement(InstalledMod* mod)
+{
+	if(mod)
+		ReverseRequirements.push_back(mod);
+}
+
+void InstalledMod::disableReverseRequirements()
+{
+	for(QList<InstalledMod *>::iterator mod = ReverseRequirements.begin(); mod != ReverseRequirements.end(); ++mod)
+	{
+		(*mod)->ModCheckbox->setCheckState(Qt::Unchecked);
+	}
+}
+
+void InstalledMod::enable()
+{
+	if(ModCheckbox)
+		ModCheckbox->setCheckState(Qt::Checked);
+}
+
 
 #include "installedmod.moc"

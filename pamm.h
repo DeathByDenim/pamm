@@ -49,10 +49,13 @@ private:
 	QTextBrowser *NewsBrowser;
 	QPushButton *RefreshButton;
 	QTabWidget *Tabs;
+	QPushButton *UpdateAllButton;
+	QComboBox *FilterComboBox;
 	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All);
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
     void loadNews();
 	void checkForUpdate();
+	void updateUpdateAllButton();
 
 public Q_SLOTS:
 	void exitButtonClicked();
@@ -64,6 +67,7 @@ public Q_SLOTS:
 	void newModInstalled(InstalledMod *newmod);
 	void sortIndexChanged(const QString & text);
 	void filterIndexChanged(const QString & text);
+	void updateAllButtonClicked();
 };
 
 #endif // PAMM_H

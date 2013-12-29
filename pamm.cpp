@@ -136,14 +136,14 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 	filterLabel->setText("SHOW:");
 	availableMenuWidgetLayout->addWidget(filterLabel);
 
-	QComboBox *filterComboBox = new QComboBox(availableMenuWidget);
-	filterComboBox->addItem("ALL");
-	filterComboBox->addItem("INSTALLED");
-	filterComboBox->addItem("REQUIRE UPDATE");
-	filterComboBox->addItem("NOT INSTALLED");
-	connect(filterComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterIndexChanged(const QString &)));
+	FilterComboBox = new QComboBox(availableMenuWidget);
+	FilterComboBox->addItem("ALL");
+	FilterComboBox->addItem("INSTALLED");
+	FilterComboBox->addItem("REQUIRE UPDATE");
+	FilterComboBox->addItem("NOT INSTALLED");
+	connect(FilterComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterIndexChanged(const QString &)));
 
-	availableMenuWidgetLayout->addWidget(filterComboBox);
+	availableMenuWidgetLayout->addWidget(FilterComboBox);
 	availableMenuWidgetLayout->addStretch();
 	availableMenuWidgetLayout->addStrut(10);
 
@@ -169,13 +169,20 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 	availableModsWidgetFont.setBold(false);
 	availableModsWidget->setFont(availableModsWidgetFont);
 	modsLayout = new QVBoxLayout(availableModsWidget);
-	populateAvailableModsWidget(true);
 	scrollAreaAvailable->setWidget(availableModsWidget);
 	scrollAreaAvailable->setWidgetResizable(true);
 	availableTabWidgetLayout->addWidget(scrollAreaAvailable);
 
 	Tabs->addTab(availableTabWidget, "AVAILABLE MODS");
 	connect(Tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+
+
+	UpdateAllButton = new QPushButton(this);
+	UpdateAllButton->setText("Update all mods (0)");
+	layout->addWidget(UpdateAllButton);
+	connect(UpdateAllButton, SIGNAL(clicked()), this, SLOT(updateAllButtonClicked()));
+
+	populateAvailableModsWidget(true);
 
 	QWidget *buttonsWidget = new QWidget(this);
 	QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
@@ -206,7 +213,7 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 	buttonsLayout->addStretch();
 	buttonsLayout->addWidget(versionLabel);
 	buttonsLayout->addWidget(creditLabel);
-	
+
 	layout->addWidget(buttonsWidget);
 	
 	centralWidget()->setLayout(layout);
@@ -317,6 +324,26 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 		}
 		modsLayout->addStretch();
 	}
+
+	updateUpdateAllButton();
+}
+
+void PAMM::updateUpdateAllButton()
+{
+	if(UpdateAllButton)
+	{
+		QList<AvailableMod *> updatableMods;
+		for(QList<AvailableMod *>::const_iterator m = Manager->availableMods.constBegin(); m != Manager->availableMods.constEnd(); ++m)
+		{
+			if((*m)->state() == AvailableMod::updateavailable)
+			{
+				updatableMods.push_back(*m);
+			}
+		}
+
+		UpdateAllButton->setText("Update all mods (" + QString("%1").arg(updatableMods.length()) + ")");
+		UpdateAllButton->setEnabled(!updatableMods.empty());
+	}
 }
 
 void PAMM::loadNews()
@@ -390,9 +417,9 @@ void PAMM::newModInstalled(InstalledMod* newmod)
 			modlayout->insertWidget(modlayout->count() - 1, newmod);
 
 		newmod->setEnabled(true);
-
-		Tabs->setCurrentIndex(1);
 	}
+
+	updateUpdateAllButton();
 }
 
 void PAMM::filterIndexChanged(const QString& text)
@@ -453,6 +480,23 @@ void PAMM::sortIndexChanged(const QString& text)
 void PAMM::checkForUpdate()
 {
 // https://api.github.com/repos/DeathByDenim/pamm/releases
+}
+
+void PAMM::updateAllButtonClicked()
+{
+	if(UpdateAllButton)
+	{
+		if(Tabs)
+			Tabs->setCurrentIndex(2);
+		if(FilterComboBox)
+		{
+			int index = FilterComboBox->findText("REQUIRE UPDATE");
+			if(index >= 0)
+				FilterComboBox->setCurrentIndex(index);
+		}
+		if(Manager)
+			Manager->installAllUpdates();
+	}
 }
 
 #include "pamm.moc"
