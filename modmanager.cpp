@@ -350,8 +350,8 @@ void ModManager::loadAvailableMods(bool refresh)
 	if(!jsonfile.exists() || !jsonfile.isFile() || jsonfile.lastModified() >= QDateTime::currentDateTime().addDays(2) || refresh)
 	{
 
-		QNetworkRequest request(QUrl("http://pa.raevn.com/modlist.json"));
-		request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
+		QNetworkRequest request(QUrl("http://pamods.github.io/modlist.json"));
+//		request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
 		request.setAttribute(QNetworkRequest::User, QVariant("modlist"));
 		Internet->get(request);
 	}
