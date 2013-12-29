@@ -766,7 +766,7 @@ void ModManager::writeModsJson()
 	modsJsonFile.close();
 }
 
-bool ModManager::recursiveRemove(const QDir &dir)
+void ModManager::recursiveRemove(const QDir &dir)
 {
 	QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
 
