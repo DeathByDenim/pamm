@@ -60,7 +60,8 @@ QString findPAPath(QString configPath)
 		while(!logfile.atEnd())
 		{
 			QString line = logfile.readLine();
-			if(pos = line.indexOf("INFO Coherent host dir") != -1)
+			pos = line.indexOf("INFO Coherent host dir");
+			if(pos != -1)
 			{  // What the?? Pos equals 1? Hmm, better use the C++ version instead...
 				papath = line.mid(line.toStdString().find_first_of("INFO Coherent host dir") + 26);
 				papath = papath.left(papath.size() - 6);

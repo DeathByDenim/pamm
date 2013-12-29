@@ -94,7 +94,7 @@ private:
 	void installMod(AvailableMod *mod, const QString &filename);
     void updateModCount();
     void writeModsJson();
-    bool recursiveRemove(const QDir &dir);
+    void recursiveRemove(const QDir& dir);
 	void refreshReverseRequirements();
 
 public Q_SLOTS:
