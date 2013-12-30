@@ -664,6 +664,8 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 	}
 	
 	refreshReverseRequirements();
+	writeModsJson();
+	writeUiModListJS();
 }
 
 void ModManager::modstateChanged()
