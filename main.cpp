@@ -26,6 +26,7 @@
 #include "pamm.h"
 #include "modmanager.h"
 
+
 const char *strModInfoJson =
 	"{\n"
 	"    \"context\": \"client\",\n"
@@ -128,7 +129,11 @@ int main(int argc, char** argv)
 	QString imgPath = progdir + "/img/";
 #ifdef __APPLE__
 	if(!QFileInfo(imgPath).exists())
-		imgPath = progdir + "../Resources/";
+	{
+		QDir imgDir(progdir);
+		imgDir.cd("../Resources");
+		imgPath = imgDir.canonicalPath() + '/';
+	}
 #endif
 	std::cout << "Expecting configdir in: \"" << configPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
