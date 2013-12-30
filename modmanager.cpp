@@ -38,8 +38,8 @@
 #include "modmanager.h"
 #include "installedmod.h"
 
-ModManager::ModManager(QString ConfigPath, QString PAPath, QString ModPath)
- : ConfigPath(ConfigPath), PAPath(PAPath), ModPath(ModPath)
+ModManager::ModManager(QString ConfigPath, QString PAPath, QString ModPath, QString ImgPath)
+ : ConfigPath(ConfigPath), PAPath(PAPath), ModPath(ModPath), ImgPath(ImgPath)
 {
 	// Clean up zip files in cache
 	QDirIterator it(ConfigPath + "pamm_cache/", QStringList("*.zip"), QDir::Files);
@@ -480,7 +480,8 @@ void ModManager::readAvailableModListJson(QString filename)
 			moddata["url"].toUrl(),
 			moddata["category"].toStringList(),
 			moddata["requires"].toStringList(),
-			state
+			state,
+			ImgPath
 		);
 		availableMods.append(mod);
 

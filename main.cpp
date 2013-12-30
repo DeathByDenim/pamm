@@ -111,14 +111,25 @@ int main(int argc, char** argv)
 	}
 
 	QString modPath = configPath + "/mods";
+	bool custommoddir = false;
 	for(int i = 0; i < argc; i++)
 	{
 		if(QString(argv[i]).compare("--modpath", Qt::CaseInsensitive) == 0 && i+1 < argc)
 		{
+			custommoddir = true;
 			modPath = QString(argv[i+1]);
+			break;
 		}
 	}
 
+	if(!custommoddir)
+		QDir(configPath).mkdir("mods");
+	
+	QString imgPath = progdir + "/img/";
+#ifdef __APPLE__
+	if(!QFileInfo(imgPath).exists())
+		imgPath = progdir + "../Resources/";
+#endif
 	std::cout << "Expecting configdir in: \"" << configPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
@@ -143,11 +154,11 @@ int main(int argc, char** argv)
 		msgBox.exec();
 	}
 
-	ModManager manager(configPath, paPath, modPath);
+	ModManager manager(configPath, paPath, modPath, imgPath);
 	manager.findInstalledMods();
 	manager.loadAvailableMods(false);
 
-	PAMM pamm(&manager, progdir);
+	PAMM pamm(&manager, imgPath);
 	pamm.show();
 	return app.exec();
 }

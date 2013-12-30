@@ -36,7 +36,7 @@ class ModManager : public QObject
 	Q_OBJECT
 
 public:
-	ModManager(QString ConfigPath, QString PAPath, QString ModPath);
+	ModManager(QString ConfigPath, QString PAPath, QString ModPath, QString ImgPath);
 	virtual ~ModManager();
 
 	void findInstalledMods();
@@ -86,6 +86,7 @@ private:
 	QString PAPath;
 	QString ModPath;
 	QString ConfigPath;
+	QString ImgPath;
 	QNetworkAccessManager *Internet;
 
 	InstalledMod *parseJson(const QString filename);
