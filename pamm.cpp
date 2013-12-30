@@ -69,7 +69,7 @@ const char *strNewsStyleSheet =
 	"}\n";
 
 
-PAMM::PAMM(ModManager* manager, QString progdir)
+PAMM::PAMM(ModManager* manager, QString imgdir)
  : Manager(manager)
 {
 	QWidget *mainWidget = new QWidget(this);
@@ -79,9 +79,9 @@ PAMM::PAMM(ModManager* manager, QString progdir)
 
 	QLabel* logoLabel = new QLabel(this);
 
-	QImageReader *reader = new QImageReader(progdir + "/img/img_pa_logo_alpha.png");
+	QImageReader *reader = new QImageReader(imgdir + "img_pa_logo_alpha.png");
 	QImage pa_logo = reader->read();
-	reader->setFileName(progdir + "/img/img_start_bground_sample.jpg");
+	reader->setFileName(imgdir + "img_start_bground_sample.jpg");
 	QImage bground = reader->read();
 	delete reader;
 

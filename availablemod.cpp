@@ -26,7 +26,7 @@
 #include <QProgressBar>
 #include <QPainter>
 
-AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State)
+AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
  : Mod(Key, DisplayName, Description, Description, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), ModDownloadCount(NULL)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
@@ -69,14 +69,14 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	setRelativeFontSizeForLabel(modInfoLabel, .8);
 
 	ModIconLabel = new QLabel(this);
-	QImageReader *reader = new QImageReader("img/generic.png");
+	QImageReader *reader = new QImageReader(imgPath + "generic.png");
 	QImage modIcon = reader->read();
 	delete reader;
 	
 	if(Date >= QDate::currentDate().addDays(-7))
 	{
 		QPainter p(&modIcon);
-		QImageReader *reader = new QImageReader("img/new.png");
+		QImageReader *reader = new QImageReader(imgPath + "new.png");
 		QImage modNewIcon = reader->read();
 		delete reader;
 		p.setCompositionMode(QPainter::CompositionMode_SourceOver);
