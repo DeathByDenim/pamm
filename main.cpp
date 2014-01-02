@@ -164,6 +164,9 @@ int main(int argc, char** argv)
 	manager.loadAvailableMods(false);
 
 	PAMM pamm(&manager, imgPath);
+	QIcon icon(imgPath + "/icon.png");
+	pamm.setWindowIcon(icon);
+	pamm.setWindowTitle("PA Mod Manager");
 	pamm.show();
 	return app.exec();
 }
