@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 #include "availablemod.h"
 #include <QLabel>
 #include <QGridLayout>
@@ -27,7 +26,7 @@
 #include <QPainter>
 
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
- : Mod(Key, DisplayName, Description, Description, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), ModDownloadCount(NULL)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), ModDownloadCount(NULL)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	this->setLayout(modLayout);
@@ -197,12 +196,12 @@ void AvailableMod::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 bool AvailableMod::sortLastUpdated(const AvailableMod* m1, const AvailableMod* m2)
 {
-	return (m1->Date < m2->Date);
+	return (m1->Date > m2->Date);
 }
 
 bool AvailableMod::sortAuthor(const AvailableMod* m1, const AvailableMod* m2)
 {
-	return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) < 0);
+	return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) <= 0);
 }
 
 bool AvailableMod::sortBuild(const AvailableMod* m1, const AvailableMod* m2)
