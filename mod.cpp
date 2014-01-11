@@ -21,8 +21,10 @@
 #include <QLabel>
 
 Mod::Mod(const QString &Key, const QString &DisplayName, const QString &Description, const QString &Author, const QUrl &Forum, const QStringList &Category, const QString &Version, const QStringList &Requires, const QDate &Date, const QString &Build)
- : QWidget(), Key(Key), DisplayName(DisplayName), Description(Description), Author(Author), Forum(Forum), Category(Category), Version(Version), Requires(Requires), Date(Date), Build(Build)
+ : QWidget(), Key(Key), DisplayName(DisplayName), Description(Description), Author(Author), Forum(Forum), Category(Category), Version(Version), Date(Date), Build(Build)
 {
+	Mod::Requires = Requires;
+	Mod::Requires.removeAll("rPAMM");
 }
 
 Mod::~Mod()

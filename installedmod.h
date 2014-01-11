@@ -71,6 +71,7 @@ public:
 	void setUpdateAvailable(bool updateavailable);
 	void addReverseRequirement(InstalledMod *mod);
 	void disableReverseRequirements();
+	QString json();
 
 public Q_SLOTS:
 	void checkBoxStateChanged(int state);

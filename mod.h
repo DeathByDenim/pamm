@@ -48,7 +48,7 @@ protected:
 	const QUrl Forum; // Forum Link to Mod
 	const QStringList Category; // Category
 	const QString Version; // Version Number
-	const QStringList Requires;
+	QStringList Requires;
 	const QDate Date;
 	const QString Build; // Build Number
 
