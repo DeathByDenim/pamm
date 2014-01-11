@@ -111,6 +111,19 @@ InstalledMod *ModManager::parseJson(const QString filename)
 		QDate::fromString(result["date"].toString(), "yyyy/MM/dd"),
 		result["build"].toString()
 	);
+	
+	if(result.contains("icon") && result["icon"].toString() != "")
+	{
+		// Get the mod count.
+		QNetworkRequest request(result["icon"].toUrl());
+
+		// Raevn's website doesn't like Qt4 downloading its modcount! Darn you, mod_security!
+		// Pretend to be Opera! Everybody loves Opera, right?
+		request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
+		request.setAttribute(QNetworkRequest::User, QVariant("icon"));
+		request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant(availableMods.length()));
+		Internet->get(request);
+	}
 
 	if(result.contains("global_mod_list"))
 		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
@@ -347,7 +360,7 @@ AvailableMod::installstate_t ModManager::isInstalled(QString modKey, QString mod
 void ModManager::loadAvailableMods(bool refresh)
 {
 	QFileInfo jsonfile(ConfigPath + "/pamm_cache/modlist.json");
-	if(!jsonfile.exists() || !jsonfile.isFile() || jsonfile.lastModified() >= QDateTime::currentDateTime().addDays(2) || refresh)
+	if(!jsonfile.exists() || jsonfile.lastModified() <= QDateTime::currentDateTime().addDays(-1) || refresh)
 	{
 
 		QNetworkRequest request(QUrl("http://pamods.github.io/modlist.json"));
@@ -665,6 +678,7 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 	
 	refreshReverseRequirements();
 	writeModsJson();
+	writeModsListJson();
 	writeUiModListJS();
 }
 
@@ -683,6 +697,7 @@ void ModManager::modstateChanged()
 		}
 	}
 	writeModsJson();
+	writeModsListJson();
 	writeUiModListJS();
 	
 	if(mod)
@@ -766,6 +781,34 @@ void ModManager::writeModsJson()
 		stream << "\t\t\"" << (*mod)->identifier() << "\"";
 	}
 	stream << endl << "\t]" << endl << "}" << endl;
+	modsJsonFile.close();
+}
+
+void ModManager::writeModsListJson()
+{
+	QFile modsJsonFile(ModPath + "/PAMM/ui/mods/mods_list.json");
+	if(!modsJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		return;
+	}
+	
+	QTextStream stream(&modsJsonFile);
+
+	stream << "{" << endl;
+	bool firstpass = true;
+	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
+	{
+		if(!(*mod)->enabled() || (*mod)->key() == "PAMM")
+			continue;
+
+		if(firstpass)
+			firstpass = false;
+		else
+			stream << ',' << endl;
+		
+		stream << (*mod)->json();
+	}
+	stream << endl << "}" << endl;
 	modsJsonFile.close();
 }
 

@@ -374,5 +374,19 @@ void InstalledMod::enable()
 		ModCheckbox->setCheckState(Qt::Checked);
 }
 
+QString InstalledMod::json()
+{
+	QString jsonString;
+	jsonString = "\t\"" + Key + "\" : {\n";
+	jsonString += "\t\t\"display_name\": \"" + DisplayName + "\",\n";
+	jsonString += "\t\t\"author\": \"" + Author + "\",\n";
+	jsonString += "\t\t\"enabled\": " + QString(Enabled ? "true" : "false") + ",\n";
+	jsonString += "\t\t\"version\": \"" + Version + "\",\n";
+	jsonString += "\t\t\"build\": \"" + Build + "\"\n";
+	jsonString += "\t}";
+
+	return jsonString;
+}
+
 
 #include "installedmod.moc"

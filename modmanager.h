@@ -93,9 +93,10 @@ private:
 	void sceneToStream(std::ostream& os, const QList< InstalledMod* > modList, const InstalledMod::scene_t scene);
 	void readAvailableModListJson(QString filename);
 	void installMod(AvailableMod *mod, const QString &filename);
-    void updateModCount();
-    void writeModsJson();
-    void recursiveRemove(const QDir& dir);
+	void updateModCount();
+	void writeModsJson();
+	void writeModsListJson();
+	void recursiveRemove(const QDir& dir);
 	void refreshReverseRequirements();
 
 public Q_SLOTS:

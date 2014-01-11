@@ -16,8 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define PAMM_VERSION "3.0.2"
-
 #include "pamm.h"
 #include "modmanager.h"
 #include "availablemod.h"
@@ -338,12 +336,12 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 
 	if(Manager->availableMods.count() == 0)
 	{
-		QLabel *nomodsLabel = new QLabel(availableModsWidget);
+/*		QLabel *nomodsLabel = new QLabel(availableModsWidget);
 		nomodsLabel->setText("No mods found");
 		nomodsLabel->setAlignment(Qt::AlignHCenter);
 		nomodsLabel->setStyleSheet("QLabel {color: #ffffff}");
 		modsLayout->addWidget(nomodsLabel);
-	}
+*/	}
 	else
 	{
 		for(QList<AvailableMod *>::const_iterator m = Manager->availableMods.constBegin(); m != Manager->availableMods.constEnd(); ++m)
@@ -389,7 +387,7 @@ void PAMM::loadNews()
 	if(NewsBrowser)
 	{
 		QFileInfo newsFileInfo(Manager->configPath() + "/pamm_cache/news.html");
-		if(newsFileInfo.exists() && newsFileInfo.isFile() && newsFileInfo.lastModified() < QDateTime::currentDateTime().addDays(1))
+		if(newsFileInfo.exists() && newsFileInfo.isFile() && newsFileInfo.lastModified() > QDateTime::currentDateTime().addDays(-1))
 		{
 			QTextDocument *newsDocument = new QTextDocument(this);
 			newsDocument->addResource(QTextDocument::StyleSheetResource, QUrl("format.css"), strNewsStyleSheet);
@@ -407,7 +405,7 @@ void PAMM::loadNews()
 			QNetworkAccessManager *newsManager = new QNetworkAccessManager(this);
 			connect(newsManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
-			QNetworkRequest request(QUrl("http://pa.raevn.com/news.html"));
+			QNetworkRequest request(QUrl("http://pamods.github.io/news.html"));
 			request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
 			newsManager->get(request);
 		}

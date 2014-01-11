@@ -35,13 +35,13 @@ const char *strModInfoJson =
 	"    \"description\": \"Install and manage mods with ease. Based heavily on raevn's mod manager\",\n"
 	"    \"forum\": \"https://forums.uberent.com/threads/rel-raevns-ui-mod-manager-for-linux-and-mac-os-x-version-1-8-1.50958/\",\n"
 	"    \"author\": \"DeathByDenim\",\n"
-	"    \"version\": \"3.0\",\n"
+	"    \"version\": \"" PAMM_VERSION "\",\n"
 	"    \"date\": \"2013/12/27\",\n"
 	"    \"build\": \"58772\",\n"
 	"    \"signature\": \"not yet implemented\",\n"
 	"    \"priority\": 1,\n"
 	"    \"enabled\": true,\n"
-	"    \"id\": \"dPAMM\"\n"
+	"    \"id\": \"PAMM\"\n"
 	"}\n";
 
 QString findPAPath(QString configPath)
