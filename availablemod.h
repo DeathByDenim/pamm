@@ -41,6 +41,7 @@ public:
 	void setCount(int count);
 	QUrl downloadLink() {return Download;};
 	installstate_t state() {return State;};
+	void parseForumPostForLikes(const QByteArray &data);
 
 	static bool sortLastUpdated(const AvailableMod *m1, const AvailableMod *m2);
 	static bool sortTitle(const AvailableMod *m1, const AvailableMod *m2);
@@ -55,6 +56,7 @@ private:
 	installstate_t State;
 	int NumDownloaded;
 	const QString ImgPath;
+	int Likes;
 
 	QLabel *ModIconLabel;
 	QWidget *ModButtonsWidget;
