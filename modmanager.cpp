@@ -455,6 +455,14 @@ void ModManager::replyFinished(QNetworkReply* reply)
 				}
 			}
 		}
+		else if(type == "forumlikes")
+		{
+			AvailableMod *mod = dynamic_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
+			if(mod)
+			{
+				mod->parseForumPostForLikes(reply->readAll());
+			}
+		}
 	}
 }
 

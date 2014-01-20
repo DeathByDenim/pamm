@@ -26,7 +26,7 @@
 #include <QPainter>
 
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
- : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), ModDownloadCount(NULL)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCount(NULL)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	this->setLayout(modLayout);
@@ -243,5 +243,21 @@ void AvailableMod::setCount(int count)
 	ModDownloadCount->setText(QString("Downloaded %1 times").arg(count));
 }
 
+
+void AvailableMod::parseForumPostForLikes(const QByteArray& data)
+{
+	int begin_of_first_post = data.indexOf("<li id=\"post-");
+	if(begin_of_first_post < 0)
+		return;
+
+	int end_of_first_post = data.indexOf("<li id=\"post-", begin_of_first_post + 1);
+	
+	int begin_of_likes = data.indexOf("<span class=\"LikeText\">");
+	if(begin_of_likes > end_of_first_post)
+	{
+		Likes = 0;
+		return;
+	}
+}
 
 #include "availablemod.moc"
