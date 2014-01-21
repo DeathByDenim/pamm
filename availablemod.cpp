@@ -25,9 +25,6 @@
 #include <QProgressBar>
 #include <QPainter>
 
-#include <QDebug>
-#include <QFile>
-
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL)
 {
@@ -253,17 +250,6 @@ void AvailableMod::setCount(int count)
 
 void AvailableMod::parseForumPostForLikes(const QByteArray& data)
 {
-	if(DisplayName == "Favourite Colour")
-	{
-		QFile outFile("index.html");
-		if(outFile.open(QIODevice::WriteOnly | QIODevice::Text))
-		{
-			outFile.write(data);
-			outFile.close();
-		}
-
-	}
-
 	int begin_of_first_post = data.indexOf("<li id=\"post-");
 	if(begin_of_first_post < 0)
 		return;

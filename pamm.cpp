@@ -29,6 +29,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <qjson/parser.h>
 
 const char *strNewsStyleSheet =
 	".news_container {\n"
@@ -259,6 +260,8 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	connect(Manager, SIGNAL(newModInstalled(InstalledMod *)), this, SLOT(newModInstalled(InstalledMod *)));
 
 	sortIndexChanged("RANDOM");
+
+	checkForUpdate();
 }
 
 PAMM::~PAMM()
@@ -286,7 +289,7 @@ void PAMM::refreshButtonClicked()
 		{
 			NewsBrowser->clear();
 			QNetworkAccessManager *newsManager = new QNetworkAccessManager(this);
-			connect(newsManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+			connect(newsManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(newsReplyFinished(QNetworkReply*)));
 
 			QNetworkRequest request(QUrl("http://pamods.github.io/news.html"));
 			request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
@@ -404,7 +407,7 @@ void PAMM::loadNews()
 		{
 			NewsBrowser->clear();
 			QNetworkAccessManager *newsManager = new QNetworkAccessManager(this);
-			connect(newsManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+			connect(newsManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(newsReplyFinished(QNetworkReply*)));
 
 			QNetworkRequest request(QUrl("http://pamods.github.io/news.html"));
 			request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
@@ -413,7 +416,7 @@ void PAMM::loadNews()
 	}
 }
 
-void PAMM::replyFinished(QNetworkReply* reply)
+void PAMM::newsReplyFinished(QNetworkReply* reply)
 {
 	if(reply)
 	{
@@ -548,7 +551,41 @@ void PAMM::sortIndexChanged(const QString& text)
 
 void PAMM::checkForUpdate()
 {
-// https://api.github.com/repos/DeathByDenim/pamm/releases
+	QNetworkAccessManager *updateNetworkAccessManager = new QNetworkAccessManager(this);
+	connect(updateNetworkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(updateReplyFinished(QNetworkReply*)));
+
+	QNetworkRequest request(QUrl("https://api.github.com/repos/DeathByDenim/pamm/releases"));
+	updateNetworkAccessManager->get(request);
+}
+
+void PAMM::updateReplyFinished(QNetworkReply* reply)
+{
+	if(reply)
+	{
+		QJson::Parser parser;
+		bool ok;
+		QVariantList result = parser.parse(reply->readAll(), &ok).toList();
+		if(ok)
+		{
+			QString latest_version = result[0].toMap()["tag_name"].toString();
+			if(latest_version.length() > 0)
+			{
+				if(latest_version.mid(1) != PAMM_VERSION)
+				{	// Update available
+					QMessageBox msgBox;
+					msgBox.setText("New update available for the PA Mod Manager.");
+					msgBox.setInformativeText("Download now?");
+					msgBox.setIcon(QMessageBox::Information);
+					msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+					msgBox.setDefaultButton(QMessageBox::Yes);
+					if(msgBox.exec() == QMessageBox::Yes)
+					{
+						QDesktopServices::openUrl(QUrl("https://forums.uberent.com/threads/rel-raevns-pa-mod-manager-for-linux-and-mac-os-x-version-3-0-2.50958/"));
+					}
+				}
+			}
+		}
+	}
 }
 
 void PAMM::updateAllButtonClicked()
