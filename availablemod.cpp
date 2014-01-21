@@ -295,4 +295,28 @@ void AvailableMod::parseForumPostForLikes(const QByteArray& data)
 	ModLikesLabel->setText(QString("Liked %1 times").arg(Likes));
 }
 
+void AvailableMod::setState(AvailableMod::installstate_t state)
+{
+	State = state;
+
+	if(ModStatus)
+	{
+		if(State == installed)
+		{
+			ModStatus->setText("INSTALLED");
+			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
+		}
+		else if(State == updateavailable)
+		{
+			ModStatus->setText("UPDATE AVAILABLE");
+			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #ff8844;}");
+		}
+		else if(State == notinstalled)
+		{
+			ModStatus->setText("NOT INSTALLED");
+			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
+		}
+	}
+}
+
 #include "availablemod.moc"

@@ -871,14 +871,32 @@ void ModManager::uninstallMod()
 			msgBox.setIcon(QMessageBox::Warning);
 			msgBox.exec();
 		}
-		delete mod;
 		
+		for(QList<AvailableMod *>::iterator avmod = availableMods.begin(); avmod != availableMods.end(); ++avmod)
+		{
+			if((*avmod)->key() == mod->key())
+			{
+				(*avmod)->setState(AvailableMod::notinstalled);
+				break;
+			}
+		}
+
 		refreshReverseRequirements();
+		writeModsJson();
+		writeModsListJson();
+		writeUiModListJS();
+
+		delete mod;
 	}
 }
 
 void ModManager::refreshReverseRequirements()
 {
+	// Clear everything
+	for(QList<InstalledMod *>::iterator mod = installedMods.begin(); mod != installedMods.end(); ++mod)
+		(*mod)->clearReverseRequirement();
+
+	// Find requirements
 	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
 	{
 		QStringList requirements = (*mod)->requires();

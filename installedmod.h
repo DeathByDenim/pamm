@@ -70,6 +70,7 @@ public:
 	void setCompleteJson(QVariantMap &json) {CompleteJson = json;};
 	void setUpdateAvailable(bool updateavailable);
 	void addReverseRequirement(InstalledMod *mod);
+	void clearReverseRequirement();
 	void disableReverseRequirements();
 	QString json();
 

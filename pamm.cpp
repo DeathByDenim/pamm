@@ -487,6 +487,9 @@ void PAMM::newModInstalled(InstalledMod* newmod)
 		newmod->setEnabled(true);
 	}
 
+	connect(newmod, SIGNAL(updateMe()), Manager, SLOT(downloadMod()));
+	connect(newmod, SIGNAL(uninstallMe()), Manager, SLOT(uninstallMod()));
+
 	updateUpdateAllButton();
 }
 
