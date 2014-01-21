@@ -376,12 +376,12 @@ void ModManager::replyFinished(QNetworkReply* reply)
 		QString type = reply->request().attribute(QNetworkRequest::User).toString();
 		if(type == "icon")
 		{
-			int index = reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).toInt();
-			if(index >= 0 && index < availableMods.size())
+			AvailableMod *mod = dynamic_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
+			if(mod)
 			{
 				// Load pixmap
 				QImage modIcon = QImage::fromData(reply->readAll());
-				availableMods[index]->setPixmap(QPixmap::fromImage(modIcon));
+				mod->setPixmap(QPixmap::fromImage(modIcon));
 			}
 		}
 		else if(type == "modlist" || type == "modcount")
@@ -512,7 +512,7 @@ void ModManager::readAvailableModListJson(QString filename)
 			// Pretend to be Opera! Everybody loves Opera, right?
 			request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
 			request.setAttribute(QNetworkRequest::User, QVariant("icon"));
-			request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant(availableMods.length()));
+			request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant::fromValue((QWidget *)mod));
 			Internet->get(request);
 		}
 
