@@ -64,7 +64,8 @@ public Q_SLOTS:
 	void refreshButtonClicked();
 	void launchPAButtonClicked();
 	void availableModsLoaded();
-	void replyFinished(QNetworkReply* reply = NULL);
+	void newsReplyFinished(QNetworkReply* reply = NULL);
+	void updateReplyFinished(QNetworkReply* reply = NULL);
 	void tabChanged(int index);
 	void newModInstalled(InstalledMod *newmod);
 	void sortIndexChanged(const QString & text);
