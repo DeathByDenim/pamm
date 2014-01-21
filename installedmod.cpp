@@ -388,5 +388,10 @@ QString InstalledMod::json()
 	return jsonString;
 }
 
+void InstalledMod::clearReverseRequirement()
+{
+	ReverseRequirements.clear();
+}
+
 
 #include "installedmod.moc"

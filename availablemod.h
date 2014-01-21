@@ -41,6 +41,7 @@ public:
 	void setCount(int count);
 	QUrl downloadLink() {return Download;};
 	installstate_t state() {return State;};
+	void setState(installstate_t state);
 	void parseForumPostForLikes(const QByteArray &data);
 
 	static bool sortLastUpdated(const AvailableMod *m1, const AvailableMod *m2);
