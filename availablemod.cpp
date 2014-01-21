@@ -25,8 +25,11 @@
 #include <QProgressBar>
 #include <QPainter>
 
+#include <QDebug>
+#include <QFile>
+
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
- : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCount(NULL)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	this->setLayout(modLayout);
@@ -224,6 +227,11 @@ bool AvailableMod::sortDownloads(const AvailableMod* m1, const AvailableMod* m2)
 	return (m1->NumDownloaded > m2->NumDownloaded);
 }
 
+bool AvailableMod::sortLikes(const AvailableMod* m1, const AvailableMod* m2)
+{
+	return (m1->Likes > m2->Likes);
+}
+
 void AvailableMod::setCount(int count)
 {
 	NumDownloaded = count;
@@ -231,33 +239,74 @@ void AvailableMod::setCount(int count)
 	if(count < 0)
 		return;
 
-	if(ModDownloadCount == NULL)
+	if(ModDownloadCountLabel == NULL)
 	{
-		ModDownloadCount = new QLabel(this);
-		ModDownloadCount->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+		ModDownloadCountLabel = new QLabel(this);
+		ModDownloadCountLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(layout());
 		if(gridlayout)
-			gridlayout->addWidget(ModDownloadCount, 5, 3, 1, -1, Qt::AlignRight);
+			gridlayout->addWidget(ModDownloadCountLabel, 5, 3, 1, -1, Qt::AlignRight);
 	}
 
-	ModDownloadCount->setText(QString("Downloaded %1 times").arg(count));
+	ModDownloadCountLabel->setText(QString("Downloaded %1 times").arg(count));
 }
-
 
 void AvailableMod::parseForumPostForLikes(const QByteArray& data)
 {
+	if(DisplayName == "Favourite Colour")
+	{
+		QFile outFile("index.html");
+		if(outFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			outFile.write(data);
+			outFile.close();
+		}
+
+	}
+
 	int begin_of_first_post = data.indexOf("<li id=\"post-");
 	if(begin_of_first_post < 0)
 		return;
 
 	int end_of_first_post = data.indexOf("<li id=\"post-", begin_of_first_post + 1);
 	
-	int begin_of_likes = data.indexOf("<span class=\"LikeText\">");
+	int begin_of_likes = data.indexOf("<span class=\"LikeText\">", begin_of_first_post);
 	if(begin_of_likes > end_of_first_post)
 	{
 		Likes = 0;
 		return;
 	}
+
+	int end_of_likes = data.indexOf("</span>", begin_of_likes);
+	if(end_of_likes < 0)
+		return;
+	
+	QByteArray likespan = data.mid(begin_of_likes, end_of_likes - begin_of_likes);
+	
+	Likes = likespan.count("class=\"username\"");
+
+	int begin_of_others = likespan.indexOf("class=\"OverlayTrigger\">");
+	if(begin_of_others >= 0)
+	{
+		begin_of_others += QString("class=\"OverlayTrigger\">").length();
+		int end_of_others = likespan.indexOf(" ", begin_of_others);
+
+		bool ok;
+		int others = likespan.mid(begin_of_others, end_of_others - begin_of_others).toInt(&ok);
+		if(ok)
+			Likes += others;
+	}
+
+	if(ModLikesLabel == NULL)
+	{
+		ModLikesLabel = new QLabel(this);
+		ModLikesLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
+		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(layout());
+		if(gridlayout)
+			gridlayout->addWidget(ModLikesLabel, 4, 3, 1, -1, Qt::AlignRight);
+	}
+
+	ModLikesLabel->setText(QString("Liked %1 times").arg(Likes));
 }
 
 #include "availablemod.moc"
