@@ -49,6 +49,7 @@ public:
 	static bool sortBuild(const AvailableMod *m1, const AvailableMod *m2);
 	static bool sortRandom(const AvailableMod *m1, const AvailableMod *m2);
 	static bool sortDownloads(const AvailableMod *m1, const AvailableMod *m2);
+	static bool sortLikes(const AvailableMod *m1, const AvailableMod *m2);
 
 private:
 	const QUrl Download;
@@ -62,7 +63,8 @@ private:
 	QWidget *ModButtonsWidget;
 	QLabel *ModStatus;
 	QProgressBar *InstallProgressBar;
-	QLabel *ModDownloadCount;
+	QLabel *ModDownloadCountLabel;
+	QLabel *ModLikesLabel;
 
 public Q_SLOTS:
 	void installButtonClicked();

@@ -194,6 +194,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	sortComboBox->addItem("AUTHOR");
 	sortComboBox->addItem("BUILD");
 	sortComboBox->addItem("DOWNLOADS");
+	sortComboBox->addItem("LIKES");
 	connect(sortComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(sortIndexChanged(const QString &)));
 
 	availableMenuWidgetLayout->addWidget(sortComboBox);
@@ -536,6 +537,10 @@ void PAMM::sortIndexChanged(const QString& text)
 	else if(text == "DOWNLOADS")
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortDownloads);
+	}
+	else if(text == "LIKES")
+	{
+		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortLikes);
 	}
 
 	populateAvailableModsWidget(false);

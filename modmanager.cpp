@@ -111,19 +111,6 @@ InstalledMod *ModManager::parseJson(const QString filename)
 		QDate::fromString(result["date"].toString(), "yyyy/MM/dd"),
 		result["build"].toString()
 	);
-	
-	if(result.contains("icon") && result["icon"].toString() != "")
-	{
-		// Get the mod count.
-		QNetworkRequest request(result["icon"].toUrl());
-
-		// Raevn's website doesn't like Qt4 downloading its modcount! Darn you, mod_security!
-		// Pretend to be Opera! Everybody loves Opera, right?
-		request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
-		request.setAttribute(QNetworkRequest::User, QVariant("icon"));
-		request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant(availableMods.length()));
-		Internet->get(request);
-	}
 
 	if(result.contains("global_mod_list"))
 		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
@@ -455,12 +442,23 @@ void ModManager::replyFinished(QNetworkReply* reply)
 				}
 			}
 		}
-		else if(type == "forumlikes")
+		else if(type == "likes")
 		{
 			AvailableMod *mod = dynamic_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
 			if(mod)
 			{
-				mod->parseForumPostForLikes(reply->readAll());
+				int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+				if(statusCode == 301)
+				{
+					QUrl redirectUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+					QNetworkRequest request(redirectUrl);
+
+					request.setAttribute(QNetworkRequest::User, QVariant("likes"));
+					request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant::fromValue((QWidget *)mod));
+					Internet->get(request);
+				}
+				else
+					mod->parseForumPostForLikes(reply->readAll());
 			}
 		}
 	}
@@ -487,6 +485,7 @@ void ModManager::readAvailableModListJson(QString filename)
 
 		QString display_name = moddata["display_name"].toString();
 		QString version = moddata["version"].toString();
+		QUrl forumlink = moddata["forum"].toUrl();
 		AvailableMod::installstate_t state = isInstalled(modentry.key(), version);
 
 		AvailableMod *mod = new AvailableMod(
@@ -497,7 +496,7 @@ void ModManager::readAvailableModListJson(QString filename)
 			version,
 			moddata["build"].toString(),
 			QDate::fromString(moddata["date"].toString(), "yyyy/MM/dd"),
-			moddata["forum"].toUrl(),
+			forumlink,
 			moddata["url"].toUrl(),
 			moddata["category"].toStringList(),
 			moddata["requires"].toStringList(),
@@ -505,6 +504,29 @@ void ModManager::readAvailableModListJson(QString filename)
 			ImgPath
 		);
 		availableMods.append(mod);
+
+		if(moddata.contains("icon") && moddata["icon"].toString() != "")
+		{
+			// Get the mod count.
+			QNetworkRequest request(moddata["icon"].toUrl());
+
+			// Raevn's website doesn't like Qt4 downloading its modcount! Darn you, mod_security!
+			// Pretend to be Opera! Everybody loves Opera, right?
+			request.setRawHeader("User-Agent" , "Opera/9.80 (X11; Linux x86_64) Presto/2.12.388 Version/12.16");
+			request.setAttribute(QNetworkRequest::User, QVariant("icon"));
+			request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant(availableMods.length()));
+			Internet->get(request);
+		}
+
+		if(!forumlink.isEmpty() && forumlink.isValid())
+		{
+			// Scrape the number of likes from the forums.
+			QNetworkRequest request(forumlink);
+
+			request.setAttribute(QNetworkRequest::User, QVariant("likes"));
+			request.setAttribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1), QVariant::fromValue((QWidget *)mod));
+			Internet->get(request);
+		}
 
 		for(QList<InstalledMod *>::iterator instmod = installedMods.begin(); instmod != installedMods.end(); ++instmod)
 		{
