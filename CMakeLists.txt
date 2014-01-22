@@ -8,3 +8,6 @@ set(PAMM_SRCS installedmod.cpp pamm.cpp main.cpp modmanager.cpp mod.cpp availabl
 qt4_automoc(${PAMM_SRCS})
 add_executable(pamm ${PAMM_SRCS})
 target_link_libraries(pamm ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTNETWORK_LIBRARY} ${QJSON_LIBRARIES} -lzip)
+
+add_custom_command(OUTPUT locale/nl.qm COMMAND ${QT_LRELEASE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/locale/nl.ts -qm ${CMAKE_CURRENT_BINARY_DIR}/locale/nl.qm DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/locale/nl.qm)
+add_custom_command(OUTPUT locale/de.qm COMMAND ${QT_LRELEASE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/locale/de.ts -qm ${CMAKE_CURRENT_BINARY_DIR}/locale/de.qm DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/locale/de.qm)
