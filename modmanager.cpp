@@ -642,7 +642,8 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 		QMessageBox message;
 		char ziperror[256];
 		zip_error_to_str(ziperror, 256, error, errno);
-		message.setText(QString("Couldn't open ZIP file!\nReason: ") + ziperror);
+		message.setText(tr("Couldn't open ZIP file!"));
+		message.setInformativeText(tr("Reason") + ": " + ziperror);
 		message.setIcon(QMessageBox::Critical);
 		message.exec();
 	}
@@ -682,8 +683,8 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 		if(!requires.isEmpty())
 		{
 			QMessageBox installDependenciesMessageBox;
-			installDependenciesMessageBox.setText(newmod->displayName() + " depends on other mods.");
-			installDependenciesMessageBox.setInformativeText("Do you want to install those?");
+			installDependenciesMessageBox.setText(QString(tr("%1 depends on other mods.")).arg(newmod->displayName()));
+			installDependenciesMessageBox.setInformativeText(tr("Do you want to install those?"));
 			installDependenciesMessageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 			installDependenciesMessageBox.setDefaultButton(QMessageBox::Yes);
 			int ret = installDependenciesMessageBox.exec();
@@ -749,8 +750,8 @@ void ModManager::modstateChanged()
 					if(!found)
 					{
 						QMessageBox msgBox;
-						msgBox.setText("Unmet requirements!");
-						msgBox.setInformativeText((*reqstr) + " is not installed, but is needed for this mod. Mod will not work.");
+						msgBox.setText(tr("Unmet requirements!"));
+						msgBox.setInformativeText(tr("%1 is not installed, but is needed for this mod. Mod will not work.").arg((*reqstr)));
 						msgBox.setIcon(QMessageBox::Critical);
 						msgBox.exec();
 					}
@@ -866,8 +867,8 @@ void ModManager::uninstallMod()
 		if(!QDir(ModPath).rmdir(mod->key()))
 		{
 			QMessageBox msgBox;
-			msgBox.setText("Couldn't delete all of the files.");
-			msgBox.setInformativeText("See \"" + ModPath + '/' + mod->key() + "\"");
+			msgBox.setText(tr("Couldn't delete all of the files."));
+			msgBox.setInformativeText(tr("See") + " \"" + ModPath + '/' + mod->key() + "\"");
 			msgBox.setIcon(QMessageBox::Warning);
 			msgBox.exec();
 		}

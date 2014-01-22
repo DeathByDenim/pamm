@@ -93,7 +93,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	logoLabel->adjustSize();
 
 	QLabel *titleLabel = new QLabel(this);
-	titleLabel->setText("UI MOD MANAGER");
+	titleLabel->setText(tr("UI MOD MANAGER"));
 	QFont font = titleLabel->font();
 	font.setPixelSize(32);
 	titleLabel->setFont(font);
@@ -132,7 +132,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	NewsBrowser->document()->setIndentWidth(10);
 	NewsBrowser->setOpenLinks(true);
 	NewsBrowser->setOpenExternalLinks(true);
-	Tabs->addTab(NewsBrowser, "NEWS");
+	Tabs->addTab(NewsBrowser, tr("NEWS"));
 
 
 	QScrollArea *scrollAreaInstalled = new QScrollArea(this);
@@ -142,7 +142,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	if(Manager->installedMods.count() == 0)
 	{
 		QLabel *nomodsLabel = new QLabel(InstalledModsWidget);
-		nomodsLabel->setText("No mods found");
+		nomodsLabel->setText(tr("No mods found"));
 		nomodsLabel->setAlignment(Qt::AlignHCenter);
 		nomodsLabel->setStyleSheet("QLabel {color: #ffffff}");
 		modsLayout->addWidget(nomodsLabel);
@@ -160,7 +160,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	}
 	scrollAreaInstalled->setWidget(InstalledModsWidget);
 	scrollAreaInstalled->setWidgetResizable(true);
-	Tabs->addTab(scrollAreaInstalled, "INSTALLED MODS");
+	Tabs->addTab(scrollAreaInstalled, tr("INSTALLED MODS"));
 
 	QWidget *availableTabWidget = new QWidget(this);
 	QVBoxLayout *availableTabWidgetLayout = new QVBoxLayout(availableTabWidget);
@@ -170,14 +170,14 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	availableTabWidgetLayout->addWidget(availableMenuWidget);
 
 	QLabel *filterLabel = new QLabel(availableMenuWidget);
-	filterLabel->setText("SHOW:");
+	filterLabel->setText(tr("SHOW:"));
 	availableMenuWidgetLayout->addWidget(filterLabel);
 
 	FilterComboBox = new QComboBox(availableMenuWidget);
-	FilterComboBox->addItem("ALL");
-	FilterComboBox->addItem("INSTALLED");
-	FilterComboBox->addItem("REQUIRE UPDATE");
-	FilterComboBox->addItem("NOT INSTALLED");
+	FilterComboBox->addItem(tr("ALL"));
+	FilterComboBox->addItem(tr("INSTALLED"));
+	FilterComboBox->addItem(tr("REQUIRE UPDATE"));
+	FilterComboBox->addItem(tr("NOT INSTALLED"));
 	connect(FilterComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterIndexChanged(const QString &)));
 
 	availableMenuWidgetLayout->addWidget(FilterComboBox);
@@ -189,13 +189,13 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	availableMenuWidgetLayout->addWidget(sortLabel);
 
 	QComboBox *sortComboBox = new QComboBox(availableMenuWidget);
-	sortComboBox->addItem("RANDOM");
-	sortComboBox->addItem("LAST UPDATED");
-	sortComboBox->addItem("TITLE");
-	sortComboBox->addItem("AUTHOR");
-	sortComboBox->addItem("BUILD");
-	sortComboBox->addItem("DOWNLOADS");
-	sortComboBox->addItem("LIKES");
+	sortComboBox->addItem(tr("RANDOM"));
+	sortComboBox->addItem(tr("LAST UPDATED"));
+	sortComboBox->addItem(tr("TITLE"));
+	sortComboBox->addItem(tr("AUTHOR"));
+	sortComboBox->addItem(tr("BUILD"));
+	sortComboBox->addItem(tr("DOWNLOADS"));
+	sortComboBox->addItem(tr("LIKES"));
 	connect(sortComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(sortIndexChanged(const QString &)));
 
 	availableMenuWidgetLayout->addWidget(sortComboBox);
@@ -211,12 +211,12 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	scrollAreaAvailable->setWidgetResizable(true);
 	availableTabWidgetLayout->addWidget(scrollAreaAvailable);
 
-	Tabs->addTab(availableTabWidget, "AVAILABLE MODS");
+	Tabs->addTab(availableTabWidget, tr("AVAILABLE MODS"));
 	connect(Tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
 
 	UpdateAllButton = new QPushButton(this);
-	UpdateAllButton->setText("Update all mods (0)");
+	UpdateAllButton->setText(tr("Update all mods") + " (0)");
 	layout->addWidget(UpdateAllButton);
 	connect(UpdateAllButton, SIGNAL(clicked()), this, SLOT(updateAllButtonClicked()));
 
@@ -226,23 +226,23 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
 	
 	QPushButton *launchPAButton = new QPushButton(buttonsWidget);
-	launchPAButton->setText("Launch PA");
+	launchPAButton->setText(tr("Launch PA"));
 	connect(launchPAButton, SIGNAL(clicked()), this, SLOT(launchPAButtonClicked()));
 
 	RefreshButton = new QPushButton(buttonsWidget);
-	RefreshButton->setText("Refresh");
+	RefreshButton->setText(tr("Refresh"));
 	connect(RefreshButton, SIGNAL(clicked()), this, SLOT(refreshButtonClicked()));
 
 	QPushButton *exitButton = new QPushButton(buttonsWidget);
-	exitButton->setText("Exit");
+	exitButton->setText(tr("Exit"));
 	connect(exitButton, SIGNAL(clicked()), this, SLOT(exitButtonClicked()));
 
 	QLabel *versionLabel = new QLabel(buttonsWidget);
-	versionLabel->setText("Version " PAMM_VERSION);
+	versionLabel->setText(tr("Version") + " " PAMM_VERSION);
 	versionLabel->setStyleSheet("QLabel {color: #008888; font-style: italic; }");
 
 	QLabel *creditLabel = new QLabel(buttonsWidget);
-	creditLabel->setText(", created by DeathByDenim (based on Raevn)");
+	creditLabel->setText(tr(", created by DeathByDenim (based on Raevn)"));
 	creditLabel->setStyleSheet("QLabel {color: #ffffff; font-style: italic; }");
 
 	buttonsLayout->addWidget(launchPAButton);
@@ -259,7 +259,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	connect(Manager, SIGNAL(availableModsLoaded()), this, SLOT(availableModsLoaded()));
 	connect(Manager, SIGNAL(newModInstalled(InstalledMod *)), this, SLOT(newModInstalled(InstalledMod *)));
 
-	sortIndexChanged("RANDOM");
+	sortIndexChanged(tr("RANDOM"));
 
 	Tabs->setCurrentIndex(QSettings("DeathByDenim", "PAMM").value("tabs/lastindex", 0).toInt());
 
@@ -387,7 +387,7 @@ void PAMM::updateUpdateAllButton()
 			}
 		}
 
-		UpdateAllButton->setText("Update all mods (" + QString("%1").arg(updatableMods.length()) + ")");
+		UpdateAllButton->setText(tr("Update all mods") + " (" + QString("%1").arg(updatableMods.length()) + ")");
 		UpdateAllButton->setEnabled(!updatableMods.empty());
 	}
 }
@@ -459,7 +459,7 @@ void PAMM::newsReplyFinished(QNetworkReply* reply)
 		else
 		{
 			QMessageBox msgBox;
-			msgBox.setText("Couldn't write to \"" + newsFile.fileName() + "\"");
+			msgBox.setText(tr("Couldn't write to") + " \"" + newsFile.fileName() + "\"");
 			msgBox.setIcon(QMessageBox::Warning);
 			msgBox.exec();
 		}
@@ -503,19 +503,19 @@ void PAMM::newModInstalled(InstalledMod* newmod)
 void PAMM::filterIndexChanged(const QString& text)
 {
 	ModFilter filter;
-	if(text == "ALL")
+	if(text == tr("ALL"))
 	{
 		filter = All;
 	}
-	else if(text == "INSTALLED")
+	else if(text == tr("INSTALLED"))
 	{
 		filter = Installed;
 	}
-	else if(text == "REQUIRE UPDATE")
+	else if(text == tr("REQUIRE UPDATE"))
 	{
 		filter = Require_update;
 	}
-	else if(text == "NOT INSTALLED")
+	else if(text == tr("NOT INSTALLED"))
 	{
 		filter = Not_installed;
 	}
@@ -527,31 +527,31 @@ void PAMM::filterIndexChanged(const QString& text)
 
 void PAMM::sortIndexChanged(const QString& text)
 {
-	if(text == "RANDOM")
+	if(text == tr("RANDOM"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortRandom);
 	}
-	else if(text == "LAST UPDATED")
+	else if(text == tr("LAST UPDATED"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortLastUpdated);
 	}
-	else if(text == "TITLE")
+	else if(text == tr("TITLE"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortTitle);
 	}
-	else if(text == "AUTHOR")
+	else if(text == tr("AUTHOR"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortAuthor);
 	}
-	else if(text == "BUILD")
+	else if(text == tr("BUILD"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortBuild);
 	}
-	else if(text == "DOWNLOADS")
+	else if(text == tr("DOWNLOADS"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortDownloads);
 	}
-	else if(text == "LIKES")
+	else if(text == tr("LIKES"))
 	{
 		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortLikes);
 	}
@@ -583,8 +583,8 @@ void PAMM::updateReplyFinished(QNetworkReply* reply)
 				if(latest_version.mid(1) != PAMM_VERSION)
 				{	// Update available
 					QMessageBox msgBox;
-					msgBox.setText("New update available for the PA Mod Manager.");
-					msgBox.setInformativeText("Download now?");
+					msgBox.setText(tr("New update available for the PA Mod Manager."));
+					msgBox.setInformativeText(tr("Download now?"));
 					msgBox.setIcon(QMessageBox::Information);
 					msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 					msgBox.setDefaultButton(QMessageBox::Yes);
@@ -606,7 +606,7 @@ void PAMM::updateAllButtonClicked()
 			Tabs->setCurrentIndex(2);
 		if(FilterComboBox)
 		{
-			int index = FilterComboBox->findText("REQUIRE UPDATE");
+			int index = FilterComboBox->findText(tr("REQUIRE UPDATE"));
 			if(index >= 0)
 				FilterComboBox->setCurrentIndex(index);
 		}

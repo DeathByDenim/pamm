@@ -48,11 +48,11 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	QLabel *modAuthorLabel = new QLabel(this);
-	modAuthorLabel->setText("by " + Author);
+	modAuthorLabel->setText(tr("by") + " " + Author);
 	modAuthorLabel->setStyleSheet("QLabel {color: #F9F9F9; margin-left: 5px; font-style: italic; font-size: 0.7em;}");
 
 	QLabel *modInfoLabel = new QLabel(this);
-	modInfoLabel->setText(QString("Version: ") + Version + ", build " + Build + " (" + Date.toString("yyyy/MM/dd") + ")");
+	modInfoLabel->setText(QString(tr("Version") + ": ") + Version + ", " + tr("build") + " " + Build + " (" + Date.toString("yyyy/MM/dd") + ")");
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 
 	if(Identifier == "com.pa.deathbydenim.dpamm")
@@ -66,7 +66,7 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 	if(!Requires.isEmpty())
 	{
 		QLabel *modRequires = new QLabel(this);
-		modRequires->setText("REQUIRES: " + Requires.join(", "));
+		modRequires->setText(tr("REQUIRES") + ": " + Requires.join(", "));
 		modRequires->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 		setRelativeFontSizeForLabel(modRequires, .8);
 		modLayout->addWidget(modRequires, 3, 2, 1, -1);
@@ -79,11 +79,11 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 	buttonWidget->setFont(font);
 	QHBoxLayout *buttonLayout = new QHBoxLayout(buttonWidget);
 	ModUpdateButton = new QPushButton(buttonWidget);
-	ModUpdateButton->setText("Update");
+	ModUpdateButton->setText(tr("Update"));
 	ModUpdateButton->setEnabled(false);
 	buttonLayout->addWidget(ModUpdateButton);
 	QPushButton *modUninstallButton = new QPushButton(buttonWidget);
-	modUninstallButton->setText("Uninstall");
+	modUninstallButton->setText(tr("Uninstall"));
 	if(Identifier == "com.pa.deathbydenim.dpamm")
 		modUninstallButton->setDisabled(true);
 	buttonLayout->addWidget(modUninstallButton);
@@ -324,8 +324,8 @@ void InstalledMod::uninstallButtonClicked()
 		}
 
 		QMessageBox msgBox;
-		msgBox.setText(revreq + " depend on this mod.");
-		msgBox.setInformativeText("Are you sure you want to uninstall?");
+		msgBox.setText(revreq + " " + tr("depend on this mod."));
+		msgBox.setInformativeText(tr("Are you sure you want to uninstall?"));
 		msgBox.setIcon(QMessageBox::Warning);
 		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		if(msgBox.exec() != QMessageBox::Yes)
