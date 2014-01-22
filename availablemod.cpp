@@ -206,7 +206,7 @@ bool AvailableMod::sortAuthor(const AvailableMod* m1, const AvailableMod* m2)
 
 bool AvailableMod::sortBuild(const AvailableMod* m1, const AvailableMod* m2)
 {
-	return (m1->Build < m2->Build);
+	return (m1->Build >= m2->Build);
 }
 
 bool AvailableMod::sortRandom(const AvailableMod* m1, const AvailableMod* m2)
