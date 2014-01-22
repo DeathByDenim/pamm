@@ -38,31 +38,31 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	QLabel *modAuthorLabel = new QLabel(this);
-	modAuthorLabel->setText("by " + Author);
+	modAuthorLabel->setText(tr("by") + " " + Author);
 	modAuthorLabel->setStyleSheet("QLabel {color: #F9F9F9; margin-left: 5px; font-style: italic; font-size: 0.7em;}");
 
 	ModStatus = new QLabel(this);
 
 	if(State == installed)
 	{
-		ModStatus->setText("INSTALLED");
+		ModStatus->setText(tr("INSTALLED"));
 		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
 	}
 	else if(State == updateavailable)
 	{
-		ModStatus->setText("UPDATE AVAILABLE");
+		ModStatus->setText(tr("UPDATE AVAILABLE"));
 		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #ff8844;}");
 	}
 	else if(State == notinstalled)
 	{
-		ModStatus->setText("NOT INSTALLED");
+		ModStatus->setText(tr("NOT INSTALLED"));
 		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
 	}
 
 	QLabel *modInfoLabel = new QLabel(this);
 	QString modInfoText = QString("Version : ") + Version + ", build " + Build + " (" + Date.toString("yyyy/MM/dd") + ")";
 	if(!Requires.isEmpty())
-		modInfoText += "\nREQUIRES: " + Requires.join(", ");
+		modInfoText += "\n" + tr("REQUIRES") + ": " + Requires.join(", ");
 	modInfoLabel->setText(modInfoText);
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 	setRelativeFontSizeForLabel(modInfoLabel, .8);
@@ -87,7 +87,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	QLabel *modDescription = new QLabel(this);
 	modDescription->setWordWrap(true);
 	if(Description.isEmpty())
-		modDescription->setText("-- No description available --");
+		modDescription->setText("-- " + tr("No description available") + " --");
 	else
 		modDescription->setText(Description);
 	modDescription->setStyleSheet("QLabel {font-size: 0.8em; color: #ffffff; }");
@@ -99,7 +99,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 		ModButtonsWidget->setLayout(modButtonsLayout);
 
 		QPushButton *installButton = new QPushButton(ModButtonsWidget);
-		installButton->setText("Install");
+		installButton->setText(tr("Install"));
 		modButtonsLayout->addWidget(installButton);
 		modButtonsLayout->addStretch();
 		modLayout->addWidget(ModButtonsWidget, 6, 2, 1, -1);
@@ -182,7 +182,7 @@ void AvailableMod::progress(int percentage)
 		if(ModStatus)
 		{
 			State = installed;
-			ModStatus->setText("INSTALLED");
+			ModStatus->setText(tr("INSTALLED"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
 		}
 	}
@@ -245,7 +245,7 @@ void AvailableMod::setCount(int count)
 			gridlayout->addWidget(ModDownloadCountLabel, 5, 3, 1, -1, Qt::AlignRight);
 	}
 
-	ModDownloadCountLabel->setText(QString("Downloaded %1 times").arg(count));
+	ModDownloadCountLabel->setText(QString(tr("Downloaded %1 times")).arg(count));
 }
 
 void AvailableMod::parseForumPostForLikes(const QByteArray& data)
@@ -303,17 +303,17 @@ void AvailableMod::setState(AvailableMod::installstate_t state)
 	{
 		if(State == installed)
 		{
-			ModStatus->setText("INSTALLED");
+			ModStatus->setText(tr("INSTALLED"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
 		}
 		else if(State == updateavailable)
 		{
-			ModStatus->setText("UPDATE AVAILABLE");
+			ModStatus->setText(tr("UPDATE AVAILABLE"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #ff8844;}");
 		}
 		else if(State == notinstalled)
 		{
-			ModStatus->setText("NOT INSTALLED");
+			ModStatus->setText(tr("NOT INSTALLED"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
 		}
 	}
