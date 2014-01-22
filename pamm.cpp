@@ -261,6 +261,8 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 
 	sortIndexChanged("RANDOM");
 
+	Tabs->setCurrentIndex(QSettings("DeathByDenim", "PAMM").value("tabs/lastindex", 0).toInt());
+
 	checkForUpdate();
 }
 
@@ -467,6 +469,7 @@ void PAMM::newsReplyFinished(QNetworkReply* reply)
 
 void PAMM::tabChanged(int index)
 {
+	QSettings("DeathByDenim", "PAMM").setValue("tabs/lastindex", index);
 	RefreshButton->setEnabled(index != 1);
 }
 
