@@ -335,6 +335,7 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 	if(!modsLayout)
 		return;
 
+	setUpdatesEnabled(false);
 	// Delete anything that's there now.
 	clearWidgets(modsLayout, deleteWidgets);
 
@@ -366,6 +367,9 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 	}
 
 	updateUpdateAllButton();
+
+	setUpdatesEnabled(true);
+
 }
 
 void PAMM::updateUpdateAllButton()
