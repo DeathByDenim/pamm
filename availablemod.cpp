@@ -292,7 +292,7 @@ void AvailableMod::parseForumPostForLikes(const QByteArray& data)
 			gridlayout->addWidget(ModLikesLabel, 4, 3, 1, -1, Qt::AlignRight);
 	}
 
-	ModLikesLabel->setText(QString("Liked %1 times").arg(Likes));
+	ModLikesLabel->setText(QString(tr("Liked %1 times")).arg(Likes));
 }
 
 void AvailableMod::setState(AvailableMod::installstate_t state)
