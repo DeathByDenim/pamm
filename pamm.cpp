@@ -185,7 +185,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	availableMenuWidgetLayout->addStrut(10);
 
 	QLabel *sortLabel = new QLabel(availableMenuWidget);
-	sortLabel->setText("SORT:");
+	sortLabel->setText(tr("SORT:"));
 	availableMenuWidgetLayout->addWidget(sortLabel);
 
 	QComboBox *sortComboBox = new QComboBox(availableMenuWidget);

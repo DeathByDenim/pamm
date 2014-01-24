@@ -141,10 +141,10 @@ int main(int argc, char** argv)
 	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
 	
-	std::cout << "Locale: " << QLocale::languageToString(QLocale().language()).toStdString() << std::endl;
+	std::cout << "Locale: " << QLocale::languageToString(QLocale::system().language()).toStdString() << std::endl;
 
 	QTranslator translator_specific;
-	if(translator_specific.load(QLocale().name(), "/home/jarno/Projects/pamm/locale"))
+	if(translator_specific.load(QLocale::system().name(), progdir + "/locale"))
 		QCoreApplication::installTranslator(&translator_specific);
 
 	// Install the pamm mod.
