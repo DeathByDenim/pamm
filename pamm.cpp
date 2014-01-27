@@ -93,7 +93,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	logoLabel->adjustSize();
 
 	QLabel *titleLabel = new QLabel(this);
-	titleLabel->setText(tr("UI MOD MANAGER"));
+	titleLabel->setText(tr("PA MOD MANAGER"));
 	QFont font = titleLabel->font();
 	font.setPixelSize(32);
 	titleLabel->setFont(font);
