@@ -50,7 +50,7 @@
     <message>
         <location filename="../availablemod.cpp" line="295"/>
         <source>Liked %1 times</source>
-        <translation>Aimé %1 fois</translation>
+        <translation>Aimé bien %1 fois</translation>
     </message>
 </context>
 <context>
@@ -194,7 +194,7 @@
     <message>
         <location filename="../pamm.cpp" line="188"/>
         <source>SORT:</source>
-        <translation>ARRENGER:</translation>
+        <translation>ARRENGE:</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="192"/>
@@ -237,7 +237,7 @@
         <location filename="../pamm.cpp" line="198"/>
         <location filename="../pamm.cpp" line="554"/>
         <source>LIKES</source>
-        <translation>PLAIRÉ</translation>
+        <translation>AIMÉ BIEN</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="214"/>

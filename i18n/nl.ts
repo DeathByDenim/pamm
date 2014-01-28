@@ -218,7 +218,7 @@
     </message>
     <message>
         <source>SORT:</source>
-        <translation>SORTEREN:</translation>
+        <translation>SORTEER:</translation>
     </message>
 </context>
 </TS>

@@ -25,6 +25,7 @@
 #include <QTranslator>
 #include <QLocale>
 #include <iostream>
+#include <cstdlib>
 #include "pamm.h"
 #include "modmanager.h"
 
@@ -137,14 +138,26 @@ int main(int argc, char** argv)
 		imgPath = imgDir.canonicalPath() + '/';
 	}
 #endif
+
+	QLocale locale;
+	QString language = getenv("LANG");
+	if(language.length() > 0)
+		locale = QLocale(language);
+	else
+	{
+		language = QString(getenv("LANGUAGE")).split(':')[0];
+		if(language.length() > 0)
+			locale = QLocale(language);
+	}
+
 	std::cout << "Expecting configdir in: \"" << configPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
 	
-	std::cout << "Locale: " << QLocale::languageToString(QLocale::system().language()).toStdString() << std::endl;
+	std::cout << "Locale: " << QLocale::languageToString(locale.language()).toStdString() << std::endl;
 
 	QTranslator translator_specific;
-	if(translator_specific.load(QLocale::system().name(), progdir + "/i18n"))
+	if(translator_specific.load(locale.name(), progdir + "/i18n"))
 		QCoreApplication::installTranslator(&translator_specific);
 
 	// Install the pamm mod.
