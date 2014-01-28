@@ -21,7 +21,7 @@
     </message>
     <message>
         <source>REQUIRES</source>
-        <translation>BRAUCHT</translation>
+        <translation>BENÖTIGT</translation>
     </message>
     <message>
         <source>No description available</source>
@@ -37,7 +37,7 @@
     </message>
     <message>
         <source>Liked %1 times</source>
-        <translation>%1 mahl toll gefunden</translation>
+        <translation>%1 mal toll gefunden</translation>
     </message>
 </context>
 <context>
@@ -113,8 +113,8 @@
 <context>
     <name>PAMM</name>
     <message>
-        <source>UI MOD MANAGER</source>
-        <translation>UI MOD VERWALTER</translation>
+        <source>PA MOD MANAGER</source>
+        <translation>PA MOD VERWALTER</translation>
     </message>
     <message>
         <source>NEWS</source>
@@ -190,7 +190,7 @@
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Erneuern</translation>
+        <translation>Aktualisieren</translation>
     </message>
     <message>
         <source>Exit</source>

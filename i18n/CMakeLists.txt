@@ -1,0 +1,5 @@
+file(GLOB TRANSLATIONS *.ts)
+
+QT4_ADD_TRANSLATION(QM ${TRANSLATIONS})
+
+add_custom_target(all DEPENDS ${QM})

@@ -144,7 +144,7 @@ int main(int argc, char** argv)
 	std::cout << "Locale: " << QLocale::languageToString(QLocale::system().language()).toStdString() << std::endl;
 
 	QTranslator translator_specific;
-	if(translator_specific.load(QLocale::system().name(), progdir + "/locale"))
+	if(translator_specific.load(QLocale::system().name(), progdir + "/i18n"))
 		QCoreApplication::installTranslator(&translator_specific);
 
 	// Install the pamm mod.
