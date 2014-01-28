@@ -34,7 +34,7 @@ class AvailableMod : public Mod
 public:
 	enum installstate_t{installed, notinstalled, updateavailable};
 
-	AvailableMod(const QString &Key, const QString &DisplayName, const QString &Description, const QString &Author, const QString &Version, const QString &Build, const QDate &Date, const QUrl &Forum, const QUrl &Url, const QStringList &Category, const QStringList &Requires, const installstate_t State, const QString ImgPath);
+	AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath);
 	~AvailableMod();
 
 	void setPixmap(const QPixmap &pixmap);

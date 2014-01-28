@@ -95,8 +95,8 @@ InstalledMod *ModManager::parseJson(const QString filename)
 		QFileInfo(filename).absoluteDir().dirName(),
 		result["context"].toString(),
 		result["identifier"].toString(),
-		result["display_name"].toString(),
-		result["description"].toString(),
+		readLocaleField(result, "display_name").toString(),
+		readLocaleField(result, "description").toString(),
 		result["author"].toString(),
 		result["version"].toString(),
 		result["signature"].toString(),
@@ -481,7 +481,7 @@ void ModManager::readAvailableModListJson(QString filename)
 		modentry.next();
 		QVariantMap moddata = modentry.value().toMap();
 
-		QString display_name = moddata["display_name"].toString();
+		QString display_name = readLocaleField(moddata, "display_name").toString();
 		QString version = moddata["version"].toString();
 		QUrl forumlink = moddata["forum"].toUrl();
 		AvailableMod::installstate_t state = isInstalled(modentry.key(), version);
@@ -489,7 +489,7 @@ void ModManager::readAvailableModListJson(QString filename)
 		AvailableMod *mod = new AvailableMod(
 			modentry.key(),
 			display_name,
-			moddata["description"].toString(),
+			readLocaleField(moddata, "description").toString(),
 			moddata["author"].toString(),
 			version,
 			moddata["build"].toString(),
@@ -920,5 +920,17 @@ void ModManager::installAllUpdates()
 			(*m)->installButtonClicked();
 	}
 }
+
+QVariant ModManager::readLocaleField(const QVariantMap &map, const QString &field)
+{
+	QString lang = QLocale::system().name();
+	if(map.contains(field + '_' + lang))
+		return map[field + '_' + lang];
+	else if(lang.split('_')[0].length() > 0 && map.contains(field + '_' + lang.split('_')[0]))
+		return map[field + '_' + lang.split('_')[0]];
+	else
+		return map[field];
+}
+
 
 #include "modmanager.moc"
