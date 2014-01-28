@@ -98,6 +98,7 @@ private:
 	void writeModsListJson();
 	void recursiveRemove(const QDir& dir);
 	void refreshReverseRequirements();
+	QVariant readLocaleField(const QVariantMap& map, const QString& field);
 
 public Q_SLOTS:
 	void replyFinished(QNetworkReply* reply = NULL);
