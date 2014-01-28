@@ -59,7 +59,7 @@ public:
 
 	QStringList getSceneList(scene_t scene);
 	QString getModUiJsInfoString();
-	bool isOlderThan(const QString& version);
+	   int compareVersion(const QString& version_in);
 	void setScene(QVariant files, scene_t scene);
 	void setEnabled(bool enabled);
 	bool enabled() {return Enabled;};
