@@ -21,7 +21,7 @@
     </message>
     <message>
         <source>REQUIRES</source>
-        <translation>BENODIGD</translation>
+        <translation>HEEFT NODIG</translation>
     </message>
     <message>
         <source>No description available</source>
@@ -113,8 +113,8 @@
 <context>
     <name>PAMM</name>
     <message>
-        <source>UI MOD MANAGER</source>
-        <translation>UI MOD BEHEERDER</translation>
+        <source>PA MOD MANAGER</source>
+        <translation>PA MOD BEHEERDER</translation>
     </message>
     <message>
         <source>NEWS</source>
@@ -154,7 +154,7 @@
     </message>
     <message>
         <source>LAST UPDATED</source>
-        <translation>LAATST GEÜPDATE</translation>
+        <translation>LAATSTE KEER GEÜPDATE</translation>
     </message>
     <message>
         <source>TITLE</source>

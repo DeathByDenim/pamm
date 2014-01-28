@@ -30,7 +30,7 @@
     <message>
         <location filename="../availablemod.cpp" line="65"/>
         <source>REQUIRES</source>
-        <translation>AVOIR BESOIN</translation>
+        <translation>A BESOIN DE</translation>
     </message>
     <message>
         <location filename="../availablemod.cpp" line="90"/>
@@ -143,13 +143,13 @@
     <name>PAMM</name>
     <message>
         <location filename="../pamm.cpp" line="96"/>
-        <source>UI MOD MANAGER</source>
-        <translation>UI MOD ADMINISTRATEUR</translation>
+        <source>PA MOD MANAGER</source>
+        <translation>GESTIONNAIRE DE MODS DE PA</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="135"/>
         <source>NEWS</source>
-        <translation>NOUVELLE</translation>
+        <translation>NOUVELLES</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="145"/>
@@ -207,13 +207,13 @@
         <location filename="../pamm.cpp" line="193"/>
         <location filename="../pamm.cpp" line="534"/>
         <source>LAST UPDATED</source>
-        <translation type="unfinished">DERNIÈREMENT MIS À JOUR</translation>
+        <translation>DERNIÈRE MISE À JOUR</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="194"/>
         <location filename="../pamm.cpp" line="538"/>
         <source>TITLE</source>
-        <translation>TITLE</translation>
+        <translation>TITRE</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="195"/>
@@ -258,7 +258,7 @@
     <message>
         <location filename="../pamm.cpp" line="233"/>
         <source>Refresh</source>
-        <translation>Renouveler</translation>
+        <translation>Actualiser</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="237"/>
@@ -273,17 +273,17 @@
     <message>
         <location filename="../pamm.cpp" line="245"/>
         <source>, created by DeathByDenim (based on Raevn)</source>
-        <translation type="unfinished">, cré par DeatByDenim (basé à Raevn)</translation>
+        <translation>, cré par DeatByDenim (basé à Raevn)</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="462"/>
         <source>Couldn&apos;t write to</source>
-        <translation type="unfinished">Pas possble pour écrire dans</translation>
+        <translation>Ce n&apos;est pas possible pour écrire à</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="586"/>
         <source>New update available for the PA Mod Manager.</source>
-        <translation type="unfinished">Nouvelle mise à jour disponible pour le PA Mod Administrateur.</translation>
+        <translation>Nouvelle mise à jour disponible pour le gestionnaire de mods.</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="587"/>
