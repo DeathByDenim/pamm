@@ -177,11 +177,11 @@ QString InstalledMod::getModUiJsInfoString()
 			"}";
 }
 
-bool InstalledMod::isOlderThan(const QString& version_in)
+int InstalledMod::compareVersion(const QString& version_in)
 {
 	QStringList v1 = Version.split(QRegExp("[.-]"));
 	QStringList v2 = version_in.split(QRegExp("[.-]"));
-	
+
 	for(int i = 0; i < std::min(v1.count(), v2.count()); ++i)
 	{
 		bool ok1, ok2;
@@ -208,7 +208,7 @@ bool InstalledMod::isOlderThan(const QString& version_in)
 				continue;
 		}
 	}
-	
+
 	if(v1.count() < v2.count())
 		return -1;
 	else if(v1.count() == v2.count())

@@ -19,7 +19,7 @@
 #ifndef PAMM_H
 #define PAMM_H
 
-#define PAMM_VERSION "3.0.3"
+#define PAMM_VERSION "3.1"
 
 #include <QtGui/QMainWindow>
 #include "modmanager.h"

@@ -332,7 +332,7 @@ AvailableMod::installstate_t ModManager::isInstalled(QString modKey, QString mod
 	{
 		if((*mod)->key() == modKey)
 		{
-			if((*mod)->isOlderThan(modVersion) < 0)
+			if((*mod)->compareVersion(modVersion) < 0)
 				return AvailableMod::updateavailable;
 			else
 				return AvailableMod::installed;
