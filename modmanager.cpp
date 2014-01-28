@@ -442,8 +442,8 @@ void ModManager::replyFinished(QNetworkReply* reply)
 		}
 		else if(type == "likes")
 		{
-			AvailableMod *mod = dynamic_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
-			if(mod)
+			AvailableMod *mod = (AvailableMod *)reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>();
+			if(availableMods.contains(mod)) // It might be deleted by clicking refresh before all the "likes" have been loaded.
 			{
 				int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 				if(statusCode == 301)
