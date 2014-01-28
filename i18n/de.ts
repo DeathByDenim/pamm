@@ -130,7 +130,7 @@
     </message>
     <message>
         <source>SHOW:</source>
-        <translation>ZEIGEN:</translation>
+        <translation>ZEIG:</translation>
     </message>
     <message>
         <source>ALL</source>
@@ -218,7 +218,7 @@
     </message>
     <message>
         <source>SORT:</source>
-        <translation>SORTIEREN:</translation>
+        <translation>SORTIER:</translation>
     </message>
 </context>
 </TS>
