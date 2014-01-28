@@ -23,6 +23,7 @@
 #include <QList>
 #include <QStringList>
 #include <QString>
+#include <QLocale>
 #include <sstream>
 #include "installedmod.h"
 #include "availablemod.h"
@@ -36,7 +37,7 @@ class ModManager : public QObject
 	Q_OBJECT
 
 public:
-	ModManager(QString ConfigPath, QString PAPath, QString ModPath, QString ImgPath);
+	ModManager(QString ConfigPath, QString PAPath, QString ModPath, QString ImgPath, QLocale Locale);
 	virtual ~ModManager();
 
 	void findInstalledMods();
@@ -87,6 +88,7 @@ private:
 	QString ModPath;
 	QString ConfigPath;
 	QString ImgPath;
+	QLocale Locale;
 	QNetworkAccessManager *Internet;
 
 	InstalledMod *parseJson(const QString filename);

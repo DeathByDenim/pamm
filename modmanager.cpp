@@ -26,6 +26,7 @@
 #include <QMetaType>
 #include <QFile>
 #include <QTextStream>
+#include <QLocale>
 #include <fstream>
 #include <sstream>
 #include <exception>
@@ -36,8 +37,8 @@
 #include "modmanager.h"
 #include "installedmod.h"
 
-ModManager::ModManager(QString ConfigPath, QString PAPath, QString ModPath, QString ImgPath)
- : ConfigPath(ConfigPath), PAPath(PAPath), ModPath(ModPath), ImgPath(ImgPath)
+ModManager::ModManager(QString ConfigPath, QString PAPath, QString ModPath, QString ImgPath, QLocale Locale)
+ : ConfigPath(ConfigPath), PAPath(PAPath), ModPath(ModPath), ImgPath(ImgPath), Locale(Locale)
 {
 	// Clean up zip files in cache
 	QDirIterator it(ConfigPath + "pamm_cache/", QStringList("*.zip"), QDir::Files);
@@ -923,7 +924,7 @@ void ModManager::installAllUpdates()
 
 QVariant ModManager::readLocaleField(const QVariantMap &map, const QString &field)
 {
-	QString lang = QLocale::system().name();
+	QString lang = Locale.name();
 	if(map.contains(field + '_' + lang))
 		return map[field + '_' + lang];
 	else if(lang.split('_')[0].length() > 0 && map.contains(field + '_' + lang.split('_')[0]))

@@ -180,7 +180,7 @@ int main(int argc, char** argv)
 		msgBox.exec();
 	}
 
-	ModManager manager(configPath, paPath, modPath, imgPath);
+	ModManager manager(configPath, paPath, modPath, imgPath, locale);
 	manager.findInstalledMods();
 	manager.loadAvailableMods(false);
 
