@@ -145,7 +145,7 @@ int main(int argc, char** argv)
 	{
 		QDir i18nDir(progdir);
 		i18nDir.cd("../Resources");
-		i18nPath = imgDir.canonicalPath() + '/';
+		i18nPath = i18nDir.canonicalPath() + '/';
 	}
 #endif
 
