@@ -139,6 +139,16 @@ int main(int argc, char** argv)
 	}
 #endif
 
+	QString i18nPath = progdir + "/i18n/";
+#ifdef __APPLE__
+	if(!QFileInfo(i18nPath).exists())
+	{
+		QDir i18nDir(progdir);
+		i18nDir.cd("../Resources");
+		i18nPath = imgDir.canonicalPath() + '/';
+	}
+#endif
+
 	QLocale locale;
 	QString language = getenv("LANG");
 	if(language.length() > 0)
@@ -157,7 +167,7 @@ int main(int argc, char** argv)
 	std::cout << "Locale: " << QLocale::languageToString(locale.language()).toStdString() << std::endl;
 
 	QTranslator translator_specific;
-	if(translator_specific.load(locale.name(), progdir + "/i18n"))
+	if(translator_specific.load(locale.name(), i18nPath))
 		QCoreApplication::installTranslator(&translator_specific);
 
 	// Install the pamm mod.
