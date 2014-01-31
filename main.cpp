@@ -163,6 +163,7 @@ int main(int argc, char** argv)
 	std::cout << "Expecting configdir in: \"" << configPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
+	std::cout << "Expecting locale dir at: \"" << i18nPath.toStdString() << "\"." << std::endl;
 	
 	std::cout << "Locale: " << QLocale::languageToString(locale.language()).toStdString() << std::endl;
 
