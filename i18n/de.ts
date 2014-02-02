@@ -5,7 +5,7 @@
     <name>AvailableMod</name>
     <message>
         <source>by</source>
-        <translation>durch</translation>
+        <translation>von</translation>
     </message>
     <message>
         <source>INSTALLED</source>
@@ -114,7 +114,7 @@
     <name>PAMM</name>
     <message>
         <source>PA MOD MANAGER</source>
-        <translation>PA MOD VERWALTER</translation>
+        <translation>PA MOD MANAGER</translation>
     </message>
     <message>
         <source>NEWS</source>
@@ -150,7 +150,7 @@
     </message>
     <message>
         <source>RANDOM</source>
-        <translation>WILLKÜRLICH</translation>
+        <translation>ZUFALL</translation>
     </message>
     <message>
         <source>LAST UPDATED</source>
