@@ -37,7 +37,7 @@ public:
 	AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath);
 	~AvailableMod();
 
-	void setPixmap(const QPixmap &pixmap);
+	void setIcon(const QImage &icon);
 	void setCount(int count);
 	QUrl downloadLink() {return Download;};
 	installstate_t state() {return State;};
@@ -54,7 +54,7 @@ public:
 
 private:
 	const QUrl Download;
-	QPixmap Icon;
+	QImage Icon;
 	installstate_t State;
 	int NumDownloaded;
 	const QString ImgPath;

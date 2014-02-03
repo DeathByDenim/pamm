@@ -382,7 +382,7 @@ void ModManager::replyFinished(QNetworkReply* reply)
 			{
 				// Load pixmap
 				QImage modIcon = QImage::fromData(reply->readAll());
-				mod->setPixmap(QPixmap::fromImage(modIcon));
+				mod->setIcon(modIcon);
 			}
 		}
 		else if(type == "modlist" || type == "modcount")

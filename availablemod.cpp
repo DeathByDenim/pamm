@@ -26,7 +26,7 @@
 #include <QPainter>
 
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
- : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL), ImgPath(imgPath)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 	this->setLayout(modLayout);
@@ -62,7 +62,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	QLabel *modInfoLabel = new QLabel(this);
 	QString modInfoText = QString("Version : ") + Version + ", build " + Build + " (" + Date.toString("yyyy/MM/dd") + ")";
 	if(!Requires.isEmpty())
-		modInfoText += "\n" + tr("REQUIRES") + ": " + Requires.join(", ");
+	modInfoText += "\n" + tr("REQUIRES") + ": " + Requires.join(", ");
 	modInfoLabel->setText(modInfoText);
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 	setRelativeFontSizeForLabel(modInfoLabel, .8);
@@ -127,11 +127,22 @@ AvailableMod::~AvailableMod()
 {
 }
 
-void AvailableMod::setPixmap(const QPixmap& pixmap)
+void AvailableMod::setIcon(const QImage& icon)
 {
+	Icon = icon;
 	if(ModIconLabel)
 	{
-		ModIconLabel->setPixmap(pixmap);
+		if(Date >= QDate::currentDate().addDays(-7))
+		{
+			QPainter p(&Icon);
+			QImageReader *reader = new QImageReader(ImgPath + "new.png");
+			QImage modNewIcon = reader->read();
+			delete reader;
+			p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+			QRect size(QPoint(0,0), modNewIcon.size());
+			p.drawImage(size, modNewIcon);
+		}
+		ModIconLabel->setPixmap(QPixmap::fromImage(Icon));
 		ModIconLabel->setScaledContents(true);
 		ModIconLabel->setFixedSize(100, 100);
 	}
