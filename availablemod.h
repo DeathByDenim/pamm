@@ -69,6 +69,7 @@ private:
 
 public Q_SLOTS:
 	void installButtonClicked();
+	void videoReviewButtonClicked();
 	void progress(int percentage);
 	void downloadProgress( qint64 bytesReceived, qint64 bytesTotal);
 
