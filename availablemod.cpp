@@ -24,7 +24,7 @@
 #include <QPushButton>
 #include <QProgressBar>
 #include <QPainter>
-#include "videoreviewdialog.h"
+//#include "videoreviewdialog.h"
 
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL), ImgPath(imgPath)
@@ -103,14 +103,14 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 		installButton->setText(tr("Install"));
 		modButtonsLayout->addWidget(installButton);
 		
-		QPushButton *videoReviewButton = new QPushButton(ModButtonsWidget);
+/*		QPushButton *videoReviewButton = new QPushButton(ModButtonsWidget);
 		videoReviewButton->setText(tr("Video review"));
 		modButtonsLayout->addWidget(videoReviewButton);
-		
+*/		
 		modButtonsLayout->addStretch();
 		modLayout->addWidget(ModButtonsWidget, 6, 2, 1, -1);
 		connect(installButton, SIGNAL(clicked()), this, SLOT(installButtonClicked()));
-		connect(videoReviewButton, SIGNAL(clicked()), this, SLOT(videoReviewButtonClicked()));
+//		connect(videoReviewButton, SIGNAL(clicked()), this, SLOT(videoReviewButtonClicked()));
 	}
 	
 	if(!Category.isEmpty())
@@ -136,7 +136,7 @@ AvailableMod::~AvailableMod()
 
 void AvailableMod::setIcon(const QImage& icon)
 {
-	Icon = icon;
+	Icon = icon.convertToFormat(QImage::Format_ARGB32);
 	if(ModIconLabel)
 	{
 		if(Date >= QDate::currentDate().addDays(-7))
@@ -339,8 +339,8 @@ void AvailableMod::setState(AvailableMod::installstate_t state)
 
 void AvailableMod::videoReviewButtonClicked()
 {
-	VideoReviewDialog *diag = new VideoReviewDialog(this, ImgPath);
-	diag->exec();
+//	VideoReviewDialog *diag = new VideoReviewDialog(this, ImgPath);
+//	diag->exec();
 }
 
 #include "availablemod.moc"

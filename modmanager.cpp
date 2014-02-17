@@ -57,7 +57,7 @@ ModManager::~ModManager()
 
 void ModManager::findInstalledMods()
 {
-	QDirIterator it(ModPath, QDirIterator::Subdirectories);
+	QDirIterator it(ModPath, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
 	while (it.hasNext())
 	{
 		QString filename = it.next();
