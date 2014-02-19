@@ -121,6 +121,10 @@ InstalledMod *ModManager::parseJson(const QString filename)
 		mod->setScene(result["icon_atlas"], InstalledMod::icon_atlas);
 	if(result.contains("live_game"))
 		mod->setScene(result["live_game"], InstalledMod::live_game);
+	if(result.contains("live_game_econ"))
+		mod->setScene(result["live_game_econ"], InstalledMod::live_game_econ);
+	if(result.contains("live_game_hover"))
+		mod->setScene(result["live_game_hover"], InstalledMod::live_game_hover);
 	if(result.contains("load_planet"))
 		mod->setScene(result["load_planet"], InstalledMod::load_planet);
 	if(result.contains("lobby"))
@@ -223,12 +227,24 @@ void ModManager::writeUiModListJS()
 		"    'icon_atlas': [\n";
 		
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::icon_atlas);
-	
+
 	UiModListJS <<
 		"    ],\n"
 		"    'live_game': [\n";
-		
+
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game);
+
+	UiModListJS <<
+		"    ],\n"
+		"    'live_game_econ': [\n";
+
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game_econ);
+
+	UiModListJS <<
+		"    ],\n"
+		"    'live_game_hover': [\n";
+
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game_hover);
 
 	UiModListJS <<
 		"    ],\n"
