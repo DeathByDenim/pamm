@@ -124,6 +124,12 @@ QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
 		case live_game:
 			return Scene_live_game;
 			break;
+		case live_game_econ:
+			return Scene_live_game_econ;
+			break;
+		case live_game_hover:
+			return Scene_live_game_hover;
+			break;
 		case load_planet:
 			return Scene_load_planet;
 			break;
@@ -245,6 +251,12 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 			break;
 		case live_game:
 			Scene_live_game = filesStringList;
+			break;
+		case live_game_econ:
+			Scene_live_game_econ = filesStringList;
+			break;
+		case live_game_hover:
+			Scene_live_game_hover = filesStringList;
 			break;
 		case load_planet:
 			Scene_load_planet = filesStringList;

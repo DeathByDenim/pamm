@@ -43,6 +43,8 @@ public:
 		game_over,
 		icon_atlas,
 		live_game,
+		live_game_econ,
+		live_game_hover,
 		load_planet,
 		lobby,
 		matchmaking,
@@ -92,6 +94,8 @@ private:
 	QStringList Scene_game_over; // files (comma separated)
 	QStringList Scene_icon_atlas; // files (comma separated)
 	QStringList Scene_live_game; // files (comma separated)
+	QStringList Scene_live_game_econ; // files (comma separated)
+	QStringList Scene_live_game_hover; // files (comma separated)
 	QStringList Scene_load_planet; // files (comma separated)
 	QStringList Scene_lobby; // files (comma separated)
 	QStringList Scene_matchmaking; // files (comma separated)
