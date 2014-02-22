@@ -57,7 +57,7 @@ ModManager::~ModManager()
 
 void ModManager::findInstalledMods()
 {
-	QDirIterator it(ModPath, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+	QDirIterator it(ModPath, QDirIterator::Subdirectories /*| QDirIterator::FollowSymlinks*/); // No symlinks, since PA doesn't support it anyway.
 	while (it.hasNext())
 	{
 		QString filename = it.next();
