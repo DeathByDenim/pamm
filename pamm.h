@@ -74,6 +74,7 @@ public Q_SLOTS:
 	void sortIndexChanged(const QString & text);
 	void filterIndexChanged(const QString & text);
 	void updateAllButtonClicked();
+	void showModFolder();
 };
 
 #endif // PAMM_H

@@ -75,24 +75,39 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	restoreGeometry(settings.value("geometry").toByteArray());
 
 	QWidget *mainWidget = new QWidget(this);
-	setCentralWidget(mainWidget);
-
-	QVBoxLayout *layout = new QVBoxLayout(mainWidget);
-
-	QLabel* logoLabel = new QLabel(this);
-
 	QImageReader *reader = new QImageReader(imgdir + "img_pa_logo_alpha.png");
 	QImage pa_logo = reader->read();
 	reader->setFileName(imgdir + "img_start_bground_sample.jpg");
 	QImage bground = reader->read();
 	delete reader;
 
-	QPalette* palette = new QPalette();
-	palette->setBrush(QPalette::Background, *(new QBrush(bground)));
-	setPalette(*palette);
+	QPalette mypalette;
+	mypalette.setBrush(mainWidget->backgroundRole(), QBrush(bground));
+	mainWidget->setAutoFillBackground(true);
+	mainWidget->setPalette(mypalette);
 
+	setCentralWidget(mainWidget);
+	
+	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+	QAction* quitAction = new QAction(this);
+	quitAction->setText("&Quit");
+	quitAction->setShortcut(QKeySequence("Ctrl+q"));
+	connect(quitAction, SIGNAL(triggered()), SLOT(close()));
+	QAction* showModFolderAction = new QAction(this);
+	showModFolderAction->setText("&Show Mod folder");
+	connect(showModFolderAction, SIGNAL(triggered()), SLOT(showModFolder()));
+	fileMenu->addAction(showModFolderAction);
+	fileMenu->addAction(quitAction);
+
+	QVBoxLayout *layout = new QVBoxLayout(mainWidget);
+
+	QLabel* logoLabel = new QLabel(this);
 	logoLabel->setPixmap(QPixmap::fromImage(pa_logo));
 	logoLabel->adjustSize();
+	QPalette tt;
+	tt.setBrush(logoLabel->backgroundRole(), QBrush(bground));
+	logoLabel->setPalette(tt);
+	layout->addWidget(logoLabel);
 
 	QLabel *titleLabel = new QLabel(this);
 	titleLabel->setText(tr("PA MOD MANAGER"));
@@ -106,7 +121,6 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	effect->setOffset(2, 2);
 	titleLabel->setGraphicsEffect(effect);
 
-	layout->addWidget(logoLabel);
 	layout->addWidget(titleLabel);
 	
 	Tabs = new QTabWidget(this);
@@ -624,4 +638,11 @@ void PAMM::closeEvent(QCloseEvent *event)
 
 	QMainWindow::closeEvent(event);
 }
+
+void PAMM::showModFolder()
+{
+	QDesktopServices::openUrl(QUrl("file://" + Manager->configPath() + "/mods"));
+}
+
+
 #include "pamm.moc"
