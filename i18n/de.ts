@@ -41,6 +41,13 @@
     </message>
 </context>
 <context>
+    <name>HelpDialog</name>
+    <message>
+        <source>&lt;html&gt;&lt;body&gt;&lt;h1&gt;Usage&lt;/h1&gt;&lt;p&gt;Mods can greatly increase you enjoyment of Planetary Annihilation. So feel free to install as many as you like.&lt;/p&gt;&lt;h2&gt;Tabs&lt;/h2&gt;&lt;h3&gt;NEWS&lt;/h3&gt;&lt;p&gt;The NEWS tab show you recent developments in the modding community. Information about updated of new mods are shown there.&lt;/p&gt;&lt;h3&gt;INSTALLED MODS&lt;/h3&gt;&lt;p&gt;The INSTALLED MODS tab shows you the mods you currently have installed. The checkbox in front of it indicates if that mod is enabled or not. You can also uninstall mods from here. Clicking on the title will take you to the website of the mod, which is usually a thread in the forum. You can use that for questions or comments about the mod. Note that the PAMM mod cannot be disabled or uninstalled. It is required for the operation of PAMM itself.&lt;/li&gt;&lt;h3&gt;AVAILABLE MODS&lt;/h3&gt;&lt;p&gt;Mods that are available for download are listed here. The SHOW dropdown menu allows you to filter the content, while the SORT dropdown menu lets you sort the mods. The mod entries themselves tell you if the mod is installed or not and if it requires an update. It also shows you how many times the mod has already been downloaded by fellow Planetary Annihilation players and how often the are liked on the forum.&lt;/p&gt;&lt;h2&gt;Buttons&lt;/h2&gt;&lt;h3&gt;Update all mods&lt;/h3&gt;&lt;p&gt;This will tell you how many mods can be update. A click on this button will then update them all. Alternatively, you can go to the AVAILABLE MODS tabs and update only the mods that you want.&lt;/p&gt;&lt;h3&gt;Start PA&lt;/h3&gt;&lt;p&gt;This is purely a convenience button to start PA directly. It&apos;s not necessary for mods to work or anything.&lt;/p&gt;&lt;h3&gt;Refresh&lt;/h3&gt;&lt;p&gt;This refreshes the &lt;b&gt;current&lt;/b&gt; tab. Normally, information is cached and only automatically refreshed once per day.&lt;/p&gt;&lt;h3&gt;Quit&lt;/h3&gt;&lt;p&gt;This quits PAMM&lt;/p&gt;&lt;h2&gt;Menu&lt;/h2&gt;&lt;h3&gt;File&lt;/h3&gt;&lt;p&gt;This has two menu items, &amp;quot;Show Mod folder&amp;quot; and &amp;quot;Quit&amp;quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &amp;quot;Quit&amp;quot; quits PAMM.&lt;/p&gt;&lt;h3&gt;Help&lt;/h3&gt;&lt;p&gt;The first menu item, &amp;quot;Help&amp;quot; is what you are looking at now. The second menu item, &amp;quot;About...&amp;quot; gives you some info about PAMM.&lt;/p&gt;&lt;hr&gt;&lt;h1&gt;More info&lt;/h1&gt;&lt;p&gt;For more information, see the &lt;a href=&quot;https://forums.uberent.com/threads/rel-raevns-pa-mod-manager-for-linux-and-mac-os-x-version-3-1-2.50958/&quot;&gt;PAMM thread&lt;/a&gt; in the Planetary Annihilation forums. Furthermore, the source code can be found on &lt;a href=&quot;https://github.com/DeathByDenim/pamm/&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;If you want to know how to get your own mod listed in PAMM, look &lt;a href=&quot;https://forums.uberent.com/threads/guide-getting-your-mod-on-pamm.55189/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InstalledMod</name>
     <message>
         <source>by</source>
@@ -219,6 +226,30 @@
     <message>
         <source>SORT:</source>
         <translation>SORTIER:</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created by DeathByDenim.&lt;br&gt;Based on raevn&apos;s Windows-only version.&lt;br&gt;&lt;br&gt;Source code is available on &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show Mod folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

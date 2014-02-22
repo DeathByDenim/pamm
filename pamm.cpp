@@ -20,6 +20,7 @@
 #include "modmanager.h"
 #include "availablemod.h"
 #include "installedmod.h"
+#include "helpdialog.h"
 
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
@@ -68,16 +69,16 @@ const char *strNewsStyleSheet =
 	"}\n";
 
 
-PAMM::PAMM(ModManager* manager, QString imgdir)
- : Manager(manager)
+PAMM::PAMM(ModManager* manager, const QString& imgPath)
+ : Manager(manager), ImgPath(imgPath)
 {
 	QSettings settings("DeathByDenim", "PAMM");
 	restoreGeometry(settings.value("geometry").toByteArray());
 
 	QWidget *mainWidget = new QWidget(this);
-	QImageReader *reader = new QImageReader(imgdir + "img_pa_logo_alpha.png");
+	QImageReader *reader = new QImageReader(ImgPath + "img_pa_logo_alpha.png");
 	QImage pa_logo = reader->read();
-	reader->setFileName(imgdir + "img_start_bground_sample.jpg");
+	reader->setFileName(ImgPath + "img_start_bground_sample.jpg");
 	QImage bground = reader->read();
 	delete reader;
 
@@ -90,14 +91,25 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	
 	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 	QAction* quitAction = new QAction(this);
-	quitAction->setText("&Quit");
+	quitAction->setText(tr("&Quit"));
 	quitAction->setShortcut(QKeySequence("Ctrl+q"));
 	connect(quitAction, SIGNAL(triggered()), SLOT(close()));
 	QAction* showModFolderAction = new QAction(this);
-	showModFolderAction->setText("&Show Mod folder");
+	showModFolderAction->setText(tr("&Show Mod folder"));
 	connect(showModFolderAction, SIGNAL(triggered()), SLOT(showModFolder()));
 	fileMenu->addAction(showModFolderAction);
 	fileMenu->addAction(quitAction);
+
+	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
+	QAction* helpAction = new QAction(this);
+	helpAction->setText("&Help");
+	helpAction->setShortcut(QKeySequence("f1"));
+	connect(helpAction, SIGNAL(triggered()), SLOT(showHelpDialog()));
+	QAction* aboutAction = new QAction(this);
+	aboutAction->setText("&" + tr("About") + "...");
+	connect(aboutAction, SIGNAL(triggered()), SLOT(showAboutDialog()));
+	helpMenu->addAction(helpAction);
+	helpMenu->addAction(aboutAction);
 
 	QVBoxLayout *layout = new QVBoxLayout(mainWidget);
 
@@ -642,6 +654,17 @@ void PAMM::closeEvent(QCloseEvent *event)
 void PAMM::showModFolder()
 {
 	QDesktopServices::openUrl(QUrl("file://" + Manager->configPath() + "/mods"));
+}
+
+void PAMM::showAboutDialog()
+{
+	QMessageBox::about(this, tr("About"), tr("Created by DeathByDenim.<br>Based on raevn's Windows-only version.<br><br>Source code is available on <a href='https://github.com/DeathByDenim/pamm/'>GitHub</a>"));
+}
+
+void PAMM::showHelpDialog()
+{
+	HelpDialog help(this, ImgPath);
+	help.exec();
 }
 
 

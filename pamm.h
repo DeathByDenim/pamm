@@ -34,7 +34,7 @@ class PAMM : public QMainWindow
 {
 Q_OBJECT
 public:
-	PAMM(ModManager* manager, QString progdir);
+	PAMM(ModManager* manager, const QString &imgPath);
 	virtual ~PAMM();
 	
 private:
@@ -53,6 +53,7 @@ private:
 	QTabWidget *Tabs;
 	QPushButton *UpdateAllButton;
 	QComboBox *FilterComboBox;
+	const QString ImgPath;
 	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All);
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
     void loadNews();
@@ -75,6 +76,8 @@ public Q_SLOTS:
 	void filterIndexChanged(const QString & text);
 	void updateAllButtonClicked();
 	void showModFolder();
+	void showAboutDialog();
+	void showHelpDialog();
 };
 
 #endif // PAMM_H
