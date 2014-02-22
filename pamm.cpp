@@ -71,6 +71,9 @@ const char *strNewsStyleSheet =
 PAMM::PAMM(ModManager* manager, QString imgdir)
  : Manager(manager)
 {
+	QSettings settings("DeathByDenim", "PAMM");
+	restoreGeometry(settings.value("geometry").toByteArray());
+
 	QWidget *mainWidget = new QWidget(this);
 	setCentralWidget(mainWidget);
 
@@ -87,7 +90,6 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 	QPalette* palette = new QPalette();
 	palette->setBrush(QPalette::Background, *(new QBrush(bground)));
 	setPalette(*palette);
-	setBaseSize(520, 600);
 
 	logoLabel->setPixmap(QPixmap::fromImage(pa_logo));
 	logoLabel->adjustSize();
@@ -261,7 +263,7 @@ PAMM::PAMM(ModManager* manager, QString imgdir)
 
 	sortIndexChanged(tr("RANDOM"));
 
-	Tabs->setCurrentIndex(QSettings("DeathByDenim", "PAMM").value("tabs/lastindex", 0).toInt());
+	Tabs->setCurrentIndex(settings.value("tabs/lastindex", 0).toInt());
 
 	checkForUpdate();
 }
@@ -615,4 +617,11 @@ void PAMM::updateAllButtonClicked()
 	}
 }
 
+void PAMM::closeEvent(QCloseEvent *event)
+{
+	QSettings settings("DeathByDenim", "PAMM");
+	settings.setValue("geometry", saveGeometry());
+
+	QMainWindow::closeEvent(event);
+}
 #include "pamm.moc"

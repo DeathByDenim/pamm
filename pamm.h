@@ -19,7 +19,7 @@
 #ifndef PAMM_H
 #define PAMM_H
 
-#define PAMM_VERSION "3.1.2"
+#define PAMM_VERSION "3.2.0"
 
 #include <QtGui/QMainWindow>
 #include "modmanager.h"
@@ -58,6 +58,9 @@ private:
     void loadNews();
 	void checkForUpdate();
 	void updateUpdateAllButton();
+
+protected:
+	void closeEvent(QCloseEvent *event);
 
 public Q_SLOTS:
 	void exitButtonClicked();
