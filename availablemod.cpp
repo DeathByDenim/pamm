@@ -136,7 +136,10 @@ AvailableMod::~AvailableMod()
 
 void AvailableMod::setIcon(const QImage& icon)
 {
-	Icon = icon.convertToFormat(QImage::Format_ARGB32);
+	if(icon.width() == 100 && icon.height() == 100)
+		Icon = icon.convertToFormat(QImage::Format_ARGB32);
+	else
+		Icon = icon.scaled(100, 100, Qt::IgnoreAspectRatio, Qt::SmoothTransformation).convertToFormat(QImage::Format_ARGB32);
 	if(ModIconLabel)
 	{
 		if(Date >= QDate::currentDate().addDays(-7))
