@@ -21,6 +21,7 @@
 #include "availablemod.h"
 #include "installedmod.h"
 #include "helpdialog.h"
+#include "modfilterwidget.h"
 
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
@@ -89,6 +90,8 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 
 	setCentralWidget(mainWidget);
 	
+	
+	// MENU
 	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 	QAction* quitAction = new QAction(this);
 	quitAction->setText(tr("&Quit"));
@@ -99,6 +102,13 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	connect(showModFolderAction, SIGNAL(triggered()), SLOT(showModFolder()));
 	fileMenu->addAction(showModFolderAction);
 	fileMenu->addAction(quitAction);
+	
+	QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
+	ModFilterAction = new QAction(this);
+	ModFilterAction->setText("Show mod filter");
+	ModFilterAction->setCheckable(true);
+	connect(ModFilterAction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
+	viewMenu->addAction(ModFilterAction);
 
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 	QAction* helpAction = new QAction(this);
@@ -110,6 +120,8 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	connect(aboutAction, SIGNAL(triggered()), SLOT(showAboutDialog()));
 	helpMenu->addAction(helpAction);
 	helpMenu->addAction(aboutAction);
+
+
 
 	QVBoxLayout *layout = new QVBoxLayout(mainWidget);
 
@@ -146,6 +158,8 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	Tabs->setPalette(pallette);
 	layout->addWidget(Tabs);
 
+
+	// NEWS TAB
 	NewsBrowser = new QTextBrowser(this);
 	{
 		QFont font = NewsBrowser->font();
@@ -163,7 +177,11 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	Tabs->addTab(NewsBrowser, tr("NEWS"));
 
 
-	QScrollArea *scrollAreaInstalled = new QScrollArea(this);
+	// INSTALLED TAB
+	QWidget *installedTabWidget = new QWidget(this);
+	QVBoxLayout *installedTabWidgetLayout = new QVBoxLayout(installedTabWidget);
+
+	QScrollArea *scrollAreaInstalled = new QScrollArea(installedTabWidget);
 	InstalledModsWidget = new QWidget(scrollAreaInstalled);
 	QVBoxLayout *modsLayout = new QVBoxLayout(InstalledModsWidget);
 
@@ -188,8 +206,16 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	}
 	scrollAreaInstalled->setWidget(InstalledModsWidget);
 	scrollAreaInstalled->setWidgetResizable(true);
-	Tabs->addTab(scrollAreaInstalled, tr("INSTALLED MODS"));
+	installedTabWidgetLayout->addWidget(scrollAreaInstalled);
 
+	InstModFilterWidget = new ModFilterWidget(installedTabWidget);
+	installedTabWidgetLayout->addWidget(InstModFilterWidget);
+
+
+	Tabs->addTab(installedTabWidget, tr("INSTALLED MODS"));
+
+
+	// AVAILABLE TAB
 	QWidget *availableTabWidget = new QWidget(this);
 	QVBoxLayout *availableTabWidgetLayout = new QVBoxLayout(availableTabWidget);
 
@@ -238,6 +264,9 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	scrollAreaAvailable->setWidget(availableModsWidget);
 	scrollAreaAvailable->setWidgetResizable(true);
 	availableTabWidgetLayout->addWidget(scrollAreaAvailable);
+
+	AvailModFilterWidget = new ModFilterWidget(availableTabWidget);
+	availableTabWidgetLayout->addWidget(AvailModFilterWidget);
 
 	Tabs->addTab(availableTabWidget, tr("AVAILABLE MODS"));
 	connect(Tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
@@ -499,6 +528,8 @@ void PAMM::tabChanged(int index)
 {
 	QSettings("DeathByDenim", "PAMM").setValue("tabs/lastindex", index);
 	RefreshButton->setEnabled(index != 1);
+	ModFilterAction->setEnabled(index != 0);
+	ModFilterAction->setChecked( (index == 1 && InstModFilterWidget->isVisible()) || (index == 2 && AvailModFilterWidget->isVisible()) );
 }
 
 void PAMM::newModInstalled(InstalledMod* newmod)
@@ -667,5 +698,13 @@ void PAMM::showHelpDialog()
 	help.exec();
 }
 
+void PAMM::showModFilter(bool checked)
+{
+	int index = Tabs->currentIndex();
+	if(index == 1)
+		InstModFilterWidget->setVisible(checked);
+	else if(index == 2)
+		AvailModFilterWidget->setVisible(checked);
+}
 
 #include "pamm.moc"
