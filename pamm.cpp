@@ -92,10 +92,13 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 	QAction* quitAction = new QAction(this);
 	quitAction->setText(tr("&Quit"));
+	quitAction->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
 	quitAction->setShortcut(QKeySequence("Ctrl+q"));
+	quitAction->setMenuRole(QAction::QuitRole);
 	connect(quitAction, SIGNAL(triggered()), SLOT(close()));
 	QAction* showModFolderAction = new QAction(this);
 	showModFolderAction->setText(tr("&Show Mod folder"));
+	showModFolderAction->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
 	connect(showModFolderAction, SIGNAL(triggered()), SLOT(showModFolder()));
 	fileMenu->addAction(showModFolderAction);
 	fileMenu->addAction(quitAction);
@@ -104,9 +107,12 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	QAction* helpAction = new QAction(this);
 	helpAction->setText("&Help");
 	helpAction->setShortcut(QKeySequence("f1"));
+	helpAction->setIcon(style()->standardIcon(QStyle::SP_DialogHelpButton));
 	connect(helpAction, SIGNAL(triggered()), SLOT(showHelpDialog()));
 	QAction* aboutAction = new QAction(this);
-	aboutAction->setText("&" + tr("About") + "...");
+	aboutAction->setText(tr("&About..."));
+	aboutAction->setIcon(style()->standardIcon(QStyle::SP_MessageBoxInformation));
+	aboutAction->setMenuRole(QAction::AboutRole);
 	connect(aboutAction, SIGNAL(triggered()), SLOT(showAboutDialog()));
 	helpMenu->addAction(helpAction);
 	helpMenu->addAction(aboutAction);
@@ -658,7 +664,7 @@ void PAMM::showModFolder()
 
 void PAMM::showAboutDialog()
 {
-	QMessageBox::about(this, tr("About"), tr("Created by DeathByDenim.<br>Based on raevn's Windows-only version.<br><br>Source code is available on <a href='https://github.com/DeathByDenim/pamm/'>GitHub</a>"));
+	QMessageBox::about(this, tr("About"), tr("Version") + " " + PAMM_VERSION + "<br>" + tr("Created by DeathByDenim.") + "<br>" + tr("Based on raevn's Windows-only version.") + "<br><br>" + tr("Source code is available on <a href='https://github.com/DeathByDenim/pamm/'>GitHub</a>"));
 }
 
 void PAMM::showHelpDialog()

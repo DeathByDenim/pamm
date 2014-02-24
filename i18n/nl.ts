@@ -43,8 +43,108 @@
 <context>
     <name>HelpDialog</name>
     <message>
-        <source>&lt;html&gt;&lt;body&gt;&lt;h1&gt;Usage&lt;/h1&gt;&lt;p&gt;Mods can greatly increase you enjoyment of Planetary Annihilation. So feel free to install as many as you like.&lt;/p&gt;&lt;h2&gt;Tabs&lt;/h2&gt;&lt;h3&gt;NEWS&lt;/h3&gt;&lt;p&gt;The NEWS tab show you recent developments in the modding community. Information about updated of new mods are shown there.&lt;/p&gt;&lt;h3&gt;INSTALLED MODS&lt;/h3&gt;&lt;p&gt;The INSTALLED MODS tab shows you the mods you currently have installed. The checkbox in front of it indicates if that mod is enabled or not. You can also uninstall mods from here. Clicking on the title will take you to the website of the mod, which is usually a thread in the forum. You can use that for questions or comments about the mod. Note that the PAMM mod cannot be disabled or uninstalled. It is required for the operation of PAMM itself.&lt;/li&gt;&lt;h3&gt;AVAILABLE MODS&lt;/h3&gt;&lt;p&gt;Mods that are available for download are listed here. The SHOW dropdown menu allows you to filter the content, while the SORT dropdown menu lets you sort the mods. The mod entries themselves tell you if the mod is installed or not and if it requires an update. It also shows you how many times the mod has already been downloaded by fellow Planetary Annihilation players and how often the are liked on the forum.&lt;/p&gt;&lt;h2&gt;Buttons&lt;/h2&gt;&lt;h3&gt;Update all mods&lt;/h3&gt;&lt;p&gt;This will tell you how many mods can be update. A click on this button will then update them all. Alternatively, you can go to the AVAILABLE MODS tabs and update only the mods that you want.&lt;/p&gt;&lt;h3&gt;Start PA&lt;/h3&gt;&lt;p&gt;This is purely a convenience button to start PA directly. It&apos;s not necessary for mods to work or anything.&lt;/p&gt;&lt;h3&gt;Refresh&lt;/h3&gt;&lt;p&gt;This refreshes the &lt;b&gt;current&lt;/b&gt; tab. Normally, information is cached and only automatically refreshed once per day.&lt;/p&gt;&lt;h3&gt;Quit&lt;/h3&gt;&lt;p&gt;This quits PAMM&lt;/p&gt;&lt;h2&gt;Menu&lt;/h2&gt;&lt;h3&gt;File&lt;/h3&gt;&lt;p&gt;This has two menu items, &amp;quot;Show Mod folder&amp;quot; and &amp;quot;Quit&amp;quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &amp;quot;Quit&amp;quot; quits PAMM.&lt;/p&gt;&lt;h3&gt;Help&lt;/h3&gt;&lt;p&gt;The first menu item, &amp;quot;Help&amp;quot; is what you are looking at now. The second menu item, &amp;quot;About...&amp;quot; gives you some info about PAMM.&lt;/p&gt;&lt;hr&gt;&lt;h1&gt;More info&lt;/h1&gt;&lt;p&gt;For more information, see the &lt;a href=&quot;https://forums.uberent.com/threads/rel-raevns-pa-mod-manager-for-linux-and-mac-os-x-version-3-1-2.50958/&quot;&gt;PAMM thread&lt;/a&gt; in the Planetary Annihilation forums. Furthermore, the source code can be found on &lt;a href=&quot;https://github.com/DeathByDenim/pamm/&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;If you want to know how to get your own mod listed in PAMM, look &lt;a href=&quot;https://forums.uberent.com/threads/guide-getting-your-mod-on-pamm.55189/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Usage</source>
+        <translation>Gebruik</translation>
+    </message>
+    <message>
+        <source>Mods can greatly increase you enjoyment of Planetary Annihilation. So feel free to install as many as you like.</source>
+        <translation>Mods kunnen je veel meer speelplezier geven. Installeer er zoveel als u wilt.</translation>
+    </message>
+    <message>
+        <source>Tabs</source>
+        <translation>Tabs</translation>
+    </message>
+    <message>
+        <source>NEWS</source>
+        <translation>NIEUWS</translation>
+    </message>
+    <message>
+        <source>The NEWS tab show you recent developments in the modding community. Information about updated of new mods are shown there.</source>
+        <translation>De NIEUWS-tab toont de recente ontwikkelingen in de moddinggemeenschap. Infomatie ove geüpdate of nieuwe mods wordt hier getoond.</translation>
+    </message>
+    <message>
+        <source>INSTALLED MODS</source>
+        <translation>GEÏNSTALLEERDE MODS</translation>
+    </message>
+    <message>
+        <source>The INSTALLED MODS tab shows you the mods you currently have installed. The checkbox in front of it indicates if that mod is enabled or not. You can also uninstall mods from here. Clicking on the title will take you to the website of the mod, which is usually a thread in the forum. You can use that for questions or comments about the mod. Note that the PAMM mod cannot be disabled or uninstalled. It is required for the operation of PAMM itself.</source>
+        <translation>De GEÏNSTALLEERDE MODS tab toont de mods die momenteel geïnstalleerd zijn. De voorafgaande checkbox laat zien of de mod ingeschakeld is of niet. U kunt hier ook mods deïnstalleren. Wanneer u op de titel klikt, dan wordt de website van de mod geopend, wat meestal een thread in het forum zal zijn. U kunt dat gebruiken voor vragen of commentaar over de mod. Merk op dat de PAMM mod niet kunt in- of uitschakelen. Die is nodig voor het functioneren van PAMM zelf.</translation>
+    </message>
+    <message>
+        <source>AVAILABLE MODS</source>
+        <translation>BESCHIKBARE MODS</translation>
+    </message>
+    <message>
+        <source>Mods that are available for download are listed here. The SHOW dropdown menu allows you to filter the content, while the SORT dropdown menu lets you sort the mods. The mod entries themselves tell you if the mod is installed or not and if it requires an update. It also shows you how many times the mod has already been downloaded by fellow Planetary Annihilation players and how often the are liked on the forum.</source>
+        <translation type="unfinished">Beschikbare mods worden hier getoond. Het uitklapmenu TOON stelt u in staat om de mods te filteren, terwijl het SORTEER menu u de mods laat sorteren. The items zelf </translation>
+    </message>
+    <message>
+        <source>Buttons</source>
+        <translation>Knoppen</translation>
+    </message>
+    <message>
+        <source>Update all mods</source>
+        <translation>Update alle mods</translation>
+    </message>
+    <message>
+        <source>This will tell you how many mods can be update. A click on this button will then update them all. Alternatively, you can go to the AVAILABLE MODS tabs and update only the mods that you want.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is purely a convenience button to start PA directly. It&apos;s not necessary for mods to work or anything.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation>Vernieuwen</translation>
+    </message>
+    <message>
+        <source>This refreshes the &lt;b&gt;current&lt;/b&gt; tab. Normally, information is cached and only automatically refreshed once per day.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Afsluiten</translation>
+    </message>
+    <message>
+        <source>This quits PAMM</source>
+        <translation>Dit sluit PAMM af</translation>
+    </message>
+    <message>
+        <source>Menu</source>
+        <translation>Menu</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation>Bestand</translation>
+    </message>
+    <message>
+        <source>This has two menu items, &amp;quot;Show Mod folder&amp;quot; and &amp;quot;Quit&amp;quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &amp;quot;Quit&amp;quot; quits PAMM.</source>
+        <translation>Dit heeft twee menuopties, &amp;quot;Toon moddirectory&amp;quot; and Afsluiten&amp;quot;. De eerste opent de map waar alle mods automatisch door PAMM geïnstalleerd zijn. Deze optie is alleen voor geavanceerd gebruik. Normaal gesproken heeft u hier niks te zoeken. De menuoptie &amp;quot;Afsluiten&amp;quot; sluit PAMM af.</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Help</translation>
+    </message>
+    <message>
+        <source>The first menu item, &amp;quot;Help&amp;quot; is what you are looking at now. The second menu item, &amp;quot;About...&amp;quot; gives you some info about PAMM.</source>
+        <translation>De eerste menuoptie, &amp;quot;Help&amp;quot; is wat u nu bekijkt. De tweede menuoptie, &amp;quot;Over...&amp;quot; toont u wat info over PAMM.</translation>
+    </message>
+    <message>
+        <source>More info</source>
+        <translation>Meer info</translation>
+    </message>
+    <message>
+        <source>For more information, see the &lt;a href=&quot;https://forums.uberent.com/threads/rel-raevns-pa-mod-manager-for-linux-and-mac-os-x-version-3-1-2.50958/&quot;&gt;PAMM thread&lt;/a&gt; in the Planetary Annihilation forums. Furthermore, the source code can be found on &lt;a href=&quot;https://github.com/DeathByDenim/pamm/&quot;&gt;GitHub&lt;/a&gt;.</source>
+        <translation>Voor meer informatie, zie de &lt;a href=&quot;https://forums.uberent.com/threads/rel-raevns-pa-mod-manager-for-linux-and-mac-os-x-version-3-1-2.50958/&quot;&gt;PAMM-thread&lt;/a&gt; in de fora van Planetary Annihilation. Tevens kan de broncode bekeken worden op &lt;a href=&quot;https://github.com/DeathByDenim/pamm/&quot;&gt;GitHub&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <source>If you want to know how to get your own mod listed in PAMM, look &lt;a href=&quot;https://forums.uberent.com/threads/guide-getting-your-mod-on-pamm.55189/&quot;&gt;here&lt;/a&gt;.</source>
+        <translation>Als u wilt weten hoe u uw eigen mod in PAMM kunt krijgen, kijk dan &lt;a href=&quot;https://forums.uberent.com/threads/guide-getting-your-mod-on-pamm.55189/&quot;&gt;hier&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <source>Launch PA</source>
+        <translation>Start PA</translation>
     </message>
 </context>
 <context>
@@ -240,16 +340,28 @@
         <translation>Over</translation>
     </message>
     <message>
-        <source>Created by DeathByDenim.&lt;br&gt;Based on raevn&apos;s Windows-only version.&lt;br&gt;&lt;br&gt;Source code is available on &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</source>
-        <translation>Gemaakt door DeathByDenim.&lt;br&gt;Gebaseerd op raevn&apos;s Windowsversie.&lt;br&gt;&lt;br&gt;De broncode is beschikbaar op &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</translation>
-    </message>
-    <message>
         <source>&amp;Show Mod folder</source>
         <translation>&amp;Toon moddirectory</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
         <translation>&amp;Afsluiten</translation>
+    </message>
+    <message>
+        <source>Created by DeathByDenim.</source>
+        <translation>Gemaakt door DeathByDenim.</translation>
+    </message>
+    <message>
+        <source>Based on raevn&apos;s Windows-only version.</source>
+        <translation>Gebaseerd op raevn&apos;s Windowsversie.</translation>
+    </message>
+    <message>
+        <source>Source code is available on &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</source>
+        <translation>Broncode is beschikbaar op &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;About...</source>
+        <translation>&amp;Over...</translation>
     </message>
 </context>
 </TS>
