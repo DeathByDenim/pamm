@@ -29,6 +29,8 @@ class QTextBrowser;
 class QNetworkReply;
 class QPushButton;
 class QComboBox;
+class ModFilterWidget;
+class QAction;
 
 class PAMM : public QMainWindow
 {
@@ -54,7 +56,12 @@ private:
 	QPushButton *UpdateAllButton;
 	QComboBox *FilterComboBox;
 	const QString ImgPath;
-	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All);
+//	ModFilterWidget* InstModFilterWidget;
+	ModFilterWidget* AvailModFilterWidget;
+	QAction* ModFilterAction;
+	ModFilter TypeFilter;
+
+	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All, QString filterstring = "");
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
     void loadNews();
 	void checkForUpdate();
@@ -78,6 +85,8 @@ public Q_SLOTS:
 	void showModFolder();
 	void showAboutDialog();
 	void showHelpDialog();
+	void showModFilter(bool checked);
+	void filterTextChanged(const QString &text);
 };
 
 #endif // PAMM_H
