@@ -73,6 +73,8 @@ const char *strNewsStyleSheet =
 PAMM::PAMM(ModManager* manager, const QString& imgPath)
  : Manager(manager), ImgPath(imgPath)
 {
+	TypeFilter = All;
+
 	QSettings settings("DeathByDenim", "PAMM");
 	restoreGeometry(settings.value("geometry").toByteArray());
 
@@ -207,10 +209,10 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	scrollAreaInstalled->setWidget(InstalledModsWidget);
 	scrollAreaInstalled->setWidgetResizable(true);
 	installedTabWidgetLayout->addWidget(scrollAreaInstalled);
-
+/*
 	InstModFilterWidget = new ModFilterWidget(installedTabWidget);
 	installedTabWidgetLayout->addWidget(InstModFilterWidget);
-
+*/
 
 	Tabs->addTab(installedTabWidget, tr("INSTALLED MODS"));
 
@@ -266,6 +268,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	availableTabWidgetLayout->addWidget(scrollAreaAvailable);
 
 	AvailModFilterWidget = new ModFilterWidget(availableTabWidget);
+	connect(AvailModFilterWidget, SIGNAL(filterTextChanged(QString)), SLOT(filterTextChanged(QString)));
 	availableTabWidgetLayout->addWidget(AvailModFilterWidget);
 
 	Tabs->addTab(availableTabWidget, tr("AVAILABLE MODS"));
@@ -388,7 +391,7 @@ void PAMM::clearWidgets(QLayout *layout, bool deleteWidgets)
 	}
 }
 
-void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
+void PAMM::populateAvailableModsWidget(bool deleteWidgets, PAMM::ModFilter filter, QString filterstring)
 {
 	QVBoxLayout *modsLayout = dynamic_cast<QVBoxLayout *>(availableModsWidget->layout());
 	if(!modsLayout)
@@ -417,9 +420,12 @@ void PAMM::populateAvailableModsWidget(bool deleteWidgets, ModFilter filter)
 				(filter == Not_installed && (*m)->state() == AvailableMod::notinstalled)
 			)
 			{
-				(*m)->setParent(availableModsWidget);
-				connect(*m, SIGNAL(installMe()), Manager, SLOT(downloadMod()));
-				modsLayout->addWidget(*m);
+				if(filterstring == "" || (*m)->displayName().toLower().contains(filterstring.toLower()))
+				{
+					(*m)->setParent(availableModsWidget);
+					connect(*m, SIGNAL(installMe()), Manager, SLOT(downloadMod()));
+					modsLayout->addWidget(*m);
+				}
 			}
 		}
 		modsLayout->addStretch();
@@ -528,8 +534,8 @@ void PAMM::tabChanged(int index)
 {
 	QSettings("DeathByDenim", "PAMM").setValue("tabs/lastindex", index);
 	RefreshButton->setEnabled(index != 1);
-	ModFilterAction->setEnabled(index != 0);
-	ModFilterAction->setChecked( (index == 1 && InstModFilterWidget->isVisible()) || (index == 2 && AvailModFilterWidget->isVisible()) );
+	ModFilterAction->setEnabled(index == 2);
+//	ModFilterAction->setChecked( (index == 1 && InstModFilterWidget->isVisible()) || (index == 2 && AvailModFilterWidget->isVisible()) );
 }
 
 void PAMM::newModInstalled(InstalledMod* newmod)
@@ -561,27 +567,26 @@ void PAMM::newModInstalled(InstalledMod* newmod)
 
 void PAMM::filterIndexChanged(const QString& text)
 {
-	ModFilter filter;
 	if(text == tr("ALL"))
 	{
-		filter = All;
+		TypeFilter = All;
 	}
 	else if(text == tr("INSTALLED"))
 	{
-		filter = Installed;
+		TypeFilter = Installed;
 	}
 	else if(text == tr("REQUIRE UPDATE"))
 	{
-		filter = Require_update;
+		TypeFilter = Require_update;
 	}
 	else if(text == tr("NOT INSTALLED"))
 	{
-		filter = Not_installed;
+		TypeFilter = Not_installed;
 	}
 	else
-		filter = All;
+		TypeFilter = All;
 
-	populateAvailableModsWidget(false, filter);
+	populateAvailableModsWidget(false, TypeFilter);
 }
 
 void PAMM::sortIndexChanged(const QString& text)
@@ -699,12 +704,17 @@ void PAMM::showHelpDialog()
 }
 
 void PAMM::showModFilter(bool checked)
-{
+{/*
 	int index = Tabs->currentIndex();
 	if(index == 1)
 		InstModFilterWidget->setVisible(checked);
 	else if(index == 2)
-		AvailModFilterWidget->setVisible(checked);
+*/		AvailModFilterWidget->setVisible(checked);
+}
+
+void PAMM::filterTextChanged(const QString& text)
+{
+	populateAvailableModsWidget(false, TypeFilter, text);
 }
 
 #include "pamm.moc"

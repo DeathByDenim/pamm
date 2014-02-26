@@ -56,10 +56,12 @@ private:
 	QPushButton *UpdateAllButton;
 	QComboBox *FilterComboBox;
 	const QString ImgPath;
-    ModFilterWidget* InstModFilterWidget;
-    ModFilterWidget* AvailModFilterWidget;
-    QAction* ModFilterAction;
-	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All);
+//	ModFilterWidget* InstModFilterWidget;
+	ModFilterWidget* AvailModFilterWidget;
+	QAction* ModFilterAction;
+	ModFilter TypeFilter;
+
+	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All, QString filterstring = "");
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
     void loadNews();
 	void checkForUpdate();
@@ -84,6 +86,7 @@ public Q_SLOTS:
 	void showAboutDialog();
 	void showHelpDialog();
 	void showModFilter(bool checked);
+	void filterTextChanged(const QString &text);
 };
 
 #endif // PAMM_H
