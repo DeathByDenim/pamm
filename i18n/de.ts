@@ -363,5 +363,13 @@
         <source>&amp;About...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show mod filter</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

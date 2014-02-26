@@ -10,20 +10,20 @@
     </message>
     <message>
         <location filename="../availablemod.cpp" line="49"/>
-        <location filename="../availablemod.cpp" line="203"/>
-        <location filename="../availablemod.cpp" line="324"/>
+        <location filename="../availablemod.cpp" line="206"/>
+        <location filename="../availablemod.cpp" line="327"/>
         <source>INSTALLED</source>
         <translation>INSTALLÉ</translation>
     </message>
     <message>
         <location filename="../availablemod.cpp" line="54"/>
-        <location filename="../availablemod.cpp" line="329"/>
+        <location filename="../availablemod.cpp" line="332"/>
         <source>UPDATE AVAILABLE</source>
         <translation>MISE À JOUR DISPONIBLE</translation>
     </message>
     <message>
         <location filename="../availablemod.cpp" line="59"/>
-        <location filename="../availablemod.cpp" line="334"/>
+        <location filename="../availablemod.cpp" line="337"/>
         <source>NOT INSTALLED</source>
         <translation>PAS INSTALLÉ</translation>
     </message>
@@ -43,12 +43,12 @@
         <translation>Installer</translation>
     </message>
     <message>
-        <location filename="../availablemod.cpp" line="266"/>
+        <location filename="../availablemod.cpp" line="269"/>
         <source>Downloaded %1 times</source>
         <translation>%1 fois téléchargé</translation>
     </message>
     <message>
-        <location filename="../availablemod.cpp" line="313"/>
+        <location filename="../availablemod.cpp" line="316"/>
         <source>Liked %1 times</source>
         <translation>Aimé bien %1 fois</translation>
     </message>
@@ -275,197 +275,207 @@
 <context>
     <name>PAMM</name>
     <message>
-        <location filename="../pamm.cpp" line="92"/>
+        <location filename="../pamm.cpp" line="97"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="94"/>
+        <location filename="../pamm.cpp" line="99"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="100"/>
+        <location filename="../pamm.cpp" line="105"/>
         <source>&amp;Show Mod folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="106"/>
+        <location filename="../pamm.cpp" line="118"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="667"/>
+        <location filename="../pamm.cpp" line="703"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="131"/>
+        <location filename="../pamm.cpp" line="145"/>
         <source>PA MOD MANAGER</source>
         <translation>GESTIONNAIRE DE MODS DE PA</translation>
     </message>
     <message>
+        <location filename="../pamm.cpp" line="111"/>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../pamm.cpp" line="113"/>
+        <source>Show mod filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pamm.cpp" line="125"/>
         <source>&amp;About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="169"/>
+        <location filename="../pamm.cpp" line="185"/>
         <source>NEWS</source>
         <translation>NOUVELLES</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="179"/>
+        <location filename="../pamm.cpp" line="199"/>
         <source>No mods found</source>
         <translation>Pas de mods trouvé</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="197"/>
+        <location filename="../pamm.cpp" line="223"/>
         <source>INSTALLED MODS</source>
         <translation>MODS INSTALLÉS</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="207"/>
+        <location filename="../pamm.cpp" line="235"/>
         <source>SHOW:</source>
         <translation>MONTREZ:</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="211"/>
-        <location filename="../pamm.cpp" line="540"/>
+        <location filename="../pamm.cpp" line="239"/>
+        <location filename="../pamm.cpp" line="576"/>
         <source>ALL</source>
         <translation>TOUS</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="212"/>
-        <location filename="../pamm.cpp" line="544"/>
+        <location filename="../pamm.cpp" line="240"/>
+        <location filename="../pamm.cpp" line="580"/>
         <source>INSTALLED</source>
         <translation>INSTALLÉ</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="213"/>
-        <location filename="../pamm.cpp" line="548"/>
-        <location filename="../pamm.cpp" line="643"/>
+        <location filename="../pamm.cpp" line="241"/>
+        <location filename="../pamm.cpp" line="584"/>
+        <location filename="../pamm.cpp" line="679"/>
         <source>REQUIRE UPDATE</source>
         <translation>BESOIN DE MISE À JOUR</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="214"/>
-        <location filename="../pamm.cpp" line="552"/>
+        <location filename="../pamm.cpp" line="242"/>
+        <location filename="../pamm.cpp" line="588"/>
         <source>NOT INSTALLED</source>
         <translation>PAS INSTALLÉ</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="222"/>
+        <location filename="../pamm.cpp" line="250"/>
         <source>SORT:</source>
         <translation>ARRENGE:</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="226"/>
-        <location filename="../pamm.cpp" line="296"/>
-        <location filename="../pamm.cpp" line="564"/>
+        <location filename="../pamm.cpp" line="254"/>
+        <location filename="../pamm.cpp" line="328"/>
+        <location filename="../pamm.cpp" line="600"/>
         <source>RANDOM</source>
         <translation>ARBITRAIRE</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="227"/>
-        <location filename="../pamm.cpp" line="568"/>
+        <location filename="../pamm.cpp" line="255"/>
+        <location filename="../pamm.cpp" line="604"/>
         <source>LAST UPDATED</source>
         <translation>DERNIÈRE MISE À JOUR</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="228"/>
-        <location filename="../pamm.cpp" line="572"/>
+        <location filename="../pamm.cpp" line="256"/>
+        <location filename="../pamm.cpp" line="608"/>
         <source>TITLE</source>
         <translation>TITRE</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="229"/>
-        <location filename="../pamm.cpp" line="576"/>
+        <location filename="../pamm.cpp" line="257"/>
+        <location filename="../pamm.cpp" line="612"/>
         <source>AUTHOR</source>
         <translation>AUTEUR</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="230"/>
-        <location filename="../pamm.cpp" line="580"/>
+        <location filename="../pamm.cpp" line="258"/>
+        <location filename="../pamm.cpp" line="616"/>
         <source>BUILD</source>
         <translation>BUILD</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="231"/>
-        <location filename="../pamm.cpp" line="584"/>
+        <location filename="../pamm.cpp" line="259"/>
+        <location filename="../pamm.cpp" line="620"/>
         <source>DOWNLOADS</source>
         <translation>TÉLÉCHARGEMENTS</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="232"/>
-        <location filename="../pamm.cpp" line="588"/>
+        <location filename="../pamm.cpp" line="260"/>
+        <location filename="../pamm.cpp" line="624"/>
         <source>LIKES</source>
         <translation>AIMÉ BIEN</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="248"/>
+        <location filename="../pamm.cpp" line="280"/>
         <source>AVAILABLE MODS</source>
         <translation>MODS DISPONIBLE</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="253"/>
-        <location filename="../pamm.cpp" line="424"/>
+        <location filename="../pamm.cpp" line="285"/>
+        <location filename="../pamm.cpp" line="459"/>
         <source>Update all mods</source>
         <translation>Mettre à jour tous les mods</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="263"/>
+        <location filename="../pamm.cpp" line="295"/>
         <source>Launch PA</source>
         <translation>Lancez PA</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="267"/>
+        <location filename="../pamm.cpp" line="299"/>
         <source>Refresh</source>
         <translation>Actualiser</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="271"/>
+        <location filename="../pamm.cpp" line="303"/>
         <source>Exit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="275"/>
-        <location filename="../pamm.cpp" line="667"/>
+        <location filename="../pamm.cpp" line="307"/>
+        <location filename="../pamm.cpp" line="703"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="279"/>
+        <location filename="../pamm.cpp" line="311"/>
         <source>, created by DeathByDenim (based on Raevn)</source>
         <translation>, cré par DeatByDenim (basé à Raevn)</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="496"/>
+        <location filename="../pamm.cpp" line="531"/>
         <source>Couldn&apos;t write to</source>
         <translation>Ce n&apos;est pas possible pour écrire à</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="620"/>
+        <location filename="../pamm.cpp" line="656"/>
         <source>New update available for the PA Mod Manager.</source>
         <translation>Nouvelle mise à jour disponible pour le gestionnaire de mods.</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="621"/>
+        <location filename="../pamm.cpp" line="657"/>
         <source>Download now?</source>
         <translation>Télécharger maintenant?</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="667"/>
+        <location filename="../pamm.cpp" line="703"/>
         <source>Created by DeathByDenim.</source>
         <translation>Cré par DeathByDenim.</translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="667"/>
+        <location filename="../pamm.cpp" line="703"/>
         <source>Based on raevn&apos;s Windows-only version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pamm.cpp" line="667"/>
+        <location filename="../pamm.cpp" line="703"/>
         <source>Source code is available on &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>

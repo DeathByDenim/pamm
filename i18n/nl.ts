@@ -364,5 +364,13 @@
         <source>&amp;About...</source>
         <translation>&amp;Over...</translation>
     </message>
+    <message>
+        <source>&amp;View</source>
+        <translation>&amp;Beeld</translation>
+    </message>
+    <message>
+        <source>Show mod filter</source>
+        <translation>Toon mod filter</translation>
+    </message>
 </context>
 </TS>

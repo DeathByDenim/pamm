@@ -110,7 +110,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	
 	QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
 	ModFilterAction = new QAction(this);
-	ModFilterAction->setText("Show mod filter");
+	ModFilterAction->setText(tr("Show mod filter"));
 	ModFilterAction->setCheckable(true);
 	connect(ModFilterAction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
 	viewMenu->addAction(ModFilterAction);
