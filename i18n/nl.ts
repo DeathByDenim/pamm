@@ -76,7 +76,7 @@
     </message>
     <message>
         <source>Mods that are available for download are listed here. The SHOW dropdown menu allows you to filter the content, while the SORT dropdown menu lets you sort the mods. The mod entries themselves tell you if the mod is installed or not and if it requires an update. It also shows you how many times the mod has already been downloaded by fellow Planetary Annihilation players and how often the are liked on the forum.</source>
-        <translation type="unfinished">Beschikbare mods worden hier getoond. Het uitklapmenu TOON stelt u in staat om de mods te filteren, terwijl het SORTEER menu u de mods laat sorteren. The items zelf </translation>
+        <translation>Beschikbare mods worden hier getoond. Het uitklapmenu TOON stelt u in staat om de mods te filteren, terwijl het SORTEER menu u de mods laat sorteren. The mods in de lijst laten zien of ze geïnstalleerd zijn en of ze een update nodig hebben. U kunt er ook zien hoe vaak die mod al gedownload is door medespelers en ook hoe vaak de mods &quot;leuk gevonden&quot; zijn op het forum.</translation>
     </message>
     <message>
         <source>Buttons</source>
@@ -88,11 +88,11 @@
     </message>
     <message>
         <source>This will tell you how many mods can be update. A click on this button will then update them all. Alternatively, you can go to the AVAILABLE MODS tabs and update only the mods that you want.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze knop toont hoeveel mods geüpdate kunnen worden. Een druk op de knop zal alle updates installeren. Eventueel kunt u ook naar de BESCHIKBARE MODS tab gaan en alleen de mods updaten die u wilt.</translation>
     </message>
     <message>
         <source>This is purely a convenience button to start PA directly. It&apos;s not necessary for mods to work or anything.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze knop bestaat alleen voor het gemak. Het is niet nodig om PA op die manier op te starten om de mods te laten werken of zo.</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -100,7 +100,8 @@
     </message>
     <message>
         <source>This refreshes the &lt;b&gt;current&lt;/b&gt; tab. Normally, information is cached and only automatically refreshed once per day.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Dit vernieuwt de inhoud van de &lt;b&gt;huidige&lt;/b&gt; tab. Normaal gesproken wordt de informatie in de cache opgeslagen en maar één keer per dag vernieuwd.</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <source>Quit</source>
