@@ -39,6 +39,8 @@ public:
 	{
 		unknown,
 		global_mod_list,
+		armory,
+		building_planets,
 		connect_to_game,
 		game_over,
 		icon_atlas,
@@ -90,6 +92,8 @@ private:
 	QCheckBox *ModCheckbox;
 	QPushButton *ModUpdateButton;
 	QStringList Scene_global_mod_list; // files (comma separated)
+	QStringList Scene_armory; // files (comma separated)
+	QStringList Scene_building_planets; // files (comma separated)
 	QStringList Scene_connect_to_game; // files (comma separated)
 	QStringList Scene_game_over; // files (comma separated)
 	QStringList Scene_icon_atlas; // files (comma separated)

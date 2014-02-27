@@ -113,6 +113,10 @@ InstalledMod *ModManager::parseJson(const QString filename)
 
 	if(result.contains("global_mod_list"))
 		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
+	if(result.contains("armory"))
+		mod->setScene(result["armory"], InstalledMod::armory);
+	if(result.contains("building_planets"))
+		mod->setScene(result["building_planets"], InstalledMod::building_planets);
 	if(result.contains("connect_to_game"))
 		mod->setScene(result["connect_to_game"], InstalledMod::connect_to_game);
 	if(result.contains("game_over"))
@@ -212,8 +216,20 @@ void ModManager::writeUiModListJS()
 	UiModListJS <<
 		"];\n\n"
 		"var scene_mod_list = {\n"
-		"    'connect_to_game': [\n";
+		"    'armory': [\n";
 
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::armory);
+
+	UiModListJS <<
+		"    ],\n"
+		"    'building_planets': [\n";
+		
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::building_planets);
+
+	UiModListJS <<
+		"    ],\n"
+		"    'connect_to_game': [\n";
+		
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::connect_to_game);
 
 	UiModListJS <<

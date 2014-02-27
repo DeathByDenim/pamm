@@ -58,7 +58,9 @@ public:
 		QString Category; // Category
 		QString Folder; // Folder to detect (If this folder is found, the mod is presumed installed)
 		QString File; // File to detect (If this file is found, the mod is presumed installed)
-		QStringList Scene_global_mod_list; // files (comma separated)
+/*		QStringList Scene_global_mod_list; // files (comma separated)
+		QStringList Scene_armory; // files (comma separated)
+		QStringList Scene_building_planets; // files (comma separated)
 		QStringList Scene_connect_to_game; // files (comma separated)
 		QStringList Scene_game_over; // files (comma separated)
 		QStringList Scene_icon_atlas; // files (comma separated)
@@ -69,13 +71,15 @@ public:
 		QStringList Scene_lobby; // files (comma separated)
 		QStringList Scene_matchmaking; // files (comma separated)
 		QStringList Scene_new_game; // files (comma separated)
+		QStringList Scene_replay_browser; // files (comma separated)
 		QStringList Scene_server_browser; // files (comma separated)
 		QStringList Scene_settings; // files (comma separated)
+		QStringList Scene_social; // files (comma separated)
 		QStringList Scene_special_icon_atlas; // files (comma separated)
 		QStringList Scene_start; // files (comma separated)
 		QStringList Scene_system_editor; // files (comma separated)
 		QStringList Scene_transit; // files (comma separated)
-		QString Version; // Version Number
+*/		QString Version; // Version Number
 		unsigned long Build; // Build Number
 		unsigned int Priority; // Lower numbers are included in ui_mod_list.js first. Default is 100 if not specified
 		QStringList Requires; // mod ids, comma separated

@@ -112,6 +112,12 @@ QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
 		case global_mod_list:
 			return Scene_global_mod_list;
 			break;
+		case armory:
+			return Scene_armory;
+			break;
+		case building_planets:
+			return Scene_building_planets;
+			break;
 		case connect_to_game:
 			return Scene_connect_to_game;
 			break;
@@ -239,6 +245,12 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 	{
 		case global_mod_list:
 			Scene_global_mod_list = filesStringList;
+			break;
+		case armory:
+			Scene_armory = filesStringList;
+			break;
+		case building_planets:
+			Scene_building_planets = filesStringList;
 			break;
 		case connect_to_game:
 			Scene_connect_to_game = filesStringList;
