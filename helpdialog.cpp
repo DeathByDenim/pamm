@@ -86,6 +86,8 @@ QString HelpDialog::getHelp()
 		"<h2>" + tr("Menu") + "</h2>"
 		"<h3>" + tr("File") + "</h3>"
 		"<p>" + tr("This has two menu items, &quot;Show Mod folder&quot; and &quot;Quit&quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &quot;Quit&quot; quits PAMM.") + "</p>"
+		"<h3>" + tr("View") + "</h3>"
+		"<p>" + tr("The only menu item here is &quot;Show mod filter&quot; which only works when the AVAIABLE MODS tabs is selected. If activated, you will be presented with a text field where you can type a filter text. Only mods that have that text will be displayed.") + "</p>"
 		"<h3>" + tr("Help") + "</h3>"
 		"<p>" + tr("The first menu item, &quot;Help&quot; is what you are looking at now. The second menu item, &quot;About...&quot; gives you some info about PAMM.") + "</p>"
 		"<hr><h1>" + tr("More info") + "</h1>"

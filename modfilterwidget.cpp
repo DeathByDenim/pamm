@@ -22,7 +22,11 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolButton>
-#include <qstyle.h>
+#include <QStyle>
+#include <QKeyEvent>
+#include <QFocusEvent>
+#include <QShowEvent>
+#include <QHideEvent>
 
 ModFilterWidget::ModFilterWidget(QWidget* parent)
  : QWidget(parent)
@@ -33,9 +37,9 @@ ModFilterWidget::ModFilterWidget(QWidget* parent)
 	filterLabel->setText("FILTER:");
 	layout->addWidget(filterLabel);
 	
-	QLineEdit *filterLineEdit = new QLineEdit(this);
-	connect(filterLineEdit, SIGNAL(textChanged(QString)), SLOT(textChanged(QString)));
-	layout->addWidget(filterLineEdit);
+	FilterLineEdit = new QLineEdit(this);
+	connect(FilterLineEdit, SIGNAL(textChanged(QString)), SLOT(textChanged(QString)));
+	layout->addWidget(FilterLineEdit);
 
 	QToolButton *filterCloseButton = new QToolButton(this);
 	filterCloseButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogCloseButton));
@@ -52,11 +56,46 @@ ModFilterWidget::~ModFilterWidget()
 void ModFilterWidget::clicked(bool checked)
 {
 	setVisible(false);
+	emit visibilityChanged(false);
 }
 
 void ModFilterWidget::textChanged(const QString& text)
 {
 	emit filterTextChanged(text);
+}
+
+void ModFilterWidget::keyPressEvent(QKeyEvent* event)
+{
+	if(event->key() == Qt::Key_Escape)
+	{
+		setVisible(false);
+		emit visibilityChanged(false);
+		event->accept();
+	}
+	else
+		QWidget::keyPressEvent(event);
+}
+
+void ModFilterWidget::focusInEvent(QFocusEvent* event)
+{
+	QWidget::focusInEvent(event);
+	
+	if(event->gotFocus())
+		FilterLineEdit->setFocus();
+}
+
+void ModFilterWidget::showEvent(QShowEvent* event)
+{
+	QWidget::showEvent(event);
+
+	emit filterTextChanged(FilterLineEdit->text());
+}
+
+void ModFilterWidget::hideEvent(QHideEvent* event)
+{
+	QWidget::hideEvent(event);
+
+	emit filterTextChanged("");
 }
 
 #include "modfilterwidget.moc"

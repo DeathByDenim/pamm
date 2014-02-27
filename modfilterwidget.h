@@ -22,22 +22,30 @@
 
 #include <QWidget>
 
+class QLineEdit;
+
 class ModFilterWidget : public QWidget
 {
     Q_OBJECT
+    QLineEdit* FilterLineEdit;
 
 public:
-    ModFilterWidget(QWidget *parent = 0);
-    ~ModFilterWidget();
+	ModFilterWidget(QWidget *parent = 0);
+	~ModFilterWidget();
 
-private:
-	
+protected:
+	virtual void keyPressEvent(QKeyEvent *event);
+	virtual void focusInEvent(QFocusEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void hideEvent(QHideEvent *event);
+
 private Q_SLOTS:
 	void clicked(bool checked = false);
 	void textChanged(const QString &text);
 
 Q_SIGNALS:
 	void filterTextChanged(const QString &text);
+	void visibilityChanged(bool visible);
 };
 
 #endif // MODFILTERWIDGET_H

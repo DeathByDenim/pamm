@@ -275,6 +275,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 
 	AvailModFilterWidget = new ModFilterWidget(availableTabWidget);
 	connect(AvailModFilterWidget, SIGNAL(filterTextChanged(QString)), SLOT(filterTextChanged(QString)));
+	connect(AvailModFilterWidget, SIGNAL(visibilityChanged(bool)), ModFilterAction, SLOT(setChecked(bool)));
 	availableTabWidgetLayout->addWidget(AvailModFilterWidget);
 
 	Tabs->addTab(availableTabWidget, tr("AVAILABLE MODS"));
@@ -716,6 +717,9 @@ void PAMM::showModFilter(bool checked)
 		InstModFilterWidget->setVisible(checked);
 	else if(index == 2)
 */		AvailModFilterWidget->setVisible(checked);
+	AvailModFilterWidget->setFocus();
+
+//	populateAvailableModsWidget(false, TypeFilter, "");
 }
 
 void PAMM::filterTextChanged(const QString& text)

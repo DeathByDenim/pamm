@@ -147,6 +147,14 @@
         <source>Launch PA</source>
         <translation>Start PA</translation>
     </message>
+    <message>
+        <source>View</source>
+        <translation>Beeld</translation>
+    </message>
+    <message>
+        <source>The only menu item here is &amp;quot;Show mod filter&amp;quot; which only works when the AVAIABLE MODS tabs is selected. If activated, you will be presented with a text field where you can type a filter text. Only mods that have that text will be displayed.</source>
+        <translation>De enige menuoptie is &amp;quot;Toon modfilter&amp;quot;. Deze optie is alleen beschikbaar als de BESCHIKBARE MODS tab in beeld is. Als de menuoptie is aangevinkt, dan ziet u een textveld onderaan waar u een filtertekst kunt intypen. Enkel de mods me die tekst zullen getoond worden.</translation>
+    </message>
 </context>
 <context>
     <name>InstalledMod</name>
@@ -370,7 +378,7 @@
     </message>
     <message>
         <source>Show mod filter</source>
-        <translation>Toon mod filter</translation>
+        <translation>Toon modfilter</translation>
     </message>
 </context>
 </TS>
