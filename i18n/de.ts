@@ -48,11 +48,11 @@
     </message>
     <message>
         <source>Mods can greatly increase you enjoyment of Planetary Annihilation. So feel free to install as many as you like.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mods können Ihnen mehr Spielvergnügen bieten. Installieren Sie soviel wie Sie wöllen.</translation>
     </message>
     <message>
         <source>Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabs</translation>
     </message>
     <message>
         <source>NEWS</source>
@@ -116,7 +116,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <source>This has two menu items, &amp;quot;Show Mod folder&amp;quot; and &amp;quot;Quit&amp;quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &amp;quot;Quit&amp;quot; quits PAMM.</source>
@@ -124,7 +124,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <source>The first menu item, &amp;quot;Help&amp;quot; is what you are looking at now. The second menu item, &amp;quot;About...&amp;quot; gives you some info about PAMM.</source>
@@ -148,7 +148,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht</translation>
     </message>
     <message>
         <source>The only menu item here is &amp;quot;Show mod filter&amp;quot; which only works when the AVAIABLE MODS tabs is selected. If activated, you will be presented with a text field where you can type a filter text. Only mods that have that text will be displayed.</source>
@@ -188,6 +188,13 @@
     <message>
         <source>Are you sure you want to uninstall?</source>
         <translation>Sind Sie sicher dass Sie es löschen wollen?</translation>
+    </message>
+</context>
+<context>
+    <name>ModFilterWidget</name>
+    <message>
+        <source>FILTER:</source>
+        <translation>FILTER:</translation>
     </message>
 </context>
 <context>
@@ -337,23 +344,23 @@
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Über</translation>
     </message>
     <message>
         <source>&amp;Show Mod folder</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zeig Modverzeichnis</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Beenden</translation>
     </message>
     <message>
         <source>Created by DeathByDenim.</source>
@@ -361,23 +368,23 @@
     </message>
     <message>
         <source>Based on raevn&apos;s Windows-only version.</source>
-        <translation type="unfinished">Basiert auf Raevn&apos;s Windowsversion.</translation>
+        <translation>Basiert auf Raevn&apos;s Windowsversion.</translation>
     </message>
     <message>
         <source>Source code is available on &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Quellcode ist verfügbar unter &lt;a href=&apos;https://github.com/DeathByDenim/pamm/&apos;&gt;GitHub&lt;/a&gt;</translation>
     </message>
     <message>
         <source>&amp;About...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Über...</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
-        <source>Show mod filter</source>
-        <translation type="unfinished"></translation>
+        <source>Mod filter</source>
+        <translation>Modfilter</translation>
     </message>
 </context>
 </TS>

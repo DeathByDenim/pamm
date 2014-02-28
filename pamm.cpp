@@ -107,17 +107,18 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	connect(showModFolderAction, SIGNAL(triggered()), SLOT(showModFolder()));
 	fileMenu->addAction(showModFolderAction);
 	fileMenu->addAction(quitAction);
-	
+
 	QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
 	ModFilterAction = new QAction(this);
-	ModFilterAction->setText(tr("Show mod filter"));
+	ModFilterAction->setText(tr("Mod filter"));
 	ModFilterAction->setCheckable(true);
+	ModFilterAction->setShortcut(QKeySequence("Ctrl+m"));
 	connect(ModFilterAction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
 	viewMenu->addAction(ModFilterAction);
 
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 	QAction* helpAction = new QAction(this);
-	helpAction->setText("&Help");
+	helpAction->setText(tr("&Help"));
 	helpAction->setShortcut(QKeySequence("f1"));
 	helpAction->setIcon(style()->standardIcon(QStyle::SP_DialogHelpButton));
 	connect(helpAction, SIGNAL(triggered()), SLOT(showHelpDialog()));

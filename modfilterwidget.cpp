@@ -34,7 +34,7 @@ ModFilterWidget::ModFilterWidget(QWidget* parent)
 	QHBoxLayout *layout = new QHBoxLayout(this);
 	
 	QLabel *filterLabel = new QLabel(this);
-	filterLabel->setText("FILTER:");
+	filterLabel->setText(tr("FILTER:"));
 	layout->addWidget(filterLabel);
 	
 	FilterLineEdit = new QLineEdit(this);

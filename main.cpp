@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QTranslator>
 #include <QLocale>
+#include <QLibraryInfo>
 #include <iostream>
 #include <cstdlib>
 #include "pamm.h"
@@ -170,6 +171,10 @@ int main(int argc, char** argv)
 	QTranslator translator_specific;
 	if(translator_specific.load(locale.name(), i18nPath))
 		QCoreApplication::installTranslator(&translator_specific);
+
+	QTranslator translator_qt;
+	if(translator_qt.load("qt_" + locale.name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+		QCoreApplication::installTranslator(&translator_qt);
 
 	// Install the pamm mod.
 	QDir modDir(modPath);

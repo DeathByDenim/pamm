@@ -192,6 +192,13 @@
     </message>
 </context>
 <context>
+    <name>ModFilterWidget</name>
+    <message>
+        <source>FILTER:</source>
+        <translation>FILTER:</translation>
+    </message>
+</context>
+<context>
     <name>ModManager</name>
     <message>
         <source>Couldn&apos;t open ZIP file!</source>
@@ -377,8 +384,8 @@
         <translation>&amp;Beeld</translation>
     </message>
     <message>
-        <source>Show mod filter</source>
-        <translation>Toon modfilter</translation>
+        <source>Mod filter</source>
+        <translation>Modfilter</translation>
     </message>
 </context>
 </TS>
