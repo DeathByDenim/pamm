@@ -647,7 +647,7 @@ void PAMM::updateReplyFinished(QNetworkReply* reply)
 		QJson::Parser parser;
 		bool ok;
 		QVariantList result = parser.parse(reply->readAll(), &ok).toList();
-		if(ok)
+		if(ok && result.count() > 0)
 		{
 			QString latest_version = result[0].toMap()["tag_name"].toString();
 			if(latest_version.length() > 0)
