@@ -467,7 +467,7 @@
     <message>
         <location filename="../pamm.cpp" line="313"/>
         <source>, created by DeathByDenim (based on Raevn)</source>
-        <translation>, cré par DeatByDenim (basé à Raevn)</translation>
+        <translation>, créé par DeathByDenim (basé à Raevn)</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="533"/>
@@ -487,12 +487,12 @@
     <message>
         <location filename="../pamm.cpp" line="705"/>
         <source>Created by DeathByDenim.</source>
-        <translation>Cré par DeathByDenim.</translation>
+        <translation>Créé par DeathByDenim.</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="705"/>
         <source>Based on raevn&apos;s Windows-only version.</source>
-        <translation>S&apos;inspirer de la version de raevn pour Windows.</translation>
+        <translation>S&apos;inspiré de la version de raevn pour Windows.</translation>
     </message>
     <message>
         <location filename="../pamm.cpp" line="705"/>

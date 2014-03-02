@@ -19,7 +19,7 @@
 #ifndef PAMM_H
 #define PAMM_H
 
-#define PAMM_VERSION "3.4.0"
+#define PAMM_VERSION "3.3.0"
 
 #include <QtGui/QMainWindow>
 #include "modmanager.h"
@@ -38,7 +38,7 @@ Q_OBJECT
 public:
 	PAMM(ModManager* manager, const QString &imgPath);
 	virtual ~PAMM();
-	
+
 private:
 	enum ModFilter
 	{
