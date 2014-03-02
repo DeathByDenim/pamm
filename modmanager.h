@@ -107,6 +107,7 @@ private:
 	void recursiveRemove(const QDir& dir);
 	void refreshReverseRequirements();
 	QVariant readLocaleField(const QVariantMap& map, const QString& field);
+	void parseScenes(const QVariantMap &result, InstalledMod* mod);
 
 public Q_SLOTS:
 	void replyFinished(QNetworkReply* reply = NULL);

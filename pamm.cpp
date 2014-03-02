@@ -79,7 +79,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	restoreGeometry(settings.value("geometry").toByteArray());
 
 	QWidget *mainWidget = new QWidget(this);
-	QImageReader *reader = new QImageReader(ImgPath + "img_pa_logo_alpha.png");
+	QImageReader *reader = new QImageReader(ImgPath + "img_pa_logo_start_rest.png");
 	QImage pa_logo = reader->read();
 	reader->setFileName(ImgPath + "img_start_bground_sample.jpg");
 	QImage bground = reader->read();
@@ -137,6 +137,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	QLabel* logoLabel = new QLabel(this);
 	logoLabel->setPixmap(QPixmap::fromImage(pa_logo));
 	logoLabel->adjustSize();
+	logoLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	QPalette tt;
 	tt.setBrush(logoLabel->backgroundRole(), QBrush(bground));
 	logoLabel->setPalette(tt);
@@ -145,7 +146,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	QLabel *titleLabel = new QLabel(this);
 	titleLabel->setText(tr("PA MOD MANAGER"));
 	QFont font = titleLabel->font();
-	font.setPixelSize(32);
+	font.setPixelSize(18);
 	titleLabel->setFont(font);
 	titleLabel->setStyleSheet("QLabel	{ font-size: 2em; font-weight: 700; margin-bottom: 0.67em; margin-top: 0.67em; color: #008888; font-family: \"Verdana\"; margin: 5px; padding: 0;}");
 
@@ -153,6 +154,7 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	effect->setColor(QColor(0, 0, 0));
 	effect->setOffset(2, 2);
 	titleLabel->setGraphicsEffect(effect);
+	titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
 	layout->addWidget(titleLabel);
 	

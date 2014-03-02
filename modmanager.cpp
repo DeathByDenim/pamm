@@ -75,42 +75,8 @@ void ModManager::findInstalledMods()
 	refreshReverseRequirements();
 }
 
-InstalledMod *ModManager::parseJson(const QString filename)
+void ModManager::parseScenes(const QVariantMap& result, InstalledMod* mod)
 {
-	QJson::Parser parser;
-
-	QFile jsonFile(filename);
-	if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
-		return NULL;
-
-	bool ok;
-	QVariantMap result = parser.parse(&jsonFile, &ok).toMap();
-	if(!ok)
-		return NULL;
-
-	unsigned int priority = result["priority"].toUInt(&ok);
-	if(!ok || priority == 0)
-		priority = 100;
-
-	InstalledMod *mod = new InstalledMod(
-		QFileInfo(filename).absoluteDir().dirName(),
-		result["context"].toString(),
-		result["identifier"].toString(),
-		readLocaleField(result, "display_name").toString(),
-		readLocaleField(result, "description").toString(),
-		result["author"].toString(),
-		result["version"].toString(),
-		result["signature"].toString(),
-		priority,
-		result["enabled"].toBool(),
-		result["id"].toString(),
-		result["forum"].toUrl(),
-		result["category"].toStringList(),
-		result["requires"].toStringList(),
-		QDate::fromString(result["date"].toString(), "yyyy/MM/dd"),
-		result["build"].toString()
-	);
-
 	if(result.contains("global_mod_list"))
 		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
 	if(result.contains("armory"))
@@ -153,6 +119,48 @@ InstalledMod *ModManager::parseJson(const QString filename)
 		mod->setScene(result["system_editor"], InstalledMod::system_editor);
 	if(result.contains("transit"))
 		mod->setScene(result["transit"], InstalledMod::transit);
+}
+
+InstalledMod *ModManager::parseJson(const QString filename)
+{
+	QJson::Parser parser;
+
+	QFile jsonFile(filename);
+	if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+		return NULL;
+
+	bool ok;
+	QVariantMap result = parser.parse(&jsonFile, &ok).toMap();
+	if(!ok)
+		return NULL;
+
+	unsigned int priority = result["priority"].toUInt(&ok);
+	if(!ok || priority == 0)
+		priority = 100;
+
+	InstalledMod *mod = new InstalledMod(
+		QFileInfo(filename).absoluteDir().dirName(),
+		result["context"].toString(),
+		result["identifier"].toString(),
+		readLocaleField(result, "display_name").toString(),
+		readLocaleField(result, "description").toString(),
+		result["author"].toString(),
+		result["version"].toString(),
+		result["signature"].toString(),
+		priority,
+		result["enabled"].toBool(),
+		result["id"].toString(),
+		result["forum"].toUrl(),
+		result["category"].toStringList(),
+		result["requires"].toStringList(),
+		QDate::fromString(result["date"].toString(), "yyyy/MM/dd"),
+		result["build"].toString()
+	);
+	
+	parseScenes(result, mod);
+
+	if(result.contains("scenes"))
+		parseScenes(result["scenes"].toMap(), mod);
 
 	mod->setCompleteJson(result);
 
