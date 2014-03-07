@@ -65,6 +65,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	if(!Requires.isEmpty())
 	modInfoText += "\n" + tr("REQUIRES") + ": " + Requires.join(", ");
 	modInfoLabel->setText(modInfoText);
+	modInfoLabel->setWordWrap(true);
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 	setRelativeFontSizeForLabel(modInfoLabel, .8);
 
