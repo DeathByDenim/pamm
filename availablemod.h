@@ -44,13 +44,8 @@ public:
 	void setState(installstate_t state);
 	void parseForumPostForLikes(const QByteArray &data);
 
-	static bool sortLastUpdated(const AvailableMod *m1, const AvailableMod *m2);
-	static bool sortTitle(const AvailableMod *m1, const AvailableMod *m2);
-	static bool sortAuthor(const AvailableMod *m1, const AvailableMod *m2);
-	static bool sortBuild(const AvailableMod *m1, const AvailableMod *m2);
-	static bool sortRandom(const AvailableMod *m1, const AvailableMod *m2);
-	static bool sortDownloads(const AvailableMod *m1, const AvailableMod *m2);
-	static bool sortLikes(const AvailableMod *m1, const AvailableMod *m2);
+	static bool sortDownloads(const Mod *m1, const Mod *m2);
+	static bool sortLikes(const Mod *m1, const Mod *m2);
 
 private:
 	const QUrl Download;

@@ -47,7 +47,7 @@ public:
 	AvailableMod::installstate_t isInstalled(QString modName, QString modVersion);
 	void loadAvailableMods(bool refresh);
 	void installAllUpdates();
-
+/*
 	struct mod_t
 	{
 		QString FileName;
@@ -58,36 +58,15 @@ public:
 		QString Category; // Category
 		QString Folder; // Folder to detect (If this folder is found, the mod is presumed installed)
 		QString File; // File to detect (If this file is found, the mod is presumed installed)
-/*		QStringList Scene_global_mod_list; // files (comma separated)
-		QStringList Scene_armory; // files (comma separated)
-		QStringList Scene_building_planets; // files (comma separated)
-		QStringList Scene_connect_to_game; // files (comma separated)
-		QStringList Scene_game_over; // files (comma separated)
-		QStringList Scene_icon_atlas; // files (comma separated)
-		QStringList Scene_live_game; // files (comma separated)
-		QStringList Scene_live_game_econ; // files (comma separated)
-		QStringList Scene_live_game_hover; // files (comma separated)
-		QStringList Scene_load_planet; // files (comma separated)
-		QStringList Scene_lobby; // files (comma separated)
-		QStringList Scene_matchmaking; // files (comma separated)
-		QStringList Scene_new_game; // files (comma separated)
-		QStringList Scene_replay_browser; // files (comma separated)
-		QStringList Scene_server_browser; // files (comma separated)
-		QStringList Scene_settings; // files (comma separated)
-		QStringList Scene_social; // files (comma separated)
-		QStringList Scene_special_icon_atlas; // files (comma separated)
-		QStringList Scene_start; // files (comma separated)
-		QStringList Scene_system_editor; // files (comma separated)
-		QStringList Scene_transit; // files (comma separated)
-*/		QString Version; // Version Number
+		QString Version; // Version Number
 		unsigned long Build; // Build Number
 		unsigned int Priority; // Lower numbers are included in ui_mod_list.js first. Default is 100 if not specified
 		QStringList Requires; // mod ids, comma separated
 		bool Enabled;
 	};
-
-	QList<InstalledMod *> installedMods;
-	QList<AvailableMod *> availableMods;
+*/
+	QList<Mod *> installedMods;
+	QList<Mod *> availableMods;
 
 private:
 	QString PAPath;
@@ -98,7 +77,7 @@ private:
 	QNetworkAccessManager *Internet;
 
 	InstalledMod *parseJson(const QString filename);
-	void sceneToStream(std::ostream& os, const QList< InstalledMod* > modList, const InstalledMod::scene_t scene);
+	void sceneToStream(std::ostream& os, const QList< Mod* > modList, const InstalledMod::scene_t scene);
 	void readAvailableModListJson(QString filename);
 	void installMod(AvailableMod *mod, const QString &filename);
 	void updateModCount();
@@ -118,8 +97,8 @@ public Q_SLOTS:
 Q_SIGNALS:
 	void availableModsLoaded();
 	void progress(int);
-	void newModInstalled(InstalledMod *);
-	void updatedMod();
+	void newModInstalled();
+	void modUpdated();
 };
 
 #endif // MODMANAGER_H

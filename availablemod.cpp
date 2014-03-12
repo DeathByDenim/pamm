@@ -215,40 +215,22 @@ void AvailableMod::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 	progress((75. * bytesReceived) / bytesTotal);
 }
 
-
-bool AvailableMod::sortLastUpdated(const AvailableMod* m1, const AvailableMod* m2)
+bool AvailableMod::sortDownloads(const Mod* m1, const Mod* m2)
 {
-	return (m1->Date > m2->Date);
+	const AvailableMod *im1 = dynamic_cast<const AvailableMod *>(m1);
+	const AvailableMod *im2 = dynamic_cast<const AvailableMod *>(m2);
+	Q_ASSERT(im1 != NULL && im2 != NULL);
+
+	return (im1->NumDownloaded > im2->NumDownloaded);
 }
 
-bool AvailableMod::sortAuthor(const AvailableMod* m1, const AvailableMod* m2)
+bool AvailableMod::sortLikes(const Mod* m1, const Mod* m2)
 {
-	return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) <= 0);
-}
+	const AvailableMod *im1 = dynamic_cast<const AvailableMod *>(m1);
+	const AvailableMod *im2 = dynamic_cast<const AvailableMod *>(m2);
+	Q_ASSERT(im1 != NULL && im2 != NULL);
 
-bool AvailableMod::sortBuild(const AvailableMod* m1, const AvailableMod* m2)
-{
-	return (m1->Build >= m2->Build);
-}
-
-bool AvailableMod::sortRandom(const AvailableMod* m1, const AvailableMod* m2)
-{
-	return (rand() < RAND_MAX / 2);
-}
-
-bool AvailableMod::sortTitle(const AvailableMod* m1, const AvailableMod* m2)
-{
-	return (m1->DisplayName.compare(m2->DisplayName, Qt::CaseInsensitive) < 0);
-}
-
-bool AvailableMod::sortDownloads(const AvailableMod* m1, const AvailableMod* m2)
-{
-	return (m1->NumDownloaded > m2->NumDownloaded);
-}
-
-bool AvailableMod::sortLikes(const AvailableMod* m1, const AvailableMod* m2)
-{
-	return (m1->Likes > m2->Likes);
+	return (im1->Likes > im2->Likes);
 }
 
 void AvailableMod::setCount(int count)

@@ -35,9 +35,16 @@ public:
 	Mod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QUrl& Forum, const QStringList& Category, const QString& Version, const QStringList& Requires, const QDate& Date, const QString& Build);
 	~Mod();
 
-	QString displayName() {return DisplayName;};
-	QString key() {return Key;};
-	QStringList requires() {return Requires;};
+	QString displayName() {return DisplayName;}
+	QString key() {return Key;}
+	QStringList requires() {return Requires;}
+	bool textContains(QString filtertext);
+
+	static bool sortLastUpdated(const Mod *m1, const Mod *m2);
+	static bool sortTitle(const Mod *m1, const Mod *m2);
+	static bool sortAuthor(const Mod *m1, const Mod *m2);
+	static bool sortBuild(const Mod *m1, const Mod *m2);
+	static bool sortRandom(const Mod *m1, const Mod *m2);
 
 
 protected:

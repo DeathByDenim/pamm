@@ -29,6 +29,7 @@
 #include <QLocale>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <exception>
 #include <zip.h>
 #include <qjson/parser.h>
@@ -66,11 +67,15 @@ void ModManager::findInstalledMods()
 			InstalledMod *mod = parseJson(filename);
 			if(mod != NULL)
 			{
-				connect(mod, SIGNAL(modStateChanged()), this, SLOT(modstateChanged()));
+				connect(mod, SIGNAL(modStateChanged()), SLOT(modstateChanged()));
+				connect(mod, SIGNAL(updateMe()), SLOT(downloadMod()));
+				connect(mod, SIGNAL(uninstallMe()), SLOT(uninstallMod()));
 				installedMods.append(mod);
 			}
 		}
 	}
+
+	qSort(installedMods.begin(), installedMods.end(), Mod::sortTitle);
 
 	refreshReverseRequirements();
 }
@@ -167,17 +172,20 @@ InstalledMod *ModManager::parseJson(const QString filename)
 	return mod;
 }
 
-void ModManager::sceneToStream(std::ostream& os, const QList<InstalledMod *> modList, const InstalledMod::scene_t scene)
+void ModManager::sceneToStream(std::ostream& os, const QList<Mod *> modList, const InstalledMod::scene_t scene)
 {
 	std::stringstream str;
 	bool firstpass = true;
 
-	for(QList<InstalledMod *>::const_iterator m = modList.constBegin(); m != modList.constEnd(); ++m)
+	for(QList<Mod *>::const_iterator m = modList.constBegin(); m != modList.constEnd(); ++m)
 	{
-		if(!(*m)->enabled())
+		InstalledMod *im = dynamic_cast<InstalledMod *>(*m);
+		Q_ASSERT(im != NULL);
+
+		if(!im->enabled())
 			continue;
 
-		const QStringList sceneList = (*m)->getSceneList(scene);
+		const QStringList sceneList = im->getSceneList(scene);
 
 		if(sceneList.count() > 0)
 		{
@@ -210,7 +218,7 @@ void ModManager::writeUiModListJS()
 	if(!UiModListJS.good())
 		return;
 
-	QList<InstalledMod *> prioritySorted(installedMods);
+	QList<Mod *> prioritySorted(installedMods);
 	qSort(prioritySorted.begin(), prioritySorted.end(), InstalledMod::sortPriority);
 
 	UiModListJS << "/* DO NOT EDIT. This file is overwritten by pamm. */" << std::endl << std::endl;
@@ -352,16 +360,19 @@ void ModManager::writeUiModListJS()
 		"var rModsList = [\n";
 
 	bool firstpass = true;
-	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
+	for(QList<Mod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
 	{
-		if(!(*mod)->enabled())
+		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+		Q_ASSERT(imod != NULL);
+
+		if(!imod->enabled())
 			continue;
 
 		if(!firstpass)
 			UiModListJS << ",\n";
 		firstpass = false;
 
-		UiModListJS << (*mod)->getModUiJsInfoString().toStdString();
+		UiModListJS << imod->getModUiJsInfoString().toStdString();
 	}
 
 	UiModListJS << "\n];\n";
@@ -369,11 +380,14 @@ void ModManager::writeUiModListJS()
 
 AvailableMod::installstate_t ModManager::isInstalled(QString modKey, QString modVersion)
 {
-	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
+	for(QList<Mod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
 	{
-		if((*mod)->key() == modKey)
+		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+		Q_ASSERT(imod != NULL);
+
+		if(imod->key() == modKey)
 		{
-			if((*mod)->compareVersion(modVersion) < 0)
+			if(imod->compareVersion(modVersion) < 0)
 				return AvailableMod::updateavailable;
 			else
 				return AvailableMod::installed;
@@ -396,7 +410,9 @@ void ModManager::loadAvailableMods(bool refresh)
 	}
 	else
 	{
-		availableMods.clear();
+		while(!availableMods.isEmpty())
+			delete availableMods.takeLast();
+
 		readAvailableModListJson(ConfigPath + "/pamm_cache/modlist.json");
 	}
 	
@@ -417,8 +433,8 @@ void ModManager::replyFinished(QNetworkReply* reply)
 		QString type = reply->request().attribute(QNetworkRequest::User).toString();
 		if(type == "icon")
 		{
-			AvailableMod *mod = dynamic_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
-			if(mod)
+			AvailableMod *mod = static_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
+			if(mod && availableMods.contains(mod))
 			{
 				// Load pixmap
 				QImage modIcon = QImage::fromData(reply->readAll());
@@ -446,7 +462,8 @@ void ModManager::replyFinished(QNetworkReply* reply)
 
 				if(type == "modlist")
 				{
-					availableMods.clear();
+					while(!availableMods.isEmpty())
+						delete availableMods.takeLast();
 					readAvailableModListJson(jsonfilename);
 				}
 				else if(type == "modcount")
@@ -464,8 +481,8 @@ void ModManager::replyFinished(QNetworkReply* reply)
 		}
 		else if(type == "moddownload")
 		{
-			AvailableMod *mod = dynamic_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
-			if(mod)
+			AvailableMod *mod = static_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
+			if(mod && availableMods.contains(mod))
 			{
 				QStringList urlpath = reply->url().path().split('/');
 				QDir(ConfigPath).mkdir("pamm_cache");
@@ -483,8 +500,8 @@ void ModManager::replyFinished(QNetworkReply* reply)
 		}
 		else if(type == "likes")
 		{
-			AvailableMod *mod = (AvailableMod *)reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>();
-			if(availableMods.contains(mod)) // It might be deleted by clicking refresh before all the "likes" have been loaded.
+			AvailableMod *mod = static_cast<AvailableMod *>(reply->request().attribute((QNetworkRequest::Attribute)(QNetworkRequest::User+1)).value<QWidget *>());
+			if(mod && availableMods.contains(mod)) // It might be deleted by clicking refresh before all the "likes" have been loaded.
 			{
 				int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 				if(statusCode == 301)
@@ -543,6 +560,7 @@ void ModManager::readAvailableModListJson(QString filename)
 			ImgPath
 		);
 		availableMods.append(mod);
+		connect(mod, SIGNAL(installMe()), SLOT(downloadMod()));
 
 		if(moddata.contains("icon") && moddata["icon"].toString() != "")
 		{
@@ -567,12 +585,13 @@ void ModManager::readAvailableModListJson(QString filename)
 			Internet->get(request);
 		}
 
-		for(QList<InstalledMod *>::iterator instmod = installedMods.begin(); instmod != installedMods.end(); ++instmod)
+		for(QList<Mod *>::iterator m = installedMods.begin(); m != installedMods.end(); ++m)
 		{
-			if((*instmod)->key() == mod->key())
+			InstalledMod *im = dynamic_cast<InstalledMod *>(*m);
+			if(im->key() == mod->key())
 			{
 				if(state == AvailableMod::updateavailable)
-					(*instmod)->setUpdateAvailable(true);
+					im->setUpdateAvailable(true);
 			}
 		}
 	}
@@ -588,11 +607,11 @@ void ModManager::downloadMod()
 		InstalledMod *instmod = dynamic_cast<InstalledMod *>( sender() );
 		if(instmod)
 		{
-			for(QList<AvailableMod *>::const_iterator avmod = availableMods.constBegin(); avmod != availableMods.constEnd(); ++avmod)
+			for(QList<Mod *>::const_iterator avmod = availableMods.constBegin(); avmod != availableMods.constEnd(); ++avmod)
 			{
 				if(instmod->key() == (*avmod)->key())
 				{
-					mod = (*avmod);
+					mod = dynamic_cast<AvailableMod *>(*avmod);
 					break;
 				}
 			}
@@ -712,13 +731,15 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 		request.setAttribute(QNetworkRequest::User, QVariant("ignore me"));
 		Internet->get(request);
 
-		connect(newmod, SIGNAL(modStateChanged()), this, SLOT(modstateChanged()));
-		emit newModInstalled(newmod);
+		connect(newmod, SIGNAL(modStateChanged()), SLOT(modstateChanged()));
+		connect(newmod, SIGNAL(updateMe()), SLOT(downloadMod()));
+		connect(newmod, SIGNAL(uninstallMe()), SLOT(uninstallMod()));
+		emit newModInstalled();
 
 		QStringList requires = newmod->requires();
-		for(QList<InstalledMod *>::const_iterator inmod = installedMods.begin(); inmod != installedMods.end(); ++inmod)
+		for(QList<Mod *>::const_iterator m = installedMods.begin(); m != installedMods.end(); ++m)
 		{
-			requires.removeAll((*inmod)->key());
+			requires.removeAll((*m)->key());
 		}
 
 		if(!requires.isEmpty())
@@ -733,11 +754,14 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 			{
 				for(QStringList::const_iterator req = requires.begin(); req != requires.end(); ++req)
 				{
-					for(QList<AvailableMod *>::const_iterator avmod = availableMods.begin(); avmod != availableMods.end(); ++avmod)
+					for(QList<Mod *>::const_iterator avmod = availableMods.begin(); avmod != availableMods.end(); ++avmod)
 					{
 						if((*req) == (*avmod)->key())
 						{
-							(*avmod)->installButtonClicked();
+							AvailableMod *am = dynamic_cast<AvailableMod *>(*avmod);
+							Q_ASSERT(am != NULL);
+
+							am->installButtonClicked();
 							break;
 						}
 					}
@@ -780,12 +804,15 @@ void ModManager::modstateChanged()
 				for(QStringList::const_iterator reqstr = requires.constBegin(); reqstr != requires.constEnd(); ++reqstr)
 				{
 					bool found = false;
-					for(QList<InstalledMod *>::iterator reqmod = installedMods.begin(); reqmod != installedMods.end(); ++reqmod)
+					for(QList<Mod *>::iterator reqmod = installedMods.begin(); reqmod != installedMods.end(); ++reqmod)
 					{
-						if((*reqmod)->key() == *reqstr)
+						InstalledMod *reqimod = dynamic_cast<InstalledMod *>(*reqmod);
+						Q_ASSERT(reqimod != NULL);
+
+						if(reqimod->key() == *reqstr)
 						{
 							found = true;
-							(*reqmod)->enable();
+							reqimod->enable();
 						}
 					}
 					if(!found)
@@ -817,9 +844,12 @@ void ModManager::updateModCount()
 	if(!ok)
 		return;
 
-	for(QList<AvailableMod *>::iterator mod = availableMods.begin(); mod != availableMods.end(); ++mod)
+	for(QList<Mod *>::iterator mod = availableMods.begin(); mod != availableMods.end(); ++mod)
 	{
-		(*mod)->setCount(result[(*mod)->key()].toInt());
+		AvailableMod *amod = dynamic_cast<AvailableMod *>(*mod);
+		Q_ASSERT(amod != NULL);
+
+		amod->setCount(result[amod->key()].toInt());
 	}
 }
 
@@ -833,14 +863,17 @@ void ModManager::writeModsJson()
 	
 	QTextStream stream(&modsJsonFile);
 	
-	QList<InstalledMod *> prioritySorted(installedMods);
+	QList<Mod *> prioritySorted(installedMods);
 	qSort(prioritySorted.begin(), prioritySorted.end(), InstalledMod::sortPriority);
 	
 	stream << "{" << endl << "\t\"mount_order\":" << endl << "\t[" << endl;
 	bool firstpass = true;
-	for(QList<InstalledMod *>::const_iterator mod = prioritySorted.begin(); mod != prioritySorted.end(); ++mod)
+	for(QList<Mod *>::const_iterator mod = prioritySorted.begin(); mod != prioritySorted.end(); ++mod)
 	{
-		if(!(*mod)->enabled())
+		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+		Q_ASSERT(imod != NULL);
+
+		if(!imod->enabled())
 			continue;
 
 		if(firstpass)
@@ -848,7 +881,7 @@ void ModManager::writeModsJson()
 		else
 			stream << ',' << endl;
 		
-		stream << "\t\t\"" << (*mod)->identifier() << "\"";
+		stream << "\t\t\"" << imod->identifier() << "\"";
 	}
 	stream << endl << "\t]" << endl << "}" << endl;
 	modsJsonFile.close();
@@ -866,9 +899,12 @@ void ModManager::writeModsListJson()
 
 	stream << "{" << endl;
 	bool firstpass = true;
-	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
+	for(QList<Mod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
 	{
-		if(!(*mod)->enabled() || (*mod)->key() == "PAMM")
+		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+		Q_ASSERT(imod != NULL);
+
+		if(!imod->enabled() || imod->key() == "PAMM")
 			continue;
 
 		if(firstpass)
@@ -876,7 +912,7 @@ void ModManager::writeModsListJson()
 		else
 			stream << ',' << endl;
 		
-		stream << (*mod)->json();
+		stream << imod->json();
 	}
 	stream << endl << "}" << endl;
 	modsJsonFile.close();
@@ -913,12 +949,15 @@ void ModManager::uninstallMod()
 			msgBox.setIcon(QMessageBox::Warning);
 			msgBox.exec();
 		}
-		
-		for(QList<AvailableMod *>::iterator avmod = availableMods.begin(); avmod != availableMods.end(); ++avmod)
+
+		for(QList<Mod *>::iterator avmod = availableMods.begin(); avmod != availableMods.end(); ++avmod)
 		{
 			if((*avmod)->key() == mod->key())
 			{
-				(*avmod)->setState(AvailableMod::notinstalled);
+				AvailableMod *am = dynamic_cast<AvailableMod *>(*avmod);
+				Q_ASSERT(am != NULL);
+
+				am->setState(AvailableMod::notinstalled);
 				break;
 			}
 		}
@@ -935,19 +974,28 @@ void ModManager::uninstallMod()
 void ModManager::refreshReverseRequirements()
 {
 	// Clear everything
-	for(QList<InstalledMod *>::iterator mod = installedMods.begin(); mod != installedMods.end(); ++mod)
-		(*mod)->clearReverseRequirement();
+	for(QList<Mod *>::iterator mod = installedMods.begin(); mod != installedMods.end(); ++mod)
+	{
+		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+		Q_ASSERT(imod != NULL);
+		imod->clearReverseRequirement();
+	}
 
 	// Find requirements
-	for(QList<InstalledMod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
+	for(QList<Mod *>::const_iterator mod = installedMods.constBegin(); mod != installedMods.constEnd(); ++mod)
 	{
-		QStringList requirements = (*mod)->requires();
+		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+		Q_ASSERT(imod != NULL);
+
+		QStringList requirements = imod->requires();
 		for(QStringList::const_iterator requirement = requirements.constBegin(); requirement != requirements.constEnd(); ++requirement)
 		{
-			for(QList<InstalledMod *>::iterator reqmod = installedMods.begin(); reqmod != installedMods.end(); ++reqmod)
+			for(QList<Mod *>::iterator reqmod = installedMods.begin(); reqmod != installedMods.end(); ++reqmod)
 			{
-				if((*reqmod)->key() == *requirement)
-					(*reqmod)->addReverseRequirement(*mod);
+				InstalledMod *reqimod = dynamic_cast<InstalledMod *>(*reqmod);
+				Q_ASSERT(reqimod != NULL);
+				if(reqimod->key() == *requirement)
+					reqimod->addReverseRequirement(imod);
 			}
 		}
 	}
@@ -955,10 +1003,13 @@ void ModManager::refreshReverseRequirements()
 
 void ModManager::installAllUpdates()
 {
-	for(QList<AvailableMod *>::iterator m = availableMods.begin(); m != availableMods.end(); ++m)
+	for(QList<Mod *>::iterator m = availableMods.begin(); m != availableMods.end(); ++m)
 	{
-		if((*m)->state() == AvailableMod::updateavailable)
-			(*m)->installButtonClicked();
+		AvailableMod *am = dynamic_cast<AvailableMod *>(*m);
+		Q_ASSERT(am != NULL);
+
+		if(am->state() == AvailableMod::updateavailable)
+			am->installButtonClicked();
 	}
 }
 

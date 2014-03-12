@@ -6,7 +6,7 @@ find_package(QJSON REQUIRED)
 include_directories(${QT_INCLUDES} ${QJSON_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 #set(PAMM_SRCS videoreviewdialog.cpp installedmod.cpp pamm.cpp main.cpp modmanager.cpp mod.cpp availablemod.cpp)
-set(PAMM_SRCS modfilterwidget.cpp helpdialog.cpp installedmod.cpp pamm.cpp main.cpp modmanager.cpp mod.cpp availablemod.cpp)
+set(PAMM_SRCS modlistwidget.cpp modfilterwidget.cpp helpdialog.cpp installedmod.cpp pamm.cpp main.cpp modmanager.cpp mod.cpp availablemod.cpp)
 
 qt4_automoc(${PAMM_SRCS})
 

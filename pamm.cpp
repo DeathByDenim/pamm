@@ -22,6 +22,7 @@
 #include "installedmod.h"
 #include "helpdialog.h"
 #include "modfilterwidget.h"
+#include "modlistwidget.h"
 
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
@@ -73,8 +74,6 @@ const char *strNewsStyleSheet =
 PAMM::PAMM(ModManager* manager, const QString& imgPath)
  : Manager(manager), ImgPath(imgPath)
 {
-	TypeFilter = All;
-
 	QSettings settings("DeathByDenim", "PAMM");
 	restoreGeometry(settings.value("geometry").toByteArray());
 
@@ -109,12 +108,19 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	fileMenu->addAction(quitAction);
 
 	QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
-	ModFilterAction = new QAction(this);
-	ModFilterAction->setText(tr("Mod filter"));
-	ModFilterAction->setCheckable(true);
-	ModFilterAction->setShortcut(QKeySequence("Ctrl+m"));
-	connect(ModFilterAction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
-	viewMenu->addAction(ModFilterAction);
+	AvailableModFilterAction = new QAction(this);
+	AvailableModFilterAction->setText(tr("Mod filter"));
+	AvailableModFilterAction->setCheckable(true);
+	AvailableModFilterAction->setShortcut(QKeySequence("Ctrl+m"));
+	AvailableModFilterAction->setEnabled(false);
+	viewMenu->addAction(AvailableModFilterAction);
+	InstalledModFilterAction = new QAction(this);
+	InstalledModFilterAction->setText(tr("Mod filter"));
+	InstalledModFilterAction->setCheckable(true);
+	InstalledModFilterAction->setShortcut(QKeySequence("Ctrl+m"));
+	InstalledModFilterAction->setVisible(false);
+	viewMenu->addAction(InstalledModFilterAction);
+
 
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 	QAction* helpAction = new QAction(this);
@@ -189,123 +195,40 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 
 
 	// INSTALLED TAB
-	QWidget *installedTabWidget = new QWidget(this);
-	QVBoxLayout *installedTabWidgetLayout = new QVBoxLayout(installedTabWidget);
-
-	QScrollArea *scrollAreaInstalled = new QScrollArea(installedTabWidget);
-	InstalledModsWidget = new QWidget(scrollAreaInstalled);
-	QVBoxLayout *modsLayout = new QVBoxLayout(InstalledModsWidget);
-
-	if(Manager->installedMods.count() == 0)
-	{
-		QLabel *nomodsLabel = new QLabel(InstalledModsWidget);
-		nomodsLabel->setText(tr("No mods found"));
-		nomodsLabel->setAlignment(Qt::AlignHCenter);
-		nomodsLabel->setStyleSheet("QLabel {color: #ffffff}");
-		modsLayout->addWidget(nomodsLabel);
-	}
-	else
-	{
-		for(QList<InstalledMod *>::const_iterator m = Manager->installedMods.constBegin(); m != Manager->installedMods.constEnd(); ++m)
-		{
-			(*m)->setParent(InstalledModsWidget);
-			modsLayout->addWidget(*m);
-			connect(*m, SIGNAL(updateMe()), Manager, SLOT(downloadMod()));
-			connect(*m, SIGNAL(uninstallMe()), Manager, SLOT(uninstallMod()));
-		}
-		modsLayout->addStretch();
-	}
-	scrollAreaInstalled->setWidget(InstalledModsWidget);
-	scrollAreaInstalled->setWidgetResizable(true);
-	installedTabWidgetLayout->addWidget(scrollAreaInstalled);
-/*
-	InstModFilterWidget = new ModFilterWidget(installedTabWidget);
-	installedTabWidgetLayout->addWidget(InstModFilterWidget);
-*/
-
+	ModListWidget *installedTabWidget = new ModListWidget(this, InstalledModFilterAction, Manager, ModListWidget::ModeInstalled);
 	Tabs->addTab(installedTabWidget, tr("INSTALLED MODS"));
 
 
 	// AVAILABLE TAB
-	QWidget *availableTabWidget = new QWidget(this);
-	QVBoxLayout *availableTabWidgetLayout = new QVBoxLayout(availableTabWidget);
-
-	QWidget *availableMenuWidget = new QWidget(availableTabWidget);
-	QHBoxLayout *availableMenuWidgetLayout = new QHBoxLayout(availableMenuWidget);
-	availableTabWidgetLayout->addWidget(availableMenuWidget);
-
-	QLabel *filterLabel = new QLabel(availableMenuWidget);
-	filterLabel->setText(tr("SHOW:"));
-	availableMenuWidgetLayout->addWidget(filterLabel);
-
-	FilterComboBox = new QComboBox(availableMenuWidget);
-	FilterComboBox->addItem(tr("ALL"));
-	FilterComboBox->addItem(tr("INSTALLED"));
-	FilterComboBox->addItem(tr("REQUIRE UPDATE"));
-	FilterComboBox->addItem(tr("NOT INSTALLED"));
-	connect(FilterComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterIndexChanged(const QString &)));
-
-	availableMenuWidgetLayout->addWidget(FilterComboBox);
-	availableMenuWidgetLayout->addStretch();
-	availableMenuWidgetLayout->addStrut(10);
-
-	QLabel *sortLabel = new QLabel(availableMenuWidget);
-	sortLabel->setText(tr("SORT:"));
-	availableMenuWidgetLayout->addWidget(sortLabel);
-
-	QComboBox *sortComboBox = new QComboBox(availableMenuWidget);
-	sortComboBox->addItem(tr("RANDOM"));
-	sortComboBox->addItem(tr("LAST UPDATED"));
-	sortComboBox->addItem(tr("TITLE"));
-	sortComboBox->addItem(tr("AUTHOR"));
-	sortComboBox->addItem(tr("BUILD"));
-	sortComboBox->addItem(tr("DOWNLOADS"));
-	sortComboBox->addItem(tr("LIKES"));
-	connect(sortComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(sortIndexChanged(const QString &)));
-
-	availableMenuWidgetLayout->addWidget(sortComboBox);
-	availableMenuWidgetLayout->addStretch();
-
-	QScrollArea *scrollAreaAvailable = new QScrollArea(availableTabWidget);
-	availableModsWidget = new QWidget(scrollAreaAvailable);
-	QFont availableModsWidgetFont = availableModsWidget->font();
-	availableModsWidgetFont.setBold(false);
-	availableModsWidget->setFont(availableModsWidgetFont);
-	modsLayout = new QVBoxLayout(availableModsWidget);
-	scrollAreaAvailable->setWidget(availableModsWidget);
-	scrollAreaAvailable->setWidgetResizable(true);
-	availableTabWidgetLayout->addWidget(scrollAreaAvailable);
-
-	AvailModFilterWidget = new ModFilterWidget(availableTabWidget);
-	connect(AvailModFilterWidget, SIGNAL(filterTextChanged(QString)), SLOT(filterTextChanged(QString)));
-	connect(AvailModFilterWidget, SIGNAL(visibilityChanged(bool)), ModFilterAction, SLOT(setChecked(bool)));
-	availableTabWidgetLayout->addWidget(AvailModFilterWidget);
-
+	ModListWidget *availableTabWidget = new ModListWidget(this, AvailableModFilterAction, Manager, ModListWidget::ModeAvailable);
 	Tabs->addTab(availableTabWidget, tr("AVAILABLE MODS"));
-	connect(Tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+
+	connect(Tabs, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
 
 
 	UpdateAllButton = new QPushButton(this);
 	UpdateAllButton->setText(tr("Update all mods") + " (0)");
 	layout->addWidget(UpdateAllButton);
-	connect(UpdateAllButton, SIGNAL(clicked()), this, SLOT(updateAllButtonClicked()));
+	connect(UpdateAllButton, SIGNAL(clicked()), SLOT(updateAllButtonClicked()));
+	connect(Manager, SIGNAL(availableModsLoaded()), SLOT(updateUpdateAllButton()));
+	connect(Manager, SIGNAL(newModInstalled()), SLOT(updateUpdateAllButton()));
+	updateUpdateAllButton();
 
-	populateAvailableModsWidget(true);
 
 	QWidget *buttonsWidget = new QWidget(this);
 	QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
 	
 	QPushButton *launchPAButton = new QPushButton(buttonsWidget);
 	launchPAButton->setText(tr("Launch PA"));
-	connect(launchPAButton, SIGNAL(clicked()), this, SLOT(launchPAButtonClicked()));
+	connect(launchPAButton, SIGNAL(clicked()), SLOT(launchPAButtonClicked()));
 
 	RefreshButton = new QPushButton(buttonsWidget);
 	RefreshButton->setText(tr("Refresh"));
-	connect(RefreshButton, SIGNAL(clicked()), this, SLOT(refreshButtonClicked()));
+	connect(RefreshButton, SIGNAL(clicked()), SLOT(refreshButtonClicked()));
 
 	QPushButton *exitButton = new QPushButton(buttonsWidget);
 	exitButton->setText(tr("Exit"));
-	connect(exitButton, SIGNAL(clicked()), this, SLOT(exitButtonClicked()));
+	connect(exitButton, SIGNAL(clicked()), SLOT(exitButtonClicked()));
 
 	QLabel *versionLabel = new QLabel(buttonsWidget);
 	versionLabel->setText(tr("Version") + " " PAMM_VERSION);
@@ -325,11 +248,6 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	layout->addWidget(buttonsWidget);
 	
 	centralWidget()->setLayout(layout);
-
-	connect(Manager, SIGNAL(availableModsLoaded()), this, SLOT(availableModsLoaded()));
-	connect(Manager, SIGNAL(newModInstalled(InstalledMod *)), this, SLOT(newModInstalled(InstalledMod *)));
-
-	sortIndexChanged(tr("RANDOM"));
 
 	Tabs->setCurrentIndex(settings.value("tabs/lastindex", 0).toInt());
 
@@ -370,11 +288,6 @@ void PAMM::refreshButtonClicked()
 	}
 }
 
-void PAMM::availableModsLoaded()
-{
-	populateAvailableModsWidget(true);
-}
-
 void PAMM::clearWidgets(QLayout *layout, bool deleteWidgets)
 {
 	while (QLayoutItem* item = layout->takeAt(0))
@@ -401,67 +314,22 @@ void PAMM::clearWidgets(QLayout *layout, bool deleteWidgets)
 	}
 }
 
-void PAMM::populateAvailableModsWidget(bool deleteWidgets, PAMM::ModFilter filter, QString filterstring)
-{
-	QVBoxLayout *modsLayout = dynamic_cast<QVBoxLayout *>(availableModsWidget->layout());
-	if(!modsLayout)
-		return;
-
-	setUpdatesEnabled(false);
-	// Delete anything that's there now.
-	clearWidgets(modsLayout, deleteWidgets);
-
-	if(Manager->availableMods.count() == 0)
-	{
-/*		QLabel *nomodsLabel = new QLabel(availableModsWidget);
-		nomodsLabel->setText("No mods found");
-		nomodsLabel->setAlignment(Qt::AlignHCenter);
-		nomodsLabel->setStyleSheet("QLabel {color: #ffffff}");
-		modsLayout->addWidget(nomodsLabel);
-*/	}
-	else
-	{
-		for(QList<AvailableMod *>::const_iterator m = Manager->availableMods.constBegin(); m != Manager->availableMods.constEnd(); ++m)
-		{
-			if(
-				filter == All ||
-				(filter == Installed && (*m)->state() == AvailableMod::installed) ||
-				(filter == Require_update && (*m)->state() == AvailableMod::updateavailable) ||
-				(filter == Not_installed && (*m)->state() == AvailableMod::notinstalled)
-			)
-			{
-				if(filterstring == "" || (*m)->displayName().toLower().contains(filterstring.toLower()))
-				{
-					(*m)->setParent(availableModsWidget);
-					connect(*m, SIGNAL(installMe()), Manager, SLOT(downloadMod()));
-					modsLayout->addWidget(*m);
-				}
-			}
-		}
-		modsLayout->addStretch();
-	}
-
-	updateUpdateAllButton();
-
-	setUpdatesEnabled(true);
-
-}
-
 void PAMM::updateUpdateAllButton()
 {
 	if(UpdateAllButton)
 	{
-		QList<AvailableMod *> updatableMods;
-		for(QList<AvailableMod *>::const_iterator m = Manager->availableMods.constBegin(); m != Manager->availableMods.constEnd(); ++m)
+		int count = 0;
+		for(QList<Mod *>::const_iterator m = Manager->availableMods.constBegin(); m != Manager->availableMods.constEnd(); ++m)
 		{
-			if((*m)->state() == AvailableMod::updateavailable)
-			{
-				updatableMods.push_back(*m);
-			}
+			AvailableMod *am = dynamic_cast<AvailableMod *>(*m);
+			Q_ASSERT(am != NULL);
+
+			if(am->state() == AvailableMod::updateavailable)
+				count++;
 		}
 
-		UpdateAllButton->setText(tr("Update all mods") + " (" + QString("%1").arg(updatableMods.length()) + ")");
-		UpdateAllButton->setEnabled(!updatableMods.empty());
+		UpdateAllButton->setText(tr("Update all mods") + " (" + QString("%1").arg(count) + ")");
+		UpdateAllButton->setEnabled(count > 0);
 	}
 }
 
@@ -544,94 +412,13 @@ void PAMM::tabChanged(int index)
 {
 	QSettings("DeathByDenim", "PAMM").setValue("tabs/lastindex", index);
 	RefreshButton->setEnabled(index != 1);
-	ModFilterAction->setEnabled(index == 2);
-//	ModFilterAction->setChecked( (index == 1 && InstModFilterWidget->isVisible()) || (index == 2 && AvailModFilterWidget->isVisible()) );
+	
+	InstalledModFilterAction->setEnabled(index != 0);
+	InstalledModFilterAction->setVisible(index != 2);
+	AvailableModFilterAction->setEnabled(index != 0);
+	AvailableModFilterAction->setVisible(index == 2);
 }
 
-void PAMM::newModInstalled(InstalledMod* newmod)
-{
-	newmod->setParent(InstalledModsWidget);
-	QVBoxLayout *modlayout = dynamic_cast<QVBoxLayout *>(InstalledModsWidget->layout());
-	if(modlayout)
-	{
-		if(modlayout->count() <= 1)
-		{	// No mods are installed
-			QLayoutItem *item = modlayout->takeAt(0);
-			if(QWidget* widget = item->widget())
-				delete widget;
-
-			modlayout->addWidget(newmod);
-			modlayout->addStretch();
-		}
-		else
-			modlayout->insertWidget(modlayout->count() - 1, newmod);
-
-		newmod->setEnabled(true);
-	}
-
-	connect(newmod, SIGNAL(updateMe()), Manager, SLOT(downloadMod()));
-	connect(newmod, SIGNAL(uninstallMe()), Manager, SLOT(uninstallMod()));
-
-	updateUpdateAllButton();
-}
-
-void PAMM::filterIndexChanged(const QString& text)
-{
-	if(text == tr("ALL"))
-	{
-		TypeFilter = All;
-	}
-	else if(text == tr("INSTALLED"))
-	{
-		TypeFilter = Installed;
-	}
-	else if(text == tr("REQUIRE UPDATE"))
-	{
-		TypeFilter = Require_update;
-	}
-	else if(text == tr("NOT INSTALLED"))
-	{
-		TypeFilter = Not_installed;
-	}
-	else
-		TypeFilter = All;
-
-	populateAvailableModsWidget(false, TypeFilter);
-}
-
-void PAMM::sortIndexChanged(const QString& text)
-{
-	if(text == tr("RANDOM"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortRandom);
-	}
-	else if(text == tr("LAST UPDATED"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortLastUpdated);
-	}
-	else if(text == tr("TITLE"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortTitle);
-	}
-	else if(text == tr("AUTHOR"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortAuthor);
-	}
-	else if(text == tr("BUILD"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortBuild);
-	}
-	else if(text == tr("DOWNLOADS"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortDownloads);
-	}
-	else if(text == tr("LIKES"))
-	{
-		qSort(Manager->availableMods.begin(), Manager->availableMods.end(), AvailableMod::sortLikes);
-	}
-
-	populateAvailableModsWidget(false);
-}
 
 void PAMM::checkForUpdate()
 {
@@ -676,7 +463,7 @@ void PAMM::updateAllButtonClicked()
 {
 	if(UpdateAllButton)
 	{
-		if(Tabs)
+/* TODO		if(Tabs)
 			Tabs->setCurrentIndex(2);
 		if(FilterComboBox)
 		{
@@ -684,7 +471,7 @@ void PAMM::updateAllButtonClicked()
 			if(index >= 0)
 				FilterComboBox->setCurrentIndex(index);
 		}
-		if(Manager)
+*/		if(Manager)
 			Manager->installAllUpdates();
 	}
 }
@@ -711,23 +498,6 @@ void PAMM::showHelpDialog()
 {
 	HelpDialog help(this, ImgPath);
 	help.exec();
-}
-
-void PAMM::showModFilter(bool checked)
-{/*
-	int index = Tabs->currentIndex();
-	if(index == 1)
-		InstModFilterWidget->setVisible(checked);
-	else if(index == 2)
-*/		AvailModFilterWidget->setVisible(checked);
-	AvailModFilterWidget->setFocus();
-
-//	populateAvailableModsWidget(false, TypeFilter, "");
-}
-
-void PAMM::filterTextChanged(const QString& text)
-{
-	populateAvailableModsWidget(false, TypeFilter, text);
 }
 
 #include "pamm.moc"

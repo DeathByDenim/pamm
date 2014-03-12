@@ -38,4 +38,38 @@ void Mod::setRelativeFontSizeForLabel(QLabel* label, qreal size)
 	label->setFont(font);
 }
 
+bool Mod::sortLastUpdated(const Mod* m1, const Mod* m2)
+{
+	return (m1->Date > m2->Date);
+}
+
+bool Mod::sortAuthor(const Mod* m1, const Mod* m2)
+{
+	return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) <= 0);
+}
+
+bool Mod::sortBuild(const Mod* m1, const Mod* m2)
+{
+	return (m1->Build >= m2->Build);
+}
+
+bool Mod::sortRandom(const Mod* m1, const Mod* m2)
+{
+	return (rand() < RAND_MAX / 2);
+}
+
+bool Mod::sortTitle(const Mod* m1, const Mod* m2)
+{
+	return (m1->DisplayName.compare(m2->DisplayName, Qt::CaseInsensitive) < 0);
+}
+
+bool Mod::textContains(QString filtertext)
+{
+	return
+		DisplayName.toLower().contains(filtertext) ||
+		Author.toLower().contains(filtertext) ||
+		Description.toLower().contains(filtertext) ||
+		Key.toLower().contains(filtertext);
+}
+
 #include "mod.moc"

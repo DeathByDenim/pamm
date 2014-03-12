@@ -63,13 +63,13 @@ public:
 
 	QStringList getSceneList(scene_t scene);
 	QString getModUiJsInfoString();
-	   int compareVersion(const QString& version_in);
+	int compareVersion(const QString& version_in);
 	void setScene(QVariant files, scene_t scene);
 	void setEnabled(bool enabled);
 	bool enabled() {return Enabled;};
 	void enable();
 	QString identifier() {return Identifier;};
-	static bool sortPriority(const InstalledMod *m1, const InstalledMod *m2);
+	static bool sortPriority(const Mod* m1, const Mod* m2);
 	QVariantMap completeJson() {return CompleteJson;};
 	void setCompleteJson(QVariantMap &json) {CompleteJson = json;};
 	void setUpdateAvailable(bool updateavailable);

@@ -321,9 +321,14 @@ void InstalledMod::setEnabled(bool enabled)
 	}
 }
 
-bool InstalledMod::sortPriority(const InstalledMod* m1, const InstalledMod* m2)
+bool InstalledMod::sortPriority(const Mod* m1, const Mod* m2)
 {
-	return (m1->Priority < m2->Priority);
+	const InstalledMod *im1 = dynamic_cast<const InstalledMod *>(m1);
+	const InstalledMod *im2 = dynamic_cast<const InstalledMod *>(m2);
+
+	Q_ASSERT(im1 != NULL && im2 != NULL);
+
+	return (im1->Priority < im2->Priority);
 }
 
 void InstalledMod::uninstallButtonClicked()

@@ -19,7 +19,7 @@
 #ifndef PAMM_H
 #define PAMM_H
 
-#define PAMM_VERSION "3.3.0"
+#define PAMM_VERSION "3.5.0"
 
 #include <QtGui/QMainWindow>
 #include "modmanager.h"
@@ -48,24 +48,19 @@ private:
 		Not_installed
 	};
 	ModManager *Manager;
-	QWidget *availableModsWidget;
-	QWidget *InstalledModsWidget;
 	QTextBrowser *NewsBrowser;
 	QPushButton *RefreshButton;
 	QTabWidget *Tabs;
 	QPushButton *UpdateAllButton;
-	QComboBox *FilterComboBox;
+//	QComboBox *FilterComboBox;
 	const QString ImgPath;
-//	ModFilterWidget* InstModFilterWidget;
-	ModFilterWidget* AvailModFilterWidget;
-	QAction* ModFilterAction;
-	ModFilter TypeFilter;
+//	ModFilter TypeFilter;
+	QAction* AvailableModFilterAction;
+	QAction* InstalledModFilterAction;
 
-	void populateAvailableModsWidget(bool deleteWidgets, ModFilter filter = All, QString filterstring = "");
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
-    void loadNews();
+	void loadNews();
 	void checkForUpdate();
-	void updateUpdateAllButton();
 
 protected:
 	void closeEvent(QCloseEvent *event);
@@ -74,19 +69,14 @@ public Q_SLOTS:
 	void exitButtonClicked();
 	void refreshButtonClicked();
 	void launchPAButtonClicked();
-	void availableModsLoaded();
 	void newsReplyFinished(QNetworkReply* reply = NULL);
 	void updateReplyFinished(QNetworkReply* reply = NULL);
 	void tabChanged(int index);
-	void newModInstalled(InstalledMod *newmod);
-	void sortIndexChanged(const QString & text);
-	void filterIndexChanged(const QString & text);
 	void updateAllButtonClicked();
 	void showModFolder();
 	void showAboutDialog();
 	void showHelpDialog();
-	void showModFilter(bool checked);
-	void filterTextChanged(const QString &text);
+	void updateUpdateAllButton();
 };
 
 #endif // PAMM_H
