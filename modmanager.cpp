@@ -744,9 +744,15 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 		if(!requires.isEmpty())
 		{
+			QString reqmodnames;
+			for(QStringList::const_iterator req = requires.begin(); req != requires.end(); ++req)
+			{
+				reqmodnames += "<li>" + (*req) + "</li>";
+			}
+
 			QMessageBox installDependenciesMessageBox;
 			installDependenciesMessageBox.setText(QString(tr("%1 depends on other mods.")).arg(newmod->displayName()));
-			installDependenciesMessageBox.setInformativeText(tr("Do you want to install those?"));
+			installDependenciesMessageBox.setInformativeText("<p>" + tr("Do you want to install the following?") + "</p><ul>" + reqmodnames + "</ul>");
 			installDependenciesMessageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 			installDependenciesMessageBox.setDefaultButton(QMessageBox::Yes);
 			int ret = installDependenciesMessageBox.exec();

@@ -98,12 +98,12 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 		modDescription->setText(Description);
 	modDescription->setStyleSheet("QLabel {font-size: 0.8em; color: #ffffff; }");
 
+	ModButtonsWidget = new QWidget(this);
+	QHBoxLayout *modButtonsLayout = new QHBoxLayout(ModButtonsWidget);
+	ModButtonsWidget->setLayout(modButtonsLayout);
+
 	if(State != installed)
 	{
-		ModButtonsWidget = new QWidget(this);
-		QHBoxLayout *modButtonsLayout = new QHBoxLayout(ModButtonsWidget);
-		ModButtonsWidget->setLayout(modButtonsLayout);
-
 		QPushButton *installButton = new QPushButton(ModButtonsWidget);
 		installButton->setText(tr("Install"));
 		modButtonsLayout->addWidget(installButton);
@@ -113,10 +113,10 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 		modButtonsLayout->addWidget(videoReviewButton);
 */		
 		modButtonsLayout->addStretch();
-		modLayout->addWidget(ModButtonsWidget, 6, 2, 1, -1);
 		connect(installButton, SIGNAL(clicked()), this, SLOT(installButtonClicked()));
 //		connect(videoReviewButton, SIGNAL(clicked()), this, SLOT(videoReviewButtonClicked()));
 	}
+	modLayout->addWidget(ModButtonsWidget, 6, 2, 1, -1);
 	
 	if(!Category.isEmpty())
 	{
@@ -306,25 +306,55 @@ void AvailableMod::parseForumPostForLikes(const QByteArray& data)
 void AvailableMod::setState(AvailableMod::installstate_t state)
 {
 	State = state;
+	
+	Q_ASSERT(ModButtonsWidget != NULL);
 
-	if(ModStatus)
+	if(ModButtonsWidget && ModButtonsWidget->layout())
 	{
-		if(State == installed)
+		while (QLayoutItem* item = ModButtonsWidget->layout()->takeAt(0))
+		{
+			if(QWidget* widget = item->widget())
+				delete widget;
+
+			delete item;
+		}
+		InstallProgressBar = NULL;
+	}
+
+	switch(State)
+	{
+		case installed:
 		{
 			ModStatus->setText(tr("INSTALLED"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #448844;}");
 		}
-		else if(State == updateavailable)
+		break;
+		case updateavailable:
 		{
 			ModStatus->setText(tr("UPDATE AVAILABLE"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #ff8844;}");
 		}
-		else if(State == notinstalled)
+		break;
+		case notinstalled:
 		{
 			ModStatus->setText(tr("NOT INSTALLED"));
 			ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
 		}
+		break;
+		default:
+			Q_ASSERT(false);
 	}
+
+	if(State != installed && ModButtonsWidget)
+	{
+		QPushButton *installButton = new QPushButton(ModButtonsWidget);
+		installButton->setText(tr("Install"));
+		ModButtonsWidget->layout()->addWidget(installButton);
+		static_cast<QHBoxLayout *>(ModButtonsWidget->layout())->addStretch();
+
+		connect(installButton, SIGNAL(clicked()), this, SLOT(installButtonClicked()));
+	}
+
 }
 
 void AvailableMod::videoReviewButtonClicked()
