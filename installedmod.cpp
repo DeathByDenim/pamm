@@ -34,6 +34,11 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Context(Context), Identifier(Identifier), Signature(Signature), Priority(Priority), Enabled(Enabled), Id(Id)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
+#ifdef __APPLE__
+	modLayout->setMargin(0);
+	modLayout->setSpacing(-1);
+#endif
+
 	setLayout(modLayout);
 
 	ModCheckbox = new QCheckBox(this);

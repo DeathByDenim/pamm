@@ -30,7 +30,16 @@
 ModListWidget::ModListWidget(QWidget* parent, QAction* menuaction, ModManager* manager, mode_t mode)
  : QWidget(parent), Manager(manager), Mode(mode), CurrentStateFilter(StateInvalid), CurrentSort(SortInvalid)
 {
+#ifdef __APPLE__
+	QFont currentfont = font();
+	currentfont.setPointSize(currentfont.pointSize() - 2);
+	setFont(currentfont);
+#endif
 	QVBoxLayout *mainLayout = new QVBoxLayout(this);
+#ifdef __APPLE__
+	mainLayout->setMargin(0);
+	mainLayout->setSpacing(-1);
+#endif
 
 	QWidget *sortFilterWidget = createSortFilterWidget(this);
 	mainLayout->addWidget(sortFilterWidget);
@@ -62,6 +71,8 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 	{
 		QLabel *filterLabel = new QLabel(sort_filter_widget);
 		filterLabel->setText(tr("SHOW:"));
+		filterLabel->setStyleSheet("QLabel	{ color: #008888 }");
+
 		mylayout->addWidget(filterLabel);
 
 		QComboBox *filterComboBox = new QComboBox(sort_filter_widget);
@@ -79,6 +90,7 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 
 	QLabel *sortLabel = new QLabel(sort_filter_widget);
 	sortLabel->setText(tr("SORT:"));
+	sortLabel->setStyleSheet("QLabel	{ color: #008888 }");
 	mylayout->addWidget(sortLabel);
 
 	QComboBox *sortComboBox = new QComboBox(sort_filter_widget);
@@ -116,6 +128,9 @@ QScrollArea* ModListWidget::createModListScrollArea(QWidget* parent)
 	QFont listWidgetFont = ListWidget->font();
 	listWidgetFont.setBold(false);
 	ListWidget->setFont(listWidgetFont);
+#ifdef __APPLE__
+	listWidgetFont.setPointSize(listWidgetFont.pointSize() - 2);
+#endif
 	scrollAreaInstalled->setWidget(ListWidget);
 	scrollAreaInstalled->setWidgetResizable(true);
 	

@@ -30,6 +30,10 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL), ImgPath(imgPath)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
+#ifdef __APPLE__
+	modLayout->setMargin(0);
+	modLayout->setSpacing(-1);
+#endif
 	this->setLayout(modLayout);
 
 	QLabel *modNameLabel = new QLabel(this);
