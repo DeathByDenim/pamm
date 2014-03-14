@@ -71,6 +71,7 @@ public Q_SLOTS:
 	void sortIndexChanged(const QString & text);
 	void filterIndexChanged(const QString & text);
 	void updateList();
+	void maybeUpdateList();
 	void filterTextChanged(const QString &text);
 	void showModFilter(bool checked);
 };

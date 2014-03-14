@@ -264,6 +264,15 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	centralWidget()->setLayout(layout);
 
 	Tabs->setCurrentIndex(settings.value("tabs/lastindex", 0).toInt());
+	AvailableCompactViewAction->setChecked(settings.value("view/compactavailable", false).toBool());
+	InstalledCompactViewAction->setChecked(settings.value("view/compactinstalled", false).toBool());
+	AvailableModFilterAction->setChecked(settings.value("view/modfilteravailable", false).toBool());
+	InstalledModFilterAction->setChecked(settings.value("view/modfilterinstalled", false).toBool());
+	
+	availableCompactViewActionClicked(AvailableCompactViewAction->isChecked());
+	installedCompactViewActionClicked(InstalledCompactViewAction->isChecked());
+	qDebug() << settings.value("view/modfilteravailable");
+	qDebug() << settings.value("view/modfilterinstalled");
 
 	checkForUpdate();
 }
@@ -520,6 +529,8 @@ void PAMM::showHelpDialog()
 
 void PAMM::availableCompactViewActionClicked(bool checked)
 {
+	QSettings settings("DeathByDenim", "PAMM");
+	settings.setValue("view/compactavailable", AvailableCompactViewAction->isChecked());
 	for(QList<Mod *>::iterator m = Manager->availableMods.begin(); m != Manager->availableMods.end(); ++m)
 	{
 		(*m)->setCompactView(checked);
@@ -528,6 +539,8 @@ void PAMM::availableCompactViewActionClicked(bool checked)
 
 void PAMM::installedCompactViewActionClicked(bool checked)
 {
+	QSettings settings("DeathByDenim", "PAMM");
+	settings.setValue("view/compactinstalled", InstalledCompactViewAction->isChecked());
 	for(QList<Mod *>::iterator m = Manager->installedMods.begin(); m != Manager->installedMods.end(); ++m)
 	{
 		(*m)->setCompactView(checked);

@@ -514,7 +514,10 @@ void ModManager::replyFinished(QNetworkReply* reply)
 					Internet->get(request);
 				}
 				else
+				{
 					mod->parseForumPostForLikes(reply->readAll());
+					emit likeCountUpdated();
+				}
 			}
 		}
 	}

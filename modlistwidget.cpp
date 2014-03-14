@@ -26,9 +26,10 @@
 #include <QComboBox>
 #include <QScrollArea>
 #include <QAction>
+#include <QSettings>
 
 ModListWidget::ModListWidget(QWidget* parent, QAction* modfilteraction, ModManager* manager, ModListWidget::mode_t mode)
- : QWidget(parent), Manager(manager), Mode(mode), CurrentStateFilter(StateInvalid), CurrentSort(SortInvalid)
+ : QWidget(parent), Manager(manager), Mode(mode), ListWidget(NULL), FilterWidget(NULL), CurrentStateFilter(StateInvalid), CurrentSort(SortInvalid)
 {
 #ifdef __APPLE__
 	QFont currentfont = font();
@@ -53,7 +54,21 @@ ModListWidget::ModListWidget(QWidget* parent, QAction* modfilteraction, ModManag
 	connect(modfilteraction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
 	mainLayout->addWidget(FilterWidget);
 
+	QSettings settings("DeathByDenim", "PAMM");
+	switch(Mode)
+	{
+		case ModListWidget::ModeAvailable:
+			modfilteraction->setChecked(settings.value("view/modfilteravailable", false).toBool());
+			break;
+		case ModListWidget::ModeInstalled:
+			modfilteraction->setChecked(settings.value("view/modfilterinstalled", false).toBool());
+			break;
+	}
+	showModFilter(modfilteraction->isChecked());
+
+	
 	connect(Manager, SIGNAL(newModInstalled()), SLOT(updateList()));
+	connect(Manager, SIGNAL(likeCountUpdated()), SLOT(maybeUpdateList()));
 	if(Mode == ModListWidget::ModeAvailable)
 		connect(Manager, SIGNAL(availableModsLoaded()), SLOT(updateList()));
 }
@@ -64,11 +79,15 @@ ModListWidget::~ModListWidget()
 
 QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 {
+	QSettings settings("DeathByDenim", "PAMM");
+
 	QWidget *sort_filter_widget = new QWidget(parent);
 	QHBoxLayout *mylayout = new QHBoxLayout(sort_filter_widget);
 
 	if(Mode == ModListWidget::ModeAvailable)
 	{
+		CurrentStateFilter = StateAll;
+
 		QLabel *filterLabel = new QLabel(sort_filter_widget);
 		filterLabel->setText(tr("SHOW:"));
 		filterLabel->setStyleSheet("QLabel	{ color: #008888 }");
@@ -80,8 +99,9 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 		filterComboBox->addItem(tr("INSTALLED"));
 		filterComboBox->addItem(tr("REQUIRE UPDATE"));
 		filterComboBox->addItem(tr("NOT INSTALLED"));
+
 		connect(filterComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterIndexChanged(const QString &)));
-		CurrentStateFilter = StateAll;
+		filterComboBox->setCurrentIndex(settings.value(QString("filter/mode%1_filter").arg(Mode), 0).toInt());
 
 		mylayout->addWidget(filterComboBox);
 	}
@@ -110,9 +130,11 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 	}
 	connect(sortComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(sortIndexChanged(const QString &)));
 	CurrentSort = SortRandom;
+	sortComboBox->setCurrentIndex(settings.value(QString("filter/mode%1_sort").arg(Mode), 0).toInt());
 
 	mylayout->addWidget(sortComboBox);
 	mylayout->addStretch();
+
 	
 	return sort_filter_widget;
 }
@@ -123,7 +145,7 @@ QScrollArea* ModListWidget::createModListScrollArea(QWidget* parent)
 	ListWidget = new QWidget(scrollAreaInstalled);
 	QVBoxLayout *modListLayout = new QVBoxLayout(ListWidget);
 
-	populateModList();
+	populateModList(true);
 
 	QFont listWidgetFont = ListWidget->font();
 	listWidgetFont.setBold(false);
@@ -158,6 +180,11 @@ void ModListWidget::filterIndexChanged(const QString& text)
 	}
 	else
 		CurrentStateFilter = StateInvalid;
+
+	QSettings settings("DeathByDenim", "PAMM");
+	QComboBox *cb = dynamic_cast<QComboBox *>(sender());
+	if(cb)
+		settings.setValue(QString("filter/mode%1_filter").arg(Mode), cb->currentIndex());
 
 	populateModList(true);
 }
@@ -195,11 +222,19 @@ void ModListWidget::sortIndexChanged(const QString& text)
 	else
 		CurrentSort = SortInvalid;
 
+	QSettings settings("DeathByDenim", "PAMM");
+	QComboBox *cb = dynamic_cast<QComboBox *>(sender());
+	if(cb)
+		settings.setValue(QString("filter/mode%1_sort").arg(Mode), cb->currentIndex());
+
 	populateModList(true);
 }
 
 void ModListWidget::populateModList(bool do_sort)
 {
+	if(!ListWidget)
+		return;
+
 	QList<Mod *> *mods;
 	switch(Mode)
 	{
@@ -214,7 +249,8 @@ void ModListWidget::populateModList(bool do_sort)
 	}
 
 	QVBoxLayout *modListLayout = dynamic_cast<QVBoxLayout *>(ListWidget->layout());
-	Q_ASSERT(modListLayout != NULL);
+	if(modListLayout == NULL)
+		return;
 
 	setUpdatesEnabled(false);
 
@@ -336,6 +372,12 @@ void ModListWidget::updateList()
 	populateModList(true);
 }
 
+void ModListWidget::maybeUpdateList()
+{
+	if(CurrentSort == SortLikes)
+		populateModList(true);
+}
+
 void ModListWidget::filterTextChanged(const QString& text)
 {
 	CurrentFilterText = text.toLower();
@@ -347,6 +389,21 @@ void ModListWidget::showModFilter(bool checked)
 {
 	FilterWidget->setVisible(checked);
 	FilterWidget->setFocus();
+
+	QAction *ac = dynamic_cast<QAction *>(sender());
+	if(ac == NULL)
+		return;
+
+	QSettings settings("DeathByDenim", "PAMM");
+	switch(Mode)
+	{
+		case ModListWidget::ModeAvailable:
+			settings.setValue("view/modfilteravailable", ac->isChecked());
+			break;
+		case ModListWidget::ModeInstalled:
+			settings.setValue("view/modfilterinstalled", ac->isChecked());
+			break;
+	}
 }
 
 #include "modlistwidget.moc"

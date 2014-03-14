@@ -99,6 +99,7 @@ Q_SIGNALS:
 	void progress(int);
 	void newModInstalled();
 	void modUpdated();
+	void likeCountUpdated();
 };
 
 #endif // MODMANAGER_H

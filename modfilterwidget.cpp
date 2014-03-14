@@ -45,8 +45,6 @@ ModFilterWidget::ModFilterWidget(QWidget* parent)
 	filterCloseButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogCloseButton));
 	connect(filterCloseButton, SIGNAL(clicked(bool)), SLOT(clicked(bool)));
 	layout->addWidget(filterCloseButton);
-	
-	setVisible(false);
 }
 
 ModFilterWidget::~ModFilterWidget()
