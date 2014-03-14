@@ -170,6 +170,9 @@ AvailableMod::~AvailableMod()
 
 void AvailableMod::setIcon(const QImage& icon)
 {
+	if(icon.isNull())
+		return;
+
 	if(icon.width() == 100 && icon.height() == 100)
 		Icon = icon.convertToFormat(QImage::Format_ARGB32);
 	else
