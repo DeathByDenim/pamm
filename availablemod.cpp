@@ -29,24 +29,39 @@
 AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL), ImgPath(imgPath)
 {
-	QGridLayout *modLayout = new QGridLayout(this);
-#ifdef __APPLE__
-	modLayout->setMargin(0);
-	modLayout->setSpacing(-1);
-#endif
-	this->setLayout(modLayout);
+	QLayout *l = new QHBoxLayout(this);
 
-	QLabel *modNameLabel = new QLabel(this);
+	NormalView = new QWidget(this);
+	l->addWidget(NormalView);
+	CompactView = new QWidget(this);
+	l->addWidget(CompactView);
+	CompactView->setVisible(false);
+
+	QGridLayout *normalModLayout = new QGridLayout(NormalView);
+#ifdef __APPLE__
+	normalModLayout->setMargin(0);
+	normalModLayout->setSpacing(-1);
+#endif
+//	NormalView->setLayout(normalModLayout);
+
+	QHBoxLayout *compactModLayout = new QHBoxLayout(CompactView);
+#ifdef __APPLE__
+	compactModLayout->setMargin(0);
+	compactModLayout->setSpacing(-1);
+#endif
+//	NormalView->setLayout(compactModLayout);
+
+	QLabel *modNameLabel = new QLabel(NormalView);
 	modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none;\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
 	modNameLabel->setStyleSheet("QLabel {color: #008888; font-family: \"Verdana\"; font-size: 0.95em; text-decoration: none; }");
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-	QLabel *modAuthorLabel = new QLabel(this);
+	QLabel *modAuthorLabel = new QLabel(NormalView);
 	modAuthorLabel->setText(tr("by") + " " + Author);
 	modAuthorLabel->setStyleSheet("QLabel {color: #F9F9F9; margin-left: 5px; font-style: italic; font-size: 0.7em;}");
 
-	ModStatus = new QLabel(this);
+	ModStatus = new QLabel(NormalView);
 
 	if(State == installed)
 	{
@@ -64,7 +79,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 		ModStatus->setStyleSheet("QLabel {font-size: 0.8em; color: #888844;}");
 	}
 
-	QLabel *modInfoLabel = new QLabel(this);
+	QLabel *modInfoLabel = new QLabel(NormalView);
 	QString modInfoText = QString("Version : ") + Version + ", build " + Build + " (" + Date.toString("yyyy/MM/dd") + ")";
 	if(!Requires.isEmpty())
 	modInfoText += "\n" + tr("REQUIRES") + ": " + Requires.join(", ");
@@ -73,7 +88,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	modInfoLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 	setRelativeFontSizeForLabel(modInfoLabel, .8);
 
-	ModIconLabel = new QLabel(this);
+	ModIconLabel = new QLabel(NormalView);
 	QImageReader *reader = new QImageReader(imgPath + "generic.png");
 	QImage modIcon = reader->read();
 	delete reader;
@@ -90,7 +105,7 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 	}
 	ModIconLabel->setPixmap(QPixmap::fromImage(modIcon));
 
-	QLabel *modDescription = new QLabel(this);
+	QLabel *modDescription = new QLabel(NormalView);
 	modDescription->setWordWrap(true);
 	if(Description.isEmpty())
 		modDescription->setText("-- " + tr("No description available") + " --");
@@ -116,23 +131,37 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 		connect(installButton, SIGNAL(clicked()), this, SLOT(installButtonClicked()));
 //		connect(videoReviewButton, SIGNAL(clicked()), this, SLOT(videoReviewButtonClicked()));
 	}
-	modLayout->addWidget(ModButtonsWidget, 6, 2, 1, -1);
+	normalModLayout->addWidget(ModButtonsWidget, 5, 1, 1, -1);
 	
 	if(!Category.isEmpty())
 	{
-		QLabel *modCategoriesLabel = new QLabel(this);
+		QLabel *modCategoriesLabel = new QLabel(NormalView);
 		modCategoriesLabel->setText(Category.join(", ").toUpper());
 		modCategoriesLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 		setRelativeFontSizeForLabel(modCategoriesLabel, .8);
-		modLayout->addWidget(modCategoriesLabel, 4, 2, 1, -1);
+		      normalModLayout->addWidget(modCategoriesLabel, 3, 1, 1, -1);
 	}
 
-	modLayout->addWidget(ModIconLabel, 1, 1, -1, 1);
-	modLayout->addWidget(modNameLabel, 1, 2);
-	modLayout->addWidget(modAuthorLabel, 1, 3, Qt::AlignRight);
-	modLayout->addWidget(modInfoLabel, 2, 2, 1, -1);
-	modLayout->addWidget(modDescription, 3, 2, 1, -1);
-	modLayout->addWidget(ModStatus, 5, 2, 1, 1);
+	normalModLayout->addWidget(ModIconLabel, 0, 0, -1, 1);
+	normalModLayout->addWidget(modNameLabel, 0, 1);
+	normalModLayout->addWidget(modAuthorLabel, 0, 2, Qt::AlignRight);
+	normalModLayout->addWidget(modInfoLabel, 1, 1, 1, -1);
+	normalModLayout->addWidget(modDescription, 2, 1, 1, -1);
+	normalModLayout->addWidget(ModStatus, 4, 1, 1, 1);
+
+	QLabel *copyLabel = new QLabel(CompactView);
+	copyLabel->setText(modNameLabel->text());
+	copyLabel->setStyleSheet(modNameLabel->styleSheet());
+	copyLabel->setOpenExternalLinks(true);
+	compactModLayout->addWidget(copyLabel);
+	
+	copyLabel = new QLabel(CompactView);
+	copyLabel->setText(modAuthorLabel->text());
+	copyLabel->setStyleSheet(modAuthorLabel->styleSheet());
+	compactModLayout->addWidget(copyLabel);
+	
+	compactModLayout->addStretch(99999);
+	
 }
 
 AvailableMod::~AvailableMod()
@@ -167,7 +196,7 @@ void AvailableMod::installButtonClicked()
 {
 	if(ModButtonsWidget && ModButtonsWidget->layout())
 	{
-		while (QLayoutItem* item = ModButtonsWidget->layout()->takeAt(0))
+		while(QLayoutItem* item = ModButtonsWidget->layout()->takeAt(0))
 		{
 			if(QWidget* widget = item->widget())
 				delete widget;
@@ -246,11 +275,11 @@ void AvailableMod::setCount(int count)
 
 	if(ModDownloadCountLabel == NULL)
 	{
-		ModDownloadCountLabel = new QLabel(this);
+		ModDownloadCountLabel = new QLabel(NormalView);
 		ModDownloadCountLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
-		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(layout());
+		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(NormalView->layout());
 		if(gridlayout)
-			gridlayout->addWidget(ModDownloadCountLabel, 5, 3, 1, -1, Qt::AlignRight);
+			gridlayout->addWidget(ModDownloadCountLabel, 4, 2, 1, -1, Qt::AlignRight);
 	}
 
 	ModDownloadCountLabel->setText(QString(tr("Downloaded %1 times")).arg(count));
@@ -293,11 +322,11 @@ void AvailableMod::parseForumPostForLikes(const QByteArray& data)
 
 	if(ModLikesLabel == NULL)
 	{
-		ModLikesLabel = new QLabel(this);
+		ModLikesLabel = new QLabel(NormalView);
 		ModLikesLabel->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
-		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(layout());
+		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(NormalView->layout());
 		if(gridlayout)
-			gridlayout->addWidget(ModLikesLabel, 4, 3, 1, -1, Qt::AlignRight);
+			gridlayout->addWidget(ModLikesLabel, 3, 2, 1, -1, Qt::AlignRight);
 	}
 
 	ModLikesLabel->setText(QString(tr("Liked %1 times")).arg(Likes));
@@ -361,6 +390,28 @@ void AvailableMod::videoReviewButtonClicked()
 {
 //	VideoReviewDialog *diag = new VideoReviewDialog(this, ImgPath);
 //	diag->exec();
+}
+
+void AvailableMod::setCompactView(bool compact)
+{
+	setUpdatesEnabled(false);
+	NormalView->setVisible(!compact);
+	CompactView->setVisible(compact);
+	
+	if(compact)
+	{
+//		NormalView->layout()->removeWidget(ModButtonsWidget);
+		CompactView->layout()->addWidget(ModButtonsWidget);
+	}
+	else
+	{
+//		CompactView->layout()->removeWidget(ModButtonsWidget);
+		QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(NormalView->layout());
+		if(gridlayout)
+			gridlayout->addWidget(ModButtonsWidget, 5, 1, 1, -1);
+	}
+
+	setUpdatesEnabled(true);
 }
 
 #include "availablemod.moc"

@@ -30,6 +30,7 @@
 #include <QStringList>
 #include <QString>
 
+
 InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build)
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Context(Context), Identifier(Identifier), Signature(Signature), Priority(Priority), Enabled(Enabled), Id(Id)
 {
@@ -63,10 +64,10 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 	if(Identifier == "com.pa.deathbydenim.dpamm")
 		ModCheckbox->setDisabled(true);
 
-	modLayout->addWidget(ModCheckbox, 1, 1, 2, 1);
-	modLayout->addWidget(modNameLabel, 1, 2);
-	modLayout->addWidget(modAuthorLabel, 1, 3);
-	modLayout->addWidget(modInfoLabel, 2, 2, 1, -1);
+	modLayout->addWidget(ModCheckbox, 0, 0, -1, 1);
+	modLayout->addWidget(modNameLabel, 0, 1);
+	modLayout->addWidget(modAuthorLabel, 0, 2);
+	modLayout->addWidget(modInfoLabel, 1, 1, 1, -1);
 
 	if(!Requires.isEmpty())
 	{
@@ -74,7 +75,7 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 		modRequires->setText(tr("REQUIRES") + ": " + Requires.join(", "));
 		modRequires->setStyleSheet("QLabel {font-size: 0.8em; color: #888888; }");
 		setRelativeFontSizeForLabel(modRequires, .8);
-		modLayout->addWidget(modRequires, 3, 2, 1, -1);
+		modLayout->addWidget(modRequires, 2, 1, 1, -1);
 	}
 
 	QWidget *buttonWidget = new QWidget(this);
@@ -93,7 +94,7 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 		modUninstallButton->setDisabled(true);
 	buttonLayout->addWidget(modUninstallButton);
 	buttonLayout->addStretch();
-	modLayout->addWidget(buttonWidget, 4, 2, 1, -1);
+	modLayout->addWidget(buttonWidget, 3, 1, 1, -1);
 	
 	connect(ModUpdateButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked()));
 	connect(modUninstallButton, SIGNAL(clicked()), this, SLOT(uninstallButtonClicked()));
@@ -427,5 +428,27 @@ void InstalledMod::clearReverseRequirement()
 	ReverseRequirements.clear();
 }
 
+void InstalledMod::setCompactView(bool compact)
+{
+	QGridLayout *gridlayout = dynamic_cast<QGridLayout *>(layout());
+	if(gridlayout)
+	{
+		for(int i = 1; i < gridlayout->rowCount(); i++)
+		{
+			for(int j = 1; j < gridlayout->columnCount(); j++)
+			{
+				QLayoutItem *item = gridlayout->itemAtPosition(i, j);
+				if(item)
+				{
+					QWidget *widget = item->widget();
+					if(widget)
+					{
+						widget->setVisible(!compact);
+					}
+				}
+			}
+		}
+	}
+}
 
 #include "installedmod.moc"

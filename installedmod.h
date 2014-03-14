@@ -77,6 +77,7 @@ public:
 	void clearReverseRequirement();
 	void disableReverseRequirements();
 	QString json();
+	virtual void setCompactView(bool compact);
 
 public Q_SLOTS:
 	void checkBoxStateChanged(int state);

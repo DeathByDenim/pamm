@@ -43,6 +43,7 @@ public:
 	installstate_t state() {return State;};
 	void setState(installstate_t state);
 	void parseForumPostForLikes(const QByteArray &data);
+	virtual void setCompactView(bool compact);
 
 	static bool sortDownloads(const Mod *m1, const Mod *m2);
 	static bool sortLikes(const Mod *m1, const Mod *m2);
@@ -61,6 +62,8 @@ private:
 	QProgressBar *InstallProgressBar;
 	QLabel *ModDownloadCountLabel;
 	QLabel *ModLikesLabel;
+	QWidget *CompactView;
+	QWidget* NormalView;
 
 public Q_SLOTS:
 	void installButtonClicked();

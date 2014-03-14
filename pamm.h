@@ -57,6 +57,8 @@ private:
 //	ModFilter TypeFilter;
 	QAction* AvailableModFilterAction;
 	QAction* InstalledModFilterAction;
+    QAction* AvailableCompactViewAction;
+    QAction* InstalledCompactViewAction;
 
 	void clearWidgets(QLayout* layout, bool deleteWidgets);
 	void loadNews();
@@ -77,6 +79,8 @@ public Q_SLOTS:
 	void showAboutDialog();
 	void showHelpDialog();
 	void updateUpdateAllButton();
+	void availableCompactViewActionClicked(bool checked);
+	void installedCompactViewActionClicked(bool checked);
 };
 
 #endif // PAMM_H

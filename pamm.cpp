@@ -120,6 +120,20 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	InstalledModFilterAction->setShortcut(QKeySequence("Ctrl+m"));
 	InstalledModFilterAction->setVisible(false);
 	viewMenu->addAction(InstalledModFilterAction);
+	AvailableCompactViewAction = new QAction(this);
+	AvailableCompactViewAction->setText(tr("&Compact view"));
+	AvailableCompactViewAction->setCheckable(true);
+	AvailableCompactViewAction->setShortcut(QKeySequence("Alt+."));
+	AvailableCompactViewAction->setEnabled(false);
+	viewMenu->addAction(AvailableCompactViewAction);
+	InstalledCompactViewAction = new QAction(this);
+	InstalledCompactViewAction->setText(tr("&Compact view"));
+	InstalledCompactViewAction->setCheckable(true);
+	InstalledCompactViewAction->setShortcut(QKeySequence("Alt+."));
+	InstalledCompactViewAction->setVisible(false);
+	viewMenu->addAction(InstalledCompactViewAction);
+	connect(InstalledCompactViewAction, SIGNAL(triggered(bool)), SLOT(installedCompactViewActionClicked(bool)));
+	connect(AvailableCompactViewAction, SIGNAL(triggered(bool)), SLOT(availableCompactViewActionClicked(bool)));
 
 
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -415,8 +429,12 @@ void PAMM::tabChanged(int index)
 	
 	InstalledModFilterAction->setEnabled(index != 0);
 	InstalledModFilterAction->setVisible(index != 2);
+	InstalledCompactViewAction->setEnabled(index != 0);
+	InstalledCompactViewAction->setVisible(index != 2);
 	AvailableModFilterAction->setEnabled(index != 0);
 	AvailableModFilterAction->setVisible(index == 2);
+	AvailableCompactViewAction->setEnabled(index != 0);
+	AvailableCompactViewAction->setVisible(index == 2);
 }
 
 
@@ -498,6 +516,22 @@ void PAMM::showHelpDialog()
 {
 	HelpDialog help(this, ImgPath);
 	help.exec();
+}
+
+void PAMM::availableCompactViewActionClicked(bool checked)
+{
+	for(QList<Mod *>::iterator m = Manager->availableMods.begin(); m != Manager->availableMods.end(); ++m)
+	{
+		(*m)->setCompactView(checked);
+	}
+}
+
+void PAMM::installedCompactViewActionClicked(bool checked)
+{
+	for(QList<Mod *>::iterator m = Manager->installedMods.begin(); m != Manager->installedMods.end(); ++m)
+	{
+		(*m)->setCompactView(checked);
+	}
 }
 
 #include "pamm.moc"

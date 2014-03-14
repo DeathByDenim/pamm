@@ -27,7 +27,7 @@
 #include <QScrollArea>
 #include <QAction>
 
-ModListWidget::ModListWidget(QWidget* parent, QAction* menuaction, ModManager* manager, mode_t mode)
+ModListWidget::ModListWidget(QWidget* parent, QAction* modfilteraction, ModManager* manager, ModListWidget::mode_t mode)
  : QWidget(parent), Manager(manager), Mode(mode), CurrentStateFilter(StateInvalid), CurrentSort(SortInvalid)
 {
 #ifdef __APPLE__
@@ -49,8 +49,8 @@ ModListWidget::ModListWidget(QWidget* parent, QAction* menuaction, ModManager* m
 
 	FilterWidget = new ModFilterWidget(this);
 	connect(FilterWidget, SIGNAL(filterTextChanged(QString)), SLOT(filterTextChanged(QString)));
-	connect(FilterWidget, SIGNAL(visibilityChanged(bool)), menuaction, SLOT(setChecked(bool)));
-	connect(menuaction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
+	connect(FilterWidget, SIGNAL(visibilityChanged(bool)), modfilteraction, SLOT(setChecked(bool)));
+	connect(modfilteraction, SIGNAL(triggered(bool)), SLOT(showModFilter(bool)));
 	mainLayout->addWidget(FilterWidget);
 
 	connect(Manager, SIGNAL(newModInstalled()), SLOT(updateList()));

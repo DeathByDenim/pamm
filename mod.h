@@ -39,6 +39,7 @@ public:
 	QString key() {return Key;}
 	QStringList requires() {return Requires;}
 	bool textContains(QString filtertext);
+	virtual void setCompactView(bool compact) = 0;
 
 	static bool sortLastUpdated(const Mod *m1, const Mod *m2);
 	static bool sortTitle(const Mod *m1, const Mod *m2);

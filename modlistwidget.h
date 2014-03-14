@@ -34,7 +34,7 @@ class ModListWidget : public QWidget
 
 public:
 	enum mode_t {ModeInvalid, ModeInstalled, ModeAvailable};
-	ModListWidget(QWidget* parent, QAction* menuaction, ModManager* manager, ModListWidget::mode_t mode);
+	ModListWidget(QWidget* parent, QAction* modfilteraction, ModManager* manager, ModListWidget::mode_t mode);
 	~ModListWidget();
 
 private:
