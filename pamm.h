@@ -19,7 +19,7 @@
 #ifndef PAMM_H
 #define PAMM_H
 
-#define PAMM_VERSION "3.5.0"
+#define PAMM_VERSION "4.0.0"
 
 #include <QtGui/QMainWindow>
 #include "modmanager.h"
@@ -81,6 +81,8 @@ public Q_SLOTS:
 	void updateUpdateAllButton();
 	void availableCompactViewActionClicked(bool checked);
 	void installedCompactViewActionClicked(bool checked);
+	void disableAllModsClicked();
+	void reenableAllModsClicked();
 };
 
 #endif // PAMM_H

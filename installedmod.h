@@ -67,7 +67,7 @@ public:
 	void setScene(QVariant files, scene_t scene);
 	void setEnabled(bool enabled);
 	bool enabled() {return Enabled;};
-	void enable();
+	void enable(bool enabled = true);
 	QString identifier() {return Identifier;};
 	static bool sortPriority(const Mod* m1, const Mod* m2);
 	QVariantMap completeJson() {return CompleteJson;};

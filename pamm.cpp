@@ -104,7 +104,17 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	showModFolderAction->setText(tr("&Show Mod folder"));
 	showModFolderAction->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
 	connect(showModFolderAction, SIGNAL(triggered()), SLOT(showModFolder()));
+	QAction* disableAllModsAction = new QAction(this);
+	disableAllModsAction->setText(tr("Disable all mods"));
+	disableAllModsAction->setShortcut(QKeySequence("Ctrl+d"));
+	connect(disableAllModsAction, SIGNAL(triggered()), SLOT(disableAllModsClicked()));
+	QAction* reenableAllModsAction = new QAction(this);
+	reenableAllModsAction->setText(tr("Reenable previously disabled mods"));
+	reenableAllModsAction->setShortcut(QKeySequence("Ctrl+d"));
+	connect(reenableAllModsAction, SIGNAL(triggered()), SLOT(reenableAllModsClicked()));
 	fileMenu->addAction(showModFolderAction);
+	fileMenu->addAction(disableAllModsAction);
+	fileMenu->addAction(reenableAllModsAction);
 	fileMenu->addAction(quitAction);
 
 	QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
@@ -544,6 +554,41 @@ void PAMM::installedCompactViewActionClicked(bool checked)
 	for(QList<Mod *>::iterator m = Manager->installedMods.begin(); m != Manager->installedMods.end(); ++m)
 	{
 		(*m)->setCompactView(checked);
+	}
+}
+
+void PAMM::disableAllModsClicked()
+{
+	QSettings settings("DeathByDenim", "PAMM");
+	QStringList enabledModsList;
+	for(QList<Mod *>::iterator m = Manager->installedMods.begin(); m != Manager->installedMods.end(); ++m)
+	{
+		InstalledMod *im = dynamic_cast<InstalledMod *>(*m);
+		if(im && im->enabled())
+		{
+			enabledModsList.push_back(im->key());
+			im->enable(false);
+		}
+	}
+	settings.setValue("mods/previousenabled", enabledModsList);
+}
+
+void PAMM::reenableAllModsClicked()
+{
+	QSettings settings("DeathByDenim", "PAMM");
+	QStringList reenableList = settings.value("mods/previousenabled", QStringList()).toStringList();
+
+	for(QStringList::const_iterator s = reenableList.constBegin(); s != reenableList.constEnd(); ++s)
+	{
+		for(QList<Mod *>::iterator m = Manager->installedMods.begin(); m != Manager->installedMods.end(); ++m)
+		{
+			if((*m)->key() == *s)
+			{
+				InstalledMod *im = dynamic_cast<InstalledMod *>(*m);
+					im->enable();
+				break;
+			}
+		}
 	}
 }
 

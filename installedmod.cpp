@@ -403,10 +403,15 @@ void InstalledMod::disableReverseRequirements()
 	}
 }
 
-void InstalledMod::enable()
+void InstalledMod::enable(bool enabled)
 {
 	if(ModCheckbox)
-		ModCheckbox->setCheckState(Qt::Checked);
+	{
+		if(Key == "PAMM" && enabled == false)
+			return;
+
+		ModCheckbox->setCheckState(enabled ? Qt::Checked : Qt::Unchecked);
+	}
 }
 
 QString InstalledMod::json()
