@@ -38,6 +38,7 @@ public:
 	QString displayName() {return DisplayName;}
 	QString key() {return Key;}
 	QStringList requires() {return Requires;}
+	QStringList category() {return Category;}
 	bool textContains(QString filtertext);
 	virtual void setCompactView(bool compact) = 0;
 

@@ -25,6 +25,7 @@
 class ModFilterWidget;
 class QScrollArea;
 class QAction;
+class QComboBox;
 class ModManager;
 class InstalledMod;
 
@@ -58,18 +59,22 @@ private:
 		SortLikes
 	} CurrentSort;
 	QString CurrentFilterText;
-
-	ModManager *Manager;
-	QWidget* createSortFilterWidget(QWidget *parent = 0);
-    QScrollArea* createModListScrollArea(QWidget* parent = 0);
-    void populateModList(bool do_sort = false);
+	QString CurrentCategoryFilter;
 	mode_t Mode;
     QWidget* ListWidget;
     ModFilterWidget* FilterWidget;
+    QComboBox* FilterCategoryComboBox;
+	ModManager *Manager;
+
+	QWidget* createSortFilterWidget(QWidget *parent = 0);
+    QScrollArea* createModListScrollArea(QWidget* parent = 0);
+    void populateModList(bool do_sort = false);
+	void populateCategoryFilter();
 
 public Q_SLOTS:
 	void sortIndexChanged(const QString & text);
 	void filterIndexChanged(const QString & text);
+	void filterCategoryIndexChanged(const QString & text);
 	void updateList();
 	void maybeUpdateList();
 	void filterTextChanged(const QString &text);

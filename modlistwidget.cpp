@@ -29,7 +29,7 @@
 #include <QSettings>
 
 ModListWidget::ModListWidget(QWidget* parent, QAction* modfilteraction, ModManager* manager, ModListWidget::mode_t mode)
- : QWidget(parent), Manager(manager), Mode(mode), ListWidget(NULL), FilterWidget(NULL), CurrentStateFilter(StateInvalid), CurrentSort(SortInvalid)
+ : QWidget(parent), Manager(manager), Mode(mode), ListWidget(NULL), FilterWidget(NULL), CurrentStateFilter(StateInvalid), CurrentSort(SortInvalid), FilterCategoryComboBox(NULL)
 {
 #ifdef __APPLE__
 	QFont currentfont = font();
@@ -66,7 +66,6 @@ ModListWidget::ModListWidget(QWidget* parent, QAction* modfilteraction, ModManag
 	}
 	showModFilter(modfilteraction->isChecked());
 
-	
 	connect(Manager, SIGNAL(newModInstalled()), SLOT(updateList()));
 	connect(Manager, SIGNAL(likeCountUpdated()), SLOT(maybeUpdateList()));
 	if(Mode == ModListWidget::ModeAvailable)
@@ -84,15 +83,15 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 	QWidget *sort_filter_widget = new QWidget(parent);
 	QHBoxLayout *mylayout = new QHBoxLayout(sort_filter_widget);
 
+	QLabel *filterLabel = new QLabel(sort_filter_widget);
+	filterLabel->setText(tr("SHOW:"));
+	filterLabel->setStyleSheet("QLabel	{ color: #008888 }");
+
+	mylayout->addWidget(filterLabel);
+
 	if(Mode == ModListWidget::ModeAvailable)
 	{
 		CurrentStateFilter = StateAll;
-
-		QLabel *filterLabel = new QLabel(sort_filter_widget);
-		filterLabel->setText(tr("SHOW:"));
-		filterLabel->setStyleSheet("QLabel	{ color: #008888 }");
-
-		mylayout->addWidget(filterLabel);
 
 		QComboBox *filterComboBox = new QComboBox(sort_filter_widget);
 		filterComboBox->addItem(tr("ALL"));
@@ -104,7 +103,14 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 		filterComboBox->setCurrentIndex(settings.value(QString("filter/mode%1_filter").arg(Mode), 0).toInt());
 
 		mylayout->addWidget(filterComboBox);
+
 	}
+
+	FilterCategoryComboBox = new QComboBox(sort_filter_widget);
+	FilterCategoryComboBox->addItem("ALL");
+	connect(FilterCategoryComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterCategoryIndexChanged(QString)));
+
+	mylayout->addWidget(FilterCategoryComboBox);
 	mylayout->addStretch();
 	mylayout->addStrut(10);
 
@@ -145,6 +151,7 @@ QScrollArea* ModListWidget::createModListScrollArea(QWidget* parent)
 	ListWidget = new QWidget(scrollAreaInstalled);
 	QVBoxLayout *modListLayout = new QVBoxLayout(ListWidget);
 
+	populateCategoryFilter();
 	populateModList(true);
 
 	QFont listWidgetFont = ListWidget->font();
@@ -265,7 +272,7 @@ void ModListWidget::populateModList(bool do_sort)
 
 		delete item;
 	}
-	
+
 	if(do_sort)
 	{
 		switch(CurrentSort)
@@ -302,7 +309,7 @@ void ModListWidget::populateModList(bool do_sort)
 	QList<Mod *> filteredmods;
 	if(Mode == ModListWidget::ModeInstalled || (Mode == ModListWidget::ModeAvailable && CurrentStateFilter == StateAll))
 	{
-		if(CurrentFilterText == "")
+		if(CurrentFilterText == "" && CurrentCategoryFilter == "")
 		{
 			filteredmods = *mods;
 		}
@@ -311,7 +318,10 @@ void ModListWidget::populateModList(bool do_sort)
 			for(QList<Mod *>::const_iterator m = mods->constBegin(); m != mods->constEnd(); ++m)
 			{
 				if((*m)->textContains(CurrentFilterText))
-					filteredmods.append(*m);
+				{
+					if(CurrentCategoryFilter == "" || (*m)->category().contains(CurrentCategoryFilter, Qt::CaseInsensitive))
+						filteredmods.append(*m);
+				}
 			}
 		}
 	}
@@ -341,11 +351,14 @@ void ModListWidget::populateModList(bool do_sort)
 			}
 
 			if(CurrentFilterText == "" || (*m)->textContains(CurrentFilterText))
-				filteredmods.append(*m);
+			{
+				if(CurrentCategoryFilter == "" || (*m)->category().contains(CurrentCategoryFilter, Qt::CaseInsensitive))
+					filteredmods.append(*m);
+			}
 		}
+
 	}
 
-	// Add only the required ones.
 	if(filteredmods.count() == 0)
 	{
 		QLabel *nomodsLabel = new QLabel(ListWidget);
@@ -369,6 +382,7 @@ void ModListWidget::populateModList(bool do_sort)
 
 void ModListWidget::updateList()
 {
+	populateCategoryFilter();
 	populateModList(true);
 }
 
@@ -403,6 +417,55 @@ void ModListWidget::showModFilter(bool checked)
 		case ModListWidget::ModeInstalled:
 			settings.setValue("view/modfilterinstalled", ac->isChecked());
 			break;
+	}
+}
+
+void ModListWidget::filterCategoryIndexChanged(const QString& text)
+{
+	if(text == "ALL")
+		CurrentCategoryFilter = "";
+	else
+		CurrentCategoryFilter = text;
+
+	populateModList(false);
+}
+
+void ModListWidget::populateCategoryFilter()
+{
+	QList<Mod *> *mods;
+	switch(Mode)
+	{
+		case ModeInstalled:
+			mods = &Manager->installedMods;
+			break;
+		case ModeAvailable:
+			mods = &Manager->availableMods;
+			break;
+		default:
+			return;
+	}
+
+	QStringList categories;
+
+	for(QList<Mod *>::const_iterator m = mods->constBegin(); m != mods->constEnd(); ++m)
+	{
+		categories += (*m)->category();
+	}
+
+	for(QStringList::iterator s = categories.begin(); s != categories.end(); ++s)
+		*s = s->toUpper();
+	categories.sort();
+	categories.removeDuplicates();
+	categories.push_front("ALL");
+	if(FilterCategoryComboBox)
+	{
+		disconnect(FilterCategoryComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterCategoryIndexChanged(QString)));
+		FilterCategoryComboBox->clear();
+		FilterCategoryComboBox->addItems(categories);
+		int index = FilterCategoryComboBox->findText(CurrentCategoryFilter);
+		if(index >= 0)
+			FilterCategoryComboBox->setCurrentIndex(index);
+		connect(FilterCategoryComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(filterCategoryIndexChanged(QString)));
 	}
 }
 
