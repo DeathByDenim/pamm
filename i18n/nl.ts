@@ -121,7 +121,7 @@
     </message>
     <message>
         <source>This has two menu items, &amp;quot;Show Mod folder&amp;quot; and &amp;quot;Quit&amp;quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &amp;quot;Quit&amp;quot; quits PAMM.</source>
-        <translation>Dit heeft twee menuopties, &amp;quot;Toon moddirectory&amp;quot; and Afsluiten&amp;quot;. De eerste opent de map waar alle mods automatisch door PAMM geïnstalleerd zijn. Deze optie is alleen voor geavanceerd gebruik. Normaal gesproken heeft u hier niks te zoeken. De menuoptie &amp;quot;Afsluiten&amp;quot; sluit PAMM af.</translation>
+        <translation type="obsolete">Dit heeft twee menuopties, &amp;quot;Toon moddirectory&amp;quot; and Afsluiten&amp;quot;. De eerste opent de map waar alle mods automatisch door PAMM geïnstalleerd zijn. Deze optie is alleen voor geavanceerd gebruik. Normaal gesproken heeft u hier niks te zoeken. De menuoptie &amp;quot;Afsluiten&amp;quot; sluit PAMM af.</translation>
     </message>
     <message>
         <source>Help</source>
@@ -153,7 +153,31 @@
     </message>
     <message>
         <source>The only menu item here is &amp;quot;Show mod filter&amp;quot; which only works when the AVAIABLE MODS tabs is selected. If activated, you will be presented with a text field where you can type a filter text. Only mods that have that text will be displayed.</source>
-        <translation>De enige menuoptie is &amp;quot;Toon modfilter&amp;quot;. Deze optie is alleen beschikbaar als de BESCHIKBARE MODS tab in beeld is. Als de menuoptie is aangevinkt, dan ziet u een textveld onderaan waar u een filtertekst kunt intypen. Enkel de mods me die tekst zullen getoond worden.</translation>
+        <translation type="obsolete">De enige menuoptie is &amp;quot;Toon modfilter&amp;quot;. Deze optie is alleen beschikbaar als de BESCHIKBARE MODS tab in beeld is. Als de menuoptie is aangevinkt, dan ziet u een textveld onderaan waar u een filtertekst kunt intypen. Enkel de mods me die tekst zullen getoond worden.</translation>
+    </message>
+    <message>
+        <source>This has four menu items.</source>
+        <translation>Dit menu heeft view menuitems.</translation>
+    </message>
+    <message>
+        <source>&amp;quot;Show Mod folder&amp;quot; will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here.</source>
+        <translation>&amp;quot;Toon moddirectory&amp;quot; opent de map waar alle mods automatisch door PAMM geïnstalleerd zijn. Deze optie is alleen voor geavanceerd gebruik. Normaal gesproken heeft u hier niks te zoeken.</translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Disable all mods&amp;quot; will deactivate all of the mods. This is useful to see if mods are interfering with the client. The state of the mods is saved however, and you can easily restore it using the &amp;quot;Reenable previously disabled mods&amp;quot; menu item.</source>
+        <translation>De menuoptie &amp;quot;Alle mods uitschakelen&amp;quot; deactiveert alle mods. Dit is handig om uit te vinden of er mods zijn die dingen stuk maken in de client. Welke mods geactiveerd zijn wordt ook opgeslagen, zodat je ze eenvoudig weer kunt activeren via de menuoptie &amp;quot;Eerder uitgeschakelde mods inschakelen&amp;quot;.</translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Quit&amp;quot; quits PAMM.</source>
+        <translation>De menuoptie &amp;quot;Afsluiten&amp;quot; sluit PAMM af.</translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Show mod filter&amp;quot; will open text field at the bottom of the tab where you can type a filter text. Only mods that have that text will be displayed.</source>
+        <translation>De menuoptie &amp;quot;Toon modfilter&amp;quot;. opent een textveld onderaan de tab waar u een filtertekst kunt intypen. Enkel de mods me die tekst zullen getoond worden.</translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Compact view&amp;quot; will show you a summarized version of the list so you can get a better overview.</source>
+        <translation>De menuoptie &amp;quot;Toon compact&amp;quot; toont een compactere versie van de lijst zodat je een beter overzicht hebt.</translation>
     </message>
 </context>
 <context>
@@ -199,58 +223,7 @@
     </message>
 </context>
 <context>
-    <name>ModManager</name>
-    <message>
-        <source>Couldn&apos;t open ZIP file!</source>
-        <translation>Kon ZIP bestand niet openen!</translation>
-    </message>
-    <message>
-        <source>Reason</source>
-        <translation>Reden</translation>
-    </message>
-    <message>
-        <source>%1 depends on other mods.</source>
-        <translation>%1 hangt van andere mods af.</translation>
-    </message>
-    <message>
-        <source>Do you want to install those?</source>
-        <translation>Wilt u die installeren?</translation>
-    </message>
-    <message>
-        <source>Unmet requirements!</source>
-        <translation>Missende benodigdheden!</translation>
-    </message>
-    <message>
-        <source>%1 is not installed, but is needed for this mod. Mod will not work.</source>
-        <translation>%1 is niet geïnstalleerd, maar is wel nodig voor deze mod. Mod zal niet werken.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t delete all of the files.</source>
-        <translation>Kon alle bestanden niet verwijderen.</translation>
-    </message>
-    <message>
-        <source>See</source>
-        <translation>Zie</translation>
-    </message>
-</context>
-<context>
-    <name>PAMM</name>
-    <message>
-        <source>PA MOD MANAGER</source>
-        <translation>PA MOD BEHEERDER</translation>
-    </message>
-    <message>
-        <source>NEWS</source>
-        <translation>NIEUWS</translation>
-    </message>
-    <message>
-        <source>No mods found</source>
-        <translation>Geen mods gevonden</translation>
-    </message>
-    <message>
-        <source>INSTALLED MODS</source>
-        <translation>GEÏNSTALLEERDE MODS</translation>
-    </message>
+    <name>ModListWidget</name>
     <message>
         <source>SHOW:</source>
         <translation>TOON:</translation>
@@ -270,6 +243,10 @@
     <message>
         <source>NOT INSTALLED</source>
         <translation>NIET GEÏNSTALLEERD</translation>
+    </message>
+    <message>
+        <source>SORT:</source>
+        <translation>SORTEER:</translation>
     </message>
     <message>
         <source>RANDOM</source>
@@ -298,6 +275,116 @@
     <message>
         <source>LIKES</source>
         <translation>LEUK GEVONDEN</translation>
+    </message>
+    <message>
+        <source>No mods found</source>
+        <translation>Geen mods gevonden</translation>
+    </message>
+</context>
+<context>
+    <name>ModManager</name>
+    <message>
+        <source>Couldn&apos;t open ZIP file!</source>
+        <translation>Kon ZIP bestand niet openen!</translation>
+    </message>
+    <message>
+        <source>Reason</source>
+        <translation>Reden</translation>
+    </message>
+    <message>
+        <source>%1 depends on other mods.</source>
+        <translation>%1 hangt van andere mods af.</translation>
+    </message>
+    <message>
+        <source>Do you want to install those?</source>
+        <translation type="obsolete">Wilt u die installeren?</translation>
+    </message>
+    <message>
+        <source>Unmet requirements!</source>
+        <translation>Missende benodigdheden!</translation>
+    </message>
+    <message>
+        <source>%1 is not installed, but is needed for this mod. Mod will not work.</source>
+        <translation>%1 is niet geïnstalleerd, maar is wel nodig voor deze mod. Mod zal niet werken.</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t delete all of the files.</source>
+        <translation>Kon alle bestanden niet verwijderen.</translation>
+    </message>
+    <message>
+        <source>See</source>
+        <translation>Zie</translation>
+    </message>
+    <message>
+        <source>Do you want to install the following?</source>
+        <translation>Wilt u het volgende installeren?</translation>
+    </message>
+</context>
+<context>
+    <name>PAMM</name>
+    <message>
+        <source>PA MOD MANAGER</source>
+        <translation>PA MOD BEHEERDER</translation>
+    </message>
+    <message>
+        <source>NEWS</source>
+        <translation>NIEUWS</translation>
+    </message>
+    <message>
+        <source>No mods found</source>
+        <translation type="obsolete">Geen mods gevonden</translation>
+    </message>
+    <message>
+        <source>INSTALLED MODS</source>
+        <translation>GEÏNSTALLEERDE MODS</translation>
+    </message>
+    <message>
+        <source>SHOW:</source>
+        <translation type="obsolete">TOON:</translation>
+    </message>
+    <message>
+        <source>ALL</source>
+        <translation type="obsolete">ALLES</translation>
+    </message>
+    <message>
+        <source>INSTALLED</source>
+        <translation type="obsolete">GEÏNSTALLEERD</translation>
+    </message>
+    <message>
+        <source>REQUIRE UPDATE</source>
+        <translation type="obsolete">UPDATE NODIG</translation>
+    </message>
+    <message>
+        <source>NOT INSTALLED</source>
+        <translation type="obsolete">NIET GEÏNSTALLEERD</translation>
+    </message>
+    <message>
+        <source>RANDOM</source>
+        <translation type="obsolete">WILLEKEURIG</translation>
+    </message>
+    <message>
+        <source>LAST UPDATED</source>
+        <translation type="obsolete">LAATSTE KEER GEÜPDATE</translation>
+    </message>
+    <message>
+        <source>TITLE</source>
+        <translation type="obsolete">TITEL</translation>
+    </message>
+    <message>
+        <source>AUTHOR</source>
+        <translation type="obsolete">AUTEUR</translation>
+    </message>
+    <message>
+        <source>BUILD</source>
+        <translation type="obsolete">BUILD</translation>
+    </message>
+    <message>
+        <source>DOWNLOADS</source>
+        <translation type="obsolete">DOWNLOADS</translation>
+    </message>
+    <message>
+        <source>LIKES</source>
+        <translation type="obsolete">LEUK GEVONDEN</translation>
     </message>
     <message>
         <source>AVAILABLE MODS</source>
@@ -341,7 +428,7 @@
     </message>
     <message>
         <source>SORT:</source>
-        <translation>SORTEER:</translation>
+        <translation type="obsolete">SORTEER:</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -386,6 +473,18 @@
     <message>
         <source>Mod filter</source>
         <translation>Modfilter</translation>
+    </message>
+    <message>
+        <source>Disable all mods</source>
+        <translation>Alle mods uitschakelen</translation>
+    </message>
+    <message>
+        <source>Reenable previously disabled mods</source>
+        <translation>Eerder uitgeschakelde mods inschakelen</translation>
+    </message>
+    <message>
+        <source>&amp;Compact view</source>
+        <translation>Toon &amp;compact</translation>
     </message>
 </context>
 </TS>

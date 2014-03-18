@@ -119,10 +119,6 @@
         <translation>Datei</translation>
     </message>
     <message>
-        <source>This has two menu items, &amp;quot;Show Mod folder&amp;quot; and &amp;quot;Quit&amp;quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &amp;quot;Quit&amp;quot; quits PAMM.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
@@ -151,7 +147,27 @@
         <translation>Ansicht</translation>
     </message>
     <message>
-        <source>The only menu item here is &amp;quot;Show mod filter&amp;quot; which only works when the AVAIABLE MODS tabs is selected. If activated, you will be presented with a text field where you can type a filter text. Only mods that have that text will be displayed.</source>
+        <source>This has four menu items.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;quot;Show Mod folder&amp;quot; will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Disable all mods&amp;quot; will deactivate all of the mods. This is useful to see if mods are interfering with the client. The state of the mods is saved however, and you can easily restore it using the &amp;quot;Reenable previously disabled mods&amp;quot; menu item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Quit&amp;quot; quits PAMM.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Show mod filter&amp;quot; will open text field at the bottom of the tab where you can type a filter text. Only mods that have that text will be displayed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The menu item &amp;quot;Compact view&amp;quot; will show you a summarized version of the list so you can get a better overview.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -198,58 +214,7 @@
     </message>
 </context>
 <context>
-    <name>ModManager</name>
-    <message>
-        <source>Couldn&apos;t open ZIP file!</source>
-        <translation>Könnte die ZIP Datei nicht öffnen!</translation>
-    </message>
-    <message>
-        <source>Reason</source>
-        <translation>Grund</translation>
-    </message>
-    <message>
-        <source>%1 depends on other mods.</source>
-        <translation>%1 hängt ab von sonstiger Mods.</translation>
-    </message>
-    <message>
-        <source>Do you want to install those?</source>
-        <translation>Wöllen Sie die auch installieren?</translation>
-    </message>
-    <message>
-        <source>Unmet requirements!</source>
-        <translation>Mangelende  Abhängigkeiten!</translation>
-    </message>
-    <message>
-        <source>%1 is not installed, but is needed for this mod. Mod will not work.</source>
-        <translation>%1 ist nicht installiert, aber es ist nötig für dieses Mod. Mod werde nicht funktionieren.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t delete all of the files.</source>
-        <translation>Könnte nicht alle Datei löschen.</translation>
-    </message>
-    <message>
-        <source>See</source>
-        <translation>Siehe</translation>
-    </message>
-</context>
-<context>
-    <name>PAMM</name>
-    <message>
-        <source>PA MOD MANAGER</source>
-        <translation>PA MOD MANAGER</translation>
-    </message>
-    <message>
-        <source>NEWS</source>
-        <translation>NACHRICHTEN</translation>
-    </message>
-    <message>
-        <source>No mods found</source>
-        <translation>Keine mods gefunden</translation>
-    </message>
-    <message>
-        <source>INSTALLED MODS</source>
-        <translation>INSTALLIERTE MODS</translation>
-    </message>
+    <name>ModListWidget</name>
     <message>
         <source>SHOW:</source>
         <translation>ZEIG:</translation>
@@ -269,6 +234,10 @@
     <message>
         <source>NOT INSTALLED</source>
         <translation>NICHT INSTALLIERT</translation>
+    </message>
+    <message>
+        <source>SORT:</source>
+        <translation>SORTIER:</translation>
     </message>
     <message>
         <source>RANDOM</source>
@@ -297,6 +266,116 @@
     <message>
         <source>LIKES</source>
         <translation>TOLL GEFUNDEN</translation>
+    </message>
+    <message>
+        <source>No mods found</source>
+        <translation>Keine mods gefunden</translation>
+    </message>
+</context>
+<context>
+    <name>ModManager</name>
+    <message>
+        <source>Couldn&apos;t open ZIP file!</source>
+        <translation>Könnte die ZIP Datei nicht öffnen!</translation>
+    </message>
+    <message>
+        <source>Reason</source>
+        <translation>Grund</translation>
+    </message>
+    <message>
+        <source>%1 depends on other mods.</source>
+        <translation>%1 hängt ab von sonstiger Mods.</translation>
+    </message>
+    <message>
+        <source>Do you want to install those?</source>
+        <translation type="obsolete">Wöllen Sie die auch installieren?</translation>
+    </message>
+    <message>
+        <source>Unmet requirements!</source>
+        <translation>Mangelende  Abhängigkeiten!</translation>
+    </message>
+    <message>
+        <source>%1 is not installed, but is needed for this mod. Mod will not work.</source>
+        <translation>%1 ist nicht installiert, aber es ist nötig für dieses Mod. Mod werde nicht funktionieren.</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t delete all of the files.</source>
+        <translation>Könnte nicht alle Datei löschen.</translation>
+    </message>
+    <message>
+        <source>See</source>
+        <translation>Siehe</translation>
+    </message>
+    <message>
+        <source>Do you want to install the following?</source>
+        <translation>Wöllen Sie die folgende Mods auch installieren?</translation>
+    </message>
+</context>
+<context>
+    <name>PAMM</name>
+    <message>
+        <source>PA MOD MANAGER</source>
+        <translation>PA MOD MANAGER</translation>
+    </message>
+    <message>
+        <source>NEWS</source>
+        <translation>NACHRICHTEN</translation>
+    </message>
+    <message>
+        <source>No mods found</source>
+        <translation type="obsolete">Keine mods gefunden</translation>
+    </message>
+    <message>
+        <source>INSTALLED MODS</source>
+        <translation>INSTALLIERTE MODS</translation>
+    </message>
+    <message>
+        <source>SHOW:</source>
+        <translation type="obsolete">ZEIG:</translation>
+    </message>
+    <message>
+        <source>ALL</source>
+        <translation type="obsolete">ALLE</translation>
+    </message>
+    <message>
+        <source>INSTALLED</source>
+        <translation type="obsolete">INSTALLIERT</translation>
+    </message>
+    <message>
+        <source>REQUIRE UPDATE</source>
+        <translation type="obsolete">UPDATE BENÖTIGT</translation>
+    </message>
+    <message>
+        <source>NOT INSTALLED</source>
+        <translation type="obsolete">NICHT INSTALLIERT</translation>
+    </message>
+    <message>
+        <source>RANDOM</source>
+        <translation type="obsolete">ZUFALL</translation>
+    </message>
+    <message>
+        <source>LAST UPDATED</source>
+        <translation type="obsolete">LETZTE MAL UPGEDATET</translation>
+    </message>
+    <message>
+        <source>TITLE</source>
+        <translation type="obsolete">TITEL</translation>
+    </message>
+    <message>
+        <source>AUTHOR</source>
+        <translation type="obsolete">VERFASSER</translation>
+    </message>
+    <message>
+        <source>BUILD</source>
+        <translation type="obsolete">BUILD</translation>
+    </message>
+    <message>
+        <source>DOWNLOADS</source>
+        <translation type="obsolete">DOWNLOADS</translation>
+    </message>
+    <message>
+        <source>LIKES</source>
+        <translation type="obsolete">TOLL GEFUNDEN</translation>
     </message>
     <message>
         <source>AVAILABLE MODS</source>
@@ -340,7 +419,7 @@
     </message>
     <message>
         <source>SORT:</source>
-        <translation>SORTIER:</translation>
+        <translation type="obsolete">SORTIER:</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -385,6 +464,18 @@
     <message>
         <source>Mod filter</source>
         <translation>Modfilter</translation>
+    </message>
+    <message>
+        <source>Disable all mods</source>
+        <translation>Alle Mods ausschalten</translation>
+    </message>
+    <message>
+        <source>Reenable previously disabled mods</source>
+        <translation>Die ausgeschaltete Mods wieder einschalten</translation>
+    </message>
+    <message>
+        <source>&amp;Compact view</source>
+        <translation>&amp;Kompakt zeigen</translation>
     </message>
 </context>
 </TS>

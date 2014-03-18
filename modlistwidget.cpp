@@ -107,7 +107,7 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 	}
 
 	FilterCategoryComboBox = new QComboBox(sort_filter_widget);
-	FilterCategoryComboBox->addItem("ALL");
+	FilterCategoryComboBox->addItem(tr("ALL"));
 	connect(FilterCategoryComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterCategoryIndexChanged(QString)));
 
 	mylayout->addWidget(FilterCategoryComboBox);
@@ -422,7 +422,7 @@ void ModListWidget::showModFilter(bool checked)
 
 void ModListWidget::filterCategoryIndexChanged(const QString& text)
 {
-	if(text == "ALL")
+	if(text == tr("ALL"))
 		CurrentCategoryFilter = "";
 	else
 		CurrentCategoryFilter = text;
@@ -456,7 +456,7 @@ void ModListWidget::populateCategoryFilter()
 		*s = s->toUpper();
 	categories.sort();
 	categories.removeDuplicates();
-	categories.push_front("ALL");
+	categories.push_front(tr("ALL"));
 	if(FilterCategoryComboBox)
 	{
 		disconnect(FilterCategoryComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterCategoryIndexChanged(QString)));

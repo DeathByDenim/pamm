@@ -85,9 +85,13 @@ QString HelpDialog::getHelp()
 		"<p>" + tr("This quits PAMM") + "</p>"
 		"<h2>" + tr("Menu") + "</h2>"
 		"<h3>" + tr("File") + "</h3>"
-		"<p>" + tr("This has two menu items, &quot;Show Mod folder&quot; and &quot;Quit&quot;. The first will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here. The menu item &quot;Quit&quot; quits PAMM.") + "</p>"
+		"<p>" + tr("This has four menu items.") +
+		"<p>" + tr("&quot;Show Mod folder&quot; will open the directory where all of the mods are automatically installed by PAMM. This is for advanced use only. Normally, you have no business here.") +
+		"<p>" + tr("The menu item &quot;Disable all mods&quot; will deactivate all of the mods. This is useful to see if mods are interfering with the client. The state of the mods is saved however, and you can easily restore it using the &quot;Reenable previously disabled mods&quot; menu item.") + "</p>"
+		"<p>" + tr("The menu item &quot;Quit&quot; quits PAMM.") + "</p>"
 		"<h3>" + tr("View") + "</h3>"
-		"<p>" + tr("The only menu item here is &quot;Show mod filter&quot; which only works when the AVAIABLE MODS tabs is selected. If activated, you will be presented with a text field where you can type a filter text. Only mods that have that text will be displayed.") + "</p>"
+		"<p>" + tr("The menu item &quot;Show mod filter&quot; will open text field at the bottom of the tab where you can type a filter text. Only mods that have that text will be displayed.") + "</p>"
+		"<p>" + tr("The menu item &quot;Compact view&quot; will show you a summarized version of the list so you can get a better overview.") + "</p>"
 		"<h3>" + tr("Help") + "</h3>"
 		"<p>" + tr("The first menu item, &quot;Help&quot; is what you are looking at now. The second menu item, &quot;About...&quot; gives you some info about PAMM.") + "</p>"
 		"<hr><h1>" + tr("More info") + "</h1>"
