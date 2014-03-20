@@ -79,7 +79,7 @@
     <message>
         <location filename="../helpdialog.cpp" line="72"/>
         <source>The NEWS tab show you recent developments in the modding community. Information about updated of new mods are shown there.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;onglet NOUVELLES vous montre les dernières développements dans la communauté modding. Vous pouvez voir l&apos;information à propos de nouvels ou mis à jour mods ici.</translation>
     </message>
     <message>
         <location filename="../helpdialog.cpp" line="73"/>

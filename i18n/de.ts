@@ -60,7 +60,7 @@
     </message>
     <message>
         <source>The NEWS tab show you recent developments in the modding community. Information about updated of new mods are shown there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das NACHRICHTEN Tab zeigt Ihnen neue Entwicklungen in der Moddinggemeinschaft. Information über upgedatete oder neue Mods gibt es hier.</translation>
     </message>
     <message>
         <source>INSTALLED MODS</source>
@@ -68,7 +68,7 @@
     </message>
     <message>
         <source>The INSTALLED MODS tab shows you the mods you currently have installed. The checkbox in front of it indicates if that mod is enabled or not. You can also uninstall mods from here. Clicking on the title will take you to the website of the mod, which is usually a thread in the forum. You can use that for questions or comments about the mod. Note that the PAMM mod cannot be disabled or uninstalled. It is required for the operation of PAMM itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das INSTALLIERTE MODS Tab zeigt Ihnen die Mods welche Sie jetzt installiert haben. Das Kontrollkästchen davor deutet an ob die Mod schon installier ist. Sie können hier auch Mods deinstallieren. Auf den Titel klicken, werden Sie zur Website der Mod bringen. Sie können es brauchen für Fragen oder Kommentar über die Mod. Bemerken Sie dass die PAMM Mod nicht ausgeschaltet oder deinstalliert können würden. Sie ist nötwendig für PAMM.</translation>
     </message>
     <message>
         <source>AVAILABLE MODS</source>

@@ -130,10 +130,6 @@ QWidget* ModListWidget::createSortFilterWidget(QWidget* parent)
 		sortComboBox->addItem(tr("DOWNLOADS"));
 		sortComboBox->addItem(tr("LIKES"));
 	}
-	else if(Mode == ModListWidget::ModeInstalled)
-	{
-		sortComboBox->setCurrentIndex(2);
-	}
 	connect(sortComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(sortIndexChanged(const QString &)));
 	CurrentSort = SortRandom;
 	sortComboBox->setCurrentIndex(settings.value(QString("filter/mode%1_sort").arg(Mode), 0).toInt());
