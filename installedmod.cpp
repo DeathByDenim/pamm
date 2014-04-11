@@ -48,9 +48,11 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 	connect(ModCheckbox, SIGNAL(stateChanged(int)), this, SLOT(checkBoxStateChanged(int)));
 
 	QLabel *modNameLabel = new QLabel(this);
-	modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none;\">" + DisplayName + "</a>");
+	if(Forum.isEmpty())
+		modNameLabel->setText("<span style=\"text-decoration:none; font-weight: normal; color: white\">" + DisplayName + "</span>");
+	else
+		modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none; font-weight: bold; color: white\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
-	modNameLabel->setStyleSheet("QLabel {color: #008888; font-family: \"Verdana\"; font-size: 0.95em; text-decoration: none; }");
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	QLabel *modAuthorLabel = new QLabel(this);
@@ -121,6 +123,9 @@ QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
 		case armory:
 			return Scene_armory;
 			break;
+		case blank:
+			return Scene_blank;
+			break;
 		case building_planets:
 			return Scene_building_planets;
 			break;
@@ -147,6 +152,9 @@ QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
 			break;
 		case lobby:
 			return Scene_lobby;
+			break;
+		case main:
+			return Scene_main;
 			break;
 		case matchmaking:
 			return Scene_matchmaking;
@@ -255,6 +263,9 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 		case armory:
 			Scene_armory = filesStringList;
 			break;
+		case blank:
+			Scene_blank = filesStringList;
+			break;
 		case building_planets:
 			Scene_building_planets = filesStringList;
 			break;
@@ -281,6 +292,9 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 			break;
 		case lobby:
 			Scene_lobby = filesStringList;
+			break;
+		case main:
+			Scene_main = filesStringList;
 			break;
 		case matchmaking:
 			Scene_matchmaking = filesStringList;

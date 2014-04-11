@@ -52,9 +52,11 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 //	NormalView->setLayout(compactModLayout);
 
 	QLabel *modNameLabel = new QLabel(NormalView);
-	modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none;\">" + DisplayName + "</a>");
+	if(Forum.isEmpty())
+		modNameLabel->setText("<span style=\"text-decoration:none; font-weight: normal; color: white\">" + DisplayName + "</span>");
+	else
+		modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none; font-weight: bold; color: white\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
-	modNameLabel->setStyleSheet("QLabel {color: #008888; font-family: \"Verdana\"; font-size: 0.95em; text-decoration: none; }");
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	QLabel *modAuthorLabel = new QLabel(NormalView);

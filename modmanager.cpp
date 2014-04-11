@@ -86,6 +86,8 @@ void ModManager::parseScenes(const QVariantMap& result, InstalledMod* mod)
 		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
 	if(result.contains("armory"))
 		mod->setScene(result["armory"], InstalledMod::armory);
+	if(result.contains("blank"))
+		mod->setScene(result["blank"], InstalledMod::blank);
 	if(result.contains("building_planets"))
 		mod->setScene(result["building_planets"], InstalledMod::building_planets);
 	if(result.contains("connect_to_game"))
@@ -106,6 +108,8 @@ void ModManager::parseScenes(const QVariantMap& result, InstalledMod* mod)
 		mod->setScene(result["lobby"], InstalledMod::lobby);
 	if(result.contains("matchmaking"))
 		mod->setScene(result["matchmaking"], InstalledMod::matchmaking);
+	if(result.contains("main"))
+		mod->setScene(result["main"], InstalledMod::main);
 	if(result.contains("new_game"))
 		mod->setScene(result["new_game"], InstalledMod::new_game);
 	if(result.contains("replay_browser"))
@@ -238,6 +242,12 @@ void ModManager::writeUiModListJS()
 
 	UiModListJS <<
 		"    ],\n"
+		"    'blank': [\n";
+
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::blank);
+
+	UiModListJS <<
+		"    ],\n"
 		"    'building_planets': [\n";
 		
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::building_planets);
@@ -287,8 +297,14 @@ void ModManager::writeUiModListJS()
 	UiModListJS <<
 		"    ],\n"
 		"    'lobby': [\n";
-	
+
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::lobby);
+
+	UiModListJS <<
+		"    ],\n"
+		"    'main': [\n";
+
+	sceneToStream(UiModListJS, prioritySorted, InstalledMod::main);
 
 	UiModListJS <<
 		"    ],\n"
