@@ -30,6 +30,31 @@
 #include <QStringList>
 #include <QString>
 
+const QStringList InstalledMod::KnownScenes = (QStringList() <<
+	"global_mod_list" <<
+	"armory" <<
+	"blank" <<
+	"building_planets" <<
+	"connect_to_game" <<
+	"game_over" <<
+	"icon_atlas" <<
+	"live_game" <<
+	"live_game_econ" <<
+	"live_game_hover" <<
+	"load_planet" <<
+	"lobby" <<
+	"matchmaking" <<
+	"main" <<
+	"new_game" <<
+	"replay_browser" <<
+	"server_browser" <<
+	"settings" <<
+	"social" <<
+	"special_icon_atlas" <<
+	"start" <<
+	"system_editor" <<
+	"transit"
+	);
 
 InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build)
  : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Context(Context), Identifier(Identifier), Signature(Signature), Priority(Priority), Enabled(Enabled), Id(Id)
@@ -113,83 +138,12 @@ void InstalledMod::checkBoxStateChanged(int state)
 	emit modStateChanged();
 }
 
-QStringList InstalledMod::getSceneList(InstalledMod::scene_t scene)
+QStringList InstalledMod::getSceneList(QString scene)
 {
-	switch(scene)
-	{
-		case global_mod_list:
-			return Scene_global_mod_list;
-			break;
-		case armory:
-			return Scene_armory;
-			break;
-		case blank:
-			return Scene_blank;
-			break;
-		case building_planets:
-			return Scene_building_planets;
-			break;
-		case connect_to_game:
-			return Scene_connect_to_game;
-			break;
-		case game_over:
-			return Scene_game_over;
-			break;
-		case icon_atlas:
-			return Scene_icon_atlas;
-			break;
-		case live_game:
-			return Scene_live_game;
-			break;
-		case live_game_econ:
-			return Scene_live_game_econ;
-			break;
-		case live_game_hover:
-			return Scene_live_game_hover;
-			break;
-		case load_planet:
-			return Scene_load_planet;
-			break;
-		case lobby:
-			return Scene_lobby;
-			break;
-		case main:
-			return Scene_main;
-			break;
-		case matchmaking:
-			return Scene_matchmaking;
-			break;
-		case new_game:
-			return Scene_new_game;
-			break;
-		case server_browser:
-			return Scene_server_browser;
-			break;
-		case replay_browser:
-			return Scene_replay_browser;
-			break;
-		case settings:
-			return Scene_settings;
-			break;
-		case social:
-			return Scene_social;
-			break;
-		case special_icon_atlas:
-			return Scene_special_icon_atlas;
-			break;
-		case start:
-			return Scene_start;
-			break;
-		case system_editor:
-			return Scene_system_editor;
-			break;
-		case transit:
-			return Scene_transit;
-			break;
-		default:
-			return QStringList();
-	}
-
+	if(SceneFiles.contains(scene))
+		return SceneFiles[scene];
+	else
+		return QStringList();
 }
 
 QString InstalledMod::getModUiJsInfoString()
@@ -243,7 +197,7 @@ int InstalledMod::compareVersion(const QString& version_in)
 		return 1;
 }
 
-void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
+void InstalledMod::setScene(QVariant files, QString scene)
 {
 	QStringList filesStringList;
 	if(files.canConvert(QVariant::StringList))
@@ -255,80 +209,8 @@ void InstalledMod::setScene(QVariant files, InstalledMod::scene_t scene)
 		filesStringList = QStringList(files.toString());
 	else return;
 
-	switch(scene)
-	{
-		case global_mod_list:
-			Scene_global_mod_list = filesStringList;
-			break;
-		case armory:
-			Scene_armory = filesStringList;
-			break;
-		case blank:
-			Scene_blank = filesStringList;
-			break;
-		case building_planets:
-			Scene_building_planets = filesStringList;
-			break;
-		case connect_to_game:
-			Scene_connect_to_game = filesStringList;
-			break;
-		case game_over:
-			Scene_game_over = filesStringList;
-			break;
-		case icon_atlas:
-			Scene_icon_atlas = filesStringList;
-			break;
-		case live_game:
-			Scene_live_game = filesStringList;
-			break;
-		case live_game_econ:
-			Scene_live_game_econ = filesStringList;
-			break;
-		case live_game_hover:
-			Scene_live_game_hover = filesStringList;
-			break;
-		case load_planet:
-			Scene_load_planet = filesStringList;
-			break;
-		case lobby:
-			Scene_lobby = filesStringList;
-			break;
-		case main:
-			Scene_main = filesStringList;
-			break;
-		case matchmaking:
-			Scene_matchmaking = filesStringList;
-			break;
-		case new_game:
-			Scene_new_game = filesStringList;
-			break;
-		case replay_browser:
-			Scene_replay_browser = filesStringList;
-			break;
-		case server_browser:
-			Scene_server_browser = filesStringList;
-			break;
-		case settings:
-			Scene_settings = filesStringList;
-			break;
-		case social:
-			Scene_social = filesStringList;
-			break;
-		case special_icon_atlas:
-			Scene_special_icon_atlas = filesStringList;
-			break;
-		case start:
-			Scene_start = filesStringList;
-			break;
-		case system_editor:
-			Scene_system_editor = filesStringList;
-			break;
-		case transit:
-			Scene_transit = filesStringList;
-			break;
-		default:
-			break;
-	}
+	//TODO Does this work?
+	SceneFiles[scene] = filesStringList;
 }
 
 void InstalledMod::setEnabled(bool enabled)

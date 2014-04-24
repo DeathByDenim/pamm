@@ -80,54 +80,16 @@ void ModManager::findInstalledMods()
 	refreshReverseRequirements();
 }
 
-void ModManager::parseScenes(const QVariantMap& result, InstalledMod* mod)
+void ModManager::parseScenes(const QVariantMap& result, InstalledMod* mod, bool allowunknown)
 {
-	if(result.contains("global_mod_list"))
-		mod->setScene(result["global_mod_list"], InstalledMod::global_mod_list);
-	if(result.contains("armory"))
-		mod->setScene(result["armory"], InstalledMod::armory);
-	if(result.contains("blank"))
-		mod->setScene(result["blank"], InstalledMod::blank);
-	if(result.contains("building_planets"))
-		mod->setScene(result["building_planets"], InstalledMod::building_planets);
-	if(result.contains("connect_to_game"))
-		mod->setScene(result["connect_to_game"], InstalledMod::connect_to_game);
-	if(result.contains("game_over"))
-		mod->setScene(result["game_over"], InstalledMod::game_over);
-	if(result.contains("icon_atlas"))
-		mod->setScene(result["icon_atlas"], InstalledMod::icon_atlas);
-	if(result.contains("live_game"))
-		mod->setScene(result["live_game"], InstalledMod::live_game);
-	if(result.contains("live_game_econ"))
-		mod->setScene(result["live_game_econ"], InstalledMod::live_game_econ);
-	if(result.contains("live_game_hover"))
-		mod->setScene(result["live_game_hover"], InstalledMod::live_game_hover);
-	if(result.contains("load_planet"))
-		mod->setScene(result["load_planet"], InstalledMod::load_planet);
-	if(result.contains("lobby"))
-		mod->setScene(result["lobby"], InstalledMod::lobby);
-	if(result.contains("matchmaking"))
-		mod->setScene(result["matchmaking"], InstalledMod::matchmaking);
-	if(result.contains("main"))
-		mod->setScene(result["main"], InstalledMod::main);
-	if(result.contains("new_game"))
-		mod->setScene(result["new_game"], InstalledMod::new_game);
-	if(result.contains("replay_browser"))
-		mod->setScene(result["replay_browser"], InstalledMod::replay_browser);
-	if(result.contains("server_browser"))
-		mod->setScene(result["server_browser"], InstalledMod::server_browser);
-	if(result.contains("settings"))
-		mod->setScene(result["settings"], InstalledMod::settings);
-	if(result.contains("social"))
-		mod->setScene(result["social"], InstalledMod::social);
-	if(result.contains("special_icon_atlas"))
-		mod->setScene(result["special_icon_atlas"], InstalledMod::special_icon_atlas);
-	if(result.contains("start"))
-		mod->setScene(result["start"], InstalledMod::start);
-	if(result.contains("system_editor"))
-		mod->setScene(result["system_editor"], InstalledMod::system_editor);
-	if(result.contains("transit"))
-		mod->setScene(result["transit"], InstalledMod::transit);
+	QList<QString> keys = result.keys();
+	for(QList<QString>::const_iterator key = keys.constBegin(); key != keys.constEnd(); ++key)
+	{
+		if(allowunknown || InstalledMod::KnownScenes.contains(*key))
+		{
+			mod->setScene(result[*key], *key);
+		}
+	}
 }
 
 InstalledMod *ModManager::parseJson(const QString filename)
@@ -166,17 +128,17 @@ InstalledMod *ModManager::parseJson(const QString filename)
 		result["build"].toString()
 	);
 	
-	parseScenes(result, mod);
+	parseScenes(result, mod, false);
 
 	if(result.contains("scenes"))
-		parseScenes(result["scenes"].toMap(), mod);
+		parseScenes(result["scenes"].toMap(), mod, true);
 
 	mod->setCompleteJson(result);
 
 	return mod;
 }
 
-void ModManager::sceneToStream(std::ostream& os, const QList<Mod *> modList, const InstalledMod::scene_t scene)
+void ModManager::sceneToStream(std::ostream& os, const QList< Mod* > modList, const QString scene)
 {
 	std::stringstream str;
 	bool firstpass = true;
@@ -231,8 +193,51 @@ void ModManager::writeUiModListJS()
 		"/* start ui_mod_list */\n"
 		"var global_mod_list = [\n";
 
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::global_mod_list);
+	sceneToStream(UiModListJS, prioritySorted, "global_mod_list");
 
+
+	UiModListJS <<
+		"];\n\n"
+		"var scene_mod_list = {\n";
+	QMap<QString,QStringList> scenes;
+	for(QList<Mod *>::const_iterator m = prioritySorted.constBegin(); m != prioritySorted.constEnd(); ++m)
+	{
+		InstalledMod *instmod = dynamic_cast<InstalledMod *>(*m);
+		if(instmod)
+		{
+			QMap<QString,QStringList> instscenes(instmod->scenesFiles());
+			for(QMap<QString,QStringList>::const_iterator s = instscenes.constBegin(); s != instscenes.constEnd(); ++s)
+			{
+				QStringList files = scenes[s.key()];
+				files += s.value();
+				scenes[s.key()] = files;
+			}
+		}
+	}
+
+	bool firstpass_s = false;
+	for(QMap<QString,QStringList>::const_iterator s = scenes.constBegin(); s != scenes.constEnd(); ++s)
+	{
+		if(!firstpass_s)
+			firstpass_s = true;
+		else
+			UiModListJS << ',';
+		UiModListJS << std::endl;
+		UiModListJS << "    '" << s.key().toStdString() << "': [";
+		bool firstpass_file = false;
+		for(QStringList::const_iterator file = s.value().constBegin(); file != s.value().constEnd(); ++file)
+		{
+			if(!firstpass_file)
+				firstpass_file = true;
+			else
+				UiModListJS << ',';
+			UiModListJS << std::endl;
+			UiModListJS << "        '" << file->toStdString() << "'";
+		}
+		UiModListJS << std::endl << "    ]";
+	}
+	UiModListJS << std::endl;
+	/*
 	UiModListJS <<
 		"];\n\n"
 		"var scene_mod_list = {\n"
@@ -277,7 +282,6 @@ void ModManager::writeUiModListJS()
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game);
 
 	UiModListJS <<
-		"    ],\n"
 		"    'live_game_econ': [\n";
 
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game_econ);
@@ -365,9 +369,9 @@ void ModManager::writeUiModListJS()
 		"    'transit': [\n";
 	
 	sceneToStream(UiModListJS, prioritySorted, InstalledMod::transit);
-	
+	*/
 	UiModListJS <<
-		"    ]\n"
+//		"    ]\n"
 		"}\n"
 		"/* end ui_mod_list */\n";
 		

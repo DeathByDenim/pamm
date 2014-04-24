@@ -35,38 +35,12 @@ public:
     InstalledMod(const QString& Key, const QString &Context, const QString &Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString &Version, const QString &Signature, const unsigned int& Priority, const bool& Enabled, const QString &Id, const QUrl &Forum, const QStringList &Category, const QStringList &Requires, const QDate &Date, const QString &Build);
     ~InstalledMod();
 	
-	enum scene_t
-	{
-		unknown,
-		global_mod_list,
-		armory,
-		blank,
-		building_planets,
-		connect_to_game,
-		game_over,
-		icon_atlas,
-		live_game,
-		live_game_econ,
-		live_game_hover,
-		load_planet,
-		lobby,
-		matchmaking,
-		main,
-		new_game,
-		replay_browser,
-		server_browser,
-		settings,
-		social,
-		special_icon_atlas,
-		start,
-		system_editor,
-		transit
-	};
+	static const QStringList KnownScenes;
 
-	QStringList getSceneList(scene_t scene);
+	QStringList getSceneList(QString scene);
 	QString getModUiJsInfoString();
 	int compareVersion(const QString& version_in);
-	void setScene(QVariant files, scene_t scene);
+	void setScene(QVariant files, QString scene);
 	void setEnabled(bool enabled);
 	bool enabled() {return Enabled;};
 	void enable(bool enabled = true);
@@ -80,6 +54,7 @@ public:
 	void disableReverseRequirements();
 	QString json();
 	virtual void setCompactView(bool compact);
+	const QMap<QString,QStringList> &scenesFiles() { return SceneFiles; }
 
 public Q_SLOTS:
 	void checkBoxStateChanged(int state);
@@ -94,6 +69,8 @@ Q_SIGNALS:
 private:
 	QCheckBox *ModCheckbox;
 	QPushButton *ModUpdateButton;
+	QMap<QString,QStringList> SceneFiles;
+/*
 	QStringList Scene_global_mod_list; // files (comma separated)
 	QStringList Scene_armory; // files (comma separated)
 	QStringList Scene_blank; // files (comma separated)
@@ -117,6 +94,7 @@ private:
 	QStringList Scene_start; // files (comma separated)
 	QStringList Scene_system_editor; // files (comma separated)
 	QStringList Scene_transit; // files (comma separated)
+*/
 	const unsigned int Priority; // Lower numbers are included in ui_mod_list.js first. Default is 100 if not specified
 	bool Enabled;
 

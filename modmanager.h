@@ -77,7 +77,7 @@ private:
 	QNetworkAccessManager *Internet;
 
 	InstalledMod *parseJson(const QString filename);
-	void sceneToStream(std::ostream& os, const QList< Mod* > modList, const InstalledMod::scene_t scene);
+	void sceneToStream(std::ostream& os, const QList< Mod* > modList, const QString scene);
 	void readAvailableModListJson(QString filename);
 	void installMod(AvailableMod *mod, const QString &filename);
 	void updateModCount();
@@ -86,7 +86,7 @@ private:
 	void recursiveRemove(const QDir& dir);
 	void refreshReverseRequirements();
 	QVariant readLocaleField(const QVariantMap& map, const QString& field);
-	void parseScenes(const QVariantMap &result, InstalledMod* mod);
+	void parseScenes(const QVariantMap& result, InstalledMod* mod, bool allowunknown);
 
 public Q_SLOTS:
 	void replyFinished(QNetworkReply* reply = NULL);
