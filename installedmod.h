@@ -70,31 +70,7 @@ private:
 	QCheckBox *ModCheckbox;
 	QPushButton *ModUpdateButton;
 	QMap<QString,QStringList> SceneFiles;
-/*
-	QStringList Scene_global_mod_list; // files (comma separated)
-	QStringList Scene_armory; // files (comma separated)
-	QStringList Scene_blank; // files (comma separated)
-	QStringList Scene_building_planets; // files (comma separated)
-	QStringList Scene_connect_to_game; // files (comma separated)
-	QStringList Scene_game_over; // files (comma separated)
-	QStringList Scene_icon_atlas; // files (comma separated)
-	QStringList Scene_live_game; // files (comma separated)
-	QStringList Scene_live_game_econ; // files (comma separated)
-	QStringList Scene_live_game_hover; // files (comma separated)
-	QStringList Scene_load_planet; // files (comma separated)
-	QStringList Scene_lobby; // files (comma separated)
-	QStringList Scene_main; // files (comma separated)
-	QStringList Scene_matchmaking; // files (comma separated)
-	QStringList Scene_new_game; // files (comma separated)
-	QStringList Scene_replay_browser; // files (comma separated)
-	QStringList Scene_server_browser; // files (comma separated)
-	QStringList Scene_settings; // files (comma separated)
-	QStringList Scene_social; // files (comma separated)
-	QStringList Scene_special_icon_atlas; // files (comma separated)
-	QStringList Scene_start; // files (comma separated)
-	QStringList Scene_system_editor; // files (comma separated)
-	QStringList Scene_transit; // files (comma separated)
-*/
+
 	const unsigned int Priority; // Lower numbers are included in ui_mod_list.js first. Default is 100 if not specified
 	bool Enabled;
 

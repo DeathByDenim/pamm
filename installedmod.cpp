@@ -37,6 +37,11 @@ const QStringList InstalledMod::KnownScenes = (QStringList() <<
 	"building_planets" <<
 	"connect_to_game" <<
 	"game_over" <<
+	"gw_war_over" << 
+	"gw_start" <<
+	"gw_game_over" <<
+	"gw_play" <<
+	"gw_lobby" <<
 	"icon_atlas" <<
 	"live_game" <<
 	"live_game_econ" <<
@@ -47,13 +52,15 @@ const QStringList InstalledMod::KnownScenes = (QStringList() <<
 	"main" <<
 	"new_game" <<
 	"replay_browser" <<
+	"replay_loading" <<
 	"server_browser" <<
 	"settings" <<
 	"social" <<
 	"special_icon_atlas" <<
 	"start" <<
 	"system_editor" <<
-	"transit"
+	"transit" <<
+	"uberbar"
 	);
 
 InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build)

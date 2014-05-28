@@ -237,141 +237,8 @@ void ModManager::writeUiModListJS()
 		UiModListJS << std::endl << "    ]";
 	}
 	UiModListJS << std::endl;
-	/*
-	UiModListJS <<
-		"];\n\n"
-		"var scene_mod_list = {\n"
-		"    'armory': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::armory);
 
 	UiModListJS <<
-		"    ],\n"
-		"    'blank': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::blank);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'building_planets': [\n";
-		
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::building_planets);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'connect_to_game': [\n";
-		
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::connect_to_game);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'game_over': [\n";
-		
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::game_over);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'icon_atlas': [\n";
-		
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::icon_atlas);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'live_game': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game);
-
-	UiModListJS <<
-		"    'live_game_econ': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game_econ);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'live_game_hover': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::live_game_hover);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'load_planet': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::load_planet);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'lobby': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::lobby);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'main': [\n";
-
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::main);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'matchmaking': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::matchmaking);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'new_game': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::new_game);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'replay_browser': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::replay_browser);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'server_browser': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::server_browser);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'settings': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::settings);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'social': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::social);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'special_icon_atlas': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::special_icon_atlas);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'start': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::start);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'system_editor': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::system_editor);
-
-	UiModListJS <<
-		"    ],\n"
-		"    'transit': [\n";
-	
-	sceneToStream(UiModListJS, prioritySorted, InstalledMod::transit);
-	*/
-	UiModListJS <<
-//		"    ]\n"
 		"}\n"
 		"/* end ui_mod_list */\n";
 		
@@ -622,6 +489,19 @@ void ModManager::readAvailableModListJson(QString filename)
 	emit availableModsLoaded();
 }
 
+void ModManager::purgeFiles(AvailableMod* mod)
+{
+	recursiveRemove(QDir(ModPath + '/' + mod->key()));
+	if(!QDir(ModPath).rmdir(mod->key()))
+	{
+		QMessageBox msgBox;
+		msgBox.setText(tr("Couldn't delete all of the old files."));
+		msgBox.setInformativeText(tr("See") + " \"" + ModPath + '/' + mod->key() + "\"");
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.exec();
+	}
+}
+
 void ModManager::downloadMod()
 {
 	AvailableMod *mod = dynamic_cast<AvailableMod *>( sender() );
@@ -657,6 +537,10 @@ void ModManager::downloadMod()
 void ModManager::installMod(AvailableMod* mod, const QString& filename)
 {
 	connect(this, SIGNAL(progress(int)), mod, SLOT(progress(int)));
+
+	// This is an update, so delete the old stuff first.
+	if(mod->state() == AvailableMod::updateavailable)
+		purgeFiles(mod);
 
 	QString jsonfilename;
 
