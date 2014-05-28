@@ -27,6 +27,7 @@
 #include <QFocusEvent>
 #include <QShowEvent>
 #include <QHideEvent>
+#include <QTimer>
 
 ModFilterWidget::ModFilterWidget(QWidget* parent)
  : QWidget(parent)
@@ -40,6 +41,11 @@ ModFilterWidget::ModFilterWidget(QWidget* parent)
 	FilterLineEdit = new QLineEdit(this);
 	connect(FilterLineEdit, SIGNAL(textChanged(QString)), SLOT(textChanged(QString)));
 	layout->addWidget(FilterLineEdit);
+	
+	TextTimer = new QTimer(this);
+	TextTimer->setSingleShot(true);
+	TextTimer->setInterval(100);
+	connect(TextTimer, SIGNAL(timeout()), SLOT(filterTextReallyChanged()));
 
 	QToolButton *filterCloseButton = new QToolButton(this);
 	filterCloseButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogCloseButton));
@@ -59,7 +65,12 @@ void ModFilterWidget::clicked(bool checked)
 
 void ModFilterWidget::textChanged(const QString& text)
 {
-	emit filterTextChanged(text);
+	TextTimer->start();
+}
+
+void ModFilterWidget::filterTextReallyChanged()
+{
+	emit filterTextChanged(FilterLineEdit->text());
 }
 
 void ModFilterWidget::keyPressEvent(QKeyEvent* event)

@@ -22,6 +22,7 @@
 
 #include <QWidget>
 
+class QTimer;
 class QLineEdit;
 
 class ModFilterWidget : public QWidget
@@ -39,9 +40,13 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 	virtual void hideEvent(QHideEvent *event);
 
+private:
+	QTimer *TextTimer;
+
 private Q_SLOTS:
 	void clicked(bool checked = false);
 	void textChanged(const QString &text);
+	void filterTextReallyChanged();
 
 Q_SIGNALS:
 	void filterTextChanged(const QString &text);
