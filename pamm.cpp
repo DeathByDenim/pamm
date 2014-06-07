@@ -299,7 +299,7 @@ void PAMM::exitButtonClicked()
 void PAMM::launchPAButtonClicked()
 {
 	// This is very Linux specific. No idea if this works on Mac OS...
-	int result = system(("nohup " + Manager->paPath() + "/PA &").toStdString().c_str());
+	int result = system(("nohup \"" + Manager->paPath() + "/PA\" &").toStdString().c_str());
 }
 
 void PAMM::refreshButtonClicked()
