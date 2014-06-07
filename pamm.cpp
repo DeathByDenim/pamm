@@ -281,8 +281,6 @@ PAMM::PAMM(ModManager* manager, const QString& imgPath)
 	
 	availableCompactViewActionClicked(AvailableCompactViewAction->isChecked());
 	installedCompactViewActionClicked(InstalledCompactViewAction->isChecked());
-	qDebug() << settings.value("view/modfilteravailable");
-	qDebug() << settings.value("view/modfilterinstalled");
 
 	checkForUpdate();
 }
