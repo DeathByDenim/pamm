@@ -180,7 +180,7 @@ void ModManager::sceneToStream(std::ostream& os, const QList< Mod* > modList, co
 
 void ModManager::writeUiModListJS()
 {
-	std::ofstream UiModListJS((ModPath + "/PAMM/ui/mods/ui_mod_list.js").toStdString().c_str());
+	std::ofstream UiModListJS((ModPath + "/PAMM/ui/client_mods/ui_mod_list.js").toStdString().c_str());
 	if(!UiModListJS.good())
 		return;
 
@@ -802,7 +802,7 @@ void ModManager::writeModsJson()
 
 void ModManager::writeModsListJson()
 {
-	QFile modsJsonFile(ModPath + "/PAMM/ui/mods/mods_list.json");
+	QFile modsJsonFile(ModPath + "/PAMM/ui/client_mods/mods_list.json");
 	if(!modsJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		return;

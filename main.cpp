@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	QString modPath = configPath + "/mods";
+	QString modPath = configPath + "/client_mods";
 	bool custommoddir = false;
 	for(int i = 0; i < argc; i++)
 	{
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 	}
 
 	if(!custommoddir)
-		QDir(configPath).mkdir("mods");
+		QDir(configPath).mkdir("client_mods");
 	
 	QString imgPath = progdir + "/img/";
 #ifdef __APPLE__
@@ -180,7 +180,7 @@ int main(int argc, char** argv)
 	QDir modDir(modPath);
 	modDir.mkdir("PAMM");
 	modDir.mkdir("PAMM/ui");
-	modDir.mkdir("PAMM/ui/mods");
+	modDir.mkdir("PAMM/ui/client_mods");
 
 	QFile modinfojson(modPath + "/PAMM/modinfo.json");
 	if(modinfojson.open(QIODevice::WriteOnly | QIODevice::Text))

@@ -523,7 +523,7 @@ void PAMM::closeEvent(QCloseEvent *event)
 
 void PAMM::showModFolder()
 {
-	QDesktopServices::openUrl(QUrl("file://" + Manager->configPath() + "/mods"));
+	QDesktopServices::openUrl(QUrl("file://" + Manager->configPath() + "/client_mods"));
 }
 
 void PAMM::showAboutDialog()
