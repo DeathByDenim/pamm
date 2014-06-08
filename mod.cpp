@@ -20,8 +20,8 @@
 #include "mod.h"
 #include <QLabel>
 
-Mod::Mod(const QString &Key, const QString &DisplayName, const QString &Description, const QString &Author, const QUrl &Forum, const QStringList &Category, const QString &Version, const QStringList &Requires, const QDate &Date, const QString &Build)
- : QWidget(), Key(Key), DisplayName(DisplayName), Description(Description), Author(Author), Forum(Forum), Category(Category), Version(Version), Date(Date), Build(Build)
+Mod::Mod(const QString &Key, const QString &DisplayName, const QString &Description, const QString &Author, const QUrl &Forum, const QStringList &Category, const QString &Version, const QStringList &Requires, const QDate &Date, const QString &Build, context_t Context)
+ : QWidget(), Key(Key), DisplayName(DisplayName), Description(Description), Author(Author), Forum(Forum), Category(Category), Version(Version), Date(Date), Build(Build), Context(Context)
 {
 	Mod::Requires = Requires;
 	Mod::Requires.removeAll("rPAMM");
@@ -40,27 +40,42 @@ void Mod::setRelativeFontSizeForLabel(QLabel* label, qreal size)
 
 bool Mod::sortLastUpdated(const Mod* m1, const Mod* m2)
 {
-	return (m1->Date > m2->Date);
+	if(m1->Context == m2->Context)
+		return (m1->Date > m2->Date);
+	else
+		return (m1->Context < m2->Context);
 }
 
 bool Mod::sortAuthor(const Mod* m1, const Mod* m2)
 {
-	return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) <= 0);
+	if(m1->Context == m2->Context)
+		return (m1->Author.compare(m2->Author, Qt::CaseInsensitive) <= 0);
+	else
+		return (m1->Context < m2->Context);
 }
 
 bool Mod::sortBuild(const Mod* m1, const Mod* m2)
 {
-	return (m1->Build >= m2->Build);
+	if(m1->Context == m2->Context)
+		return (m1->Build >= m2->Build);
+	else
+		return (m1->Context < m2->Context);
 }
 
 bool Mod::sortRandom(const Mod* m1, const Mod* m2)
 {
-	return (rand() < RAND_MAX / 2);
+	if(m1->Context == m2->Context)
+		return (rand() < RAND_MAX / 2);
+	else
+		return (m1->Context < m2->Context);
 }
 
 bool Mod::sortTitle(const Mod* m1, const Mod* m2)
 {
-	return (m1->DisplayName.compare(m2->DisplayName, Qt::CaseInsensitive) < 0);
+	if(m1->Context == m2->Context)
+		return (m1->DisplayName.compare(m2->DisplayName, Qt::CaseInsensitive) < 0);
+	else
+		return (m1->Context < m2->Context);
 }
 
 bool Mod::textContains(QString filtertext)

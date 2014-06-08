@@ -114,6 +114,7 @@ int main(int argc, char** argv)
 			paPath = QString(argv[i+1]);
 		}
 	}
+	
 
 	QString modPath = configPath + "/client_mods";
 	bool custommoddir = false;
@@ -128,8 +129,11 @@ int main(int argc, char** argv)
 	}
 
 	if(!custommoddir)
+	{
 		QDir(configPath).mkdir("client_mods");
-	
+		QDir(configPath).mkdir("server_mods");
+	}
+
 	QString imgPath = progdir + "/img/";
 #ifdef __APPLE__
 	if(!QFileInfo(imgPath).exists())
@@ -163,7 +167,7 @@ int main(int argc, char** argv)
 
 	std::cout << "Expecting configdir in: \"" << configPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting executable in: \"" << paPath.toStdString() << "\"." << std::endl;
-	std::cout << "Expecting moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
+	std::cout << "Expecting client moddir at: \"" << modPath.toStdString() << "\"." << std::endl;
 	std::cout << "Expecting locale dir at: \"" << i18nPath.toStdString() << "\"." << std::endl;
 	
 	std::cout << "Locale: " << QLocale::languageToString(locale.language()).toStdString() << std::endl;

@@ -365,10 +365,31 @@ void ModListWidget::populateModList(bool do_sort)
 	}
 	else
 	{
+		QLabel* clientmodheaderlabel;
+		QLabel* servermodheaderlabel;
+		clientmodheaderlabel = new QLabel("CLIENT MODS", ListWidget);
+		clientmodheaderlabel->setAlignment(Qt::AlignHCenter);
+		clientmodheaderlabel->setStyleSheet("QLabel { color: gray; }");
+		servermodheaderlabel = new QLabel("SERVER MODS", ListWidget);
+		servermodheaderlabel->setAlignment(Qt::AlignHCenter);
+		servermodheaderlabel->setStyleSheet("QLabel { color: gray; }");
+		QFont font = clientmodheaderlabel->font();
+		font.setPointSize(font.pointSize() + 8);
+		font.setBold(true);
+		clientmodheaderlabel->setFont(font);
+		servermodheaderlabel->setFont(font);
+		modListLayout->addWidget(clientmodheaderlabel);
+		bool firstservermod = true;
 		for(QList<Mod *>::const_iterator m = filteredmods.constBegin(); m != filteredmods.constEnd(); ++m)
 		{
+			if(firstservermod && (*m)->context() == Mod::server)
+			{
+				firstservermod = false;
+				modListLayout->addWidget(servermodheaderlabel);
+			}
+
 			(*m)->setParent(ListWidget);
-			modListLayout->layout()->addWidget(*m);
+			modListLayout->addWidget(*m);
 		}
 	}
 	modListLayout->addStretch();

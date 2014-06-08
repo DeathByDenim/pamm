@@ -26,8 +26,8 @@
 #include <QPainter>
 //#include "videoreviewdialog.h"
 
-AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath)
- : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL), ImgPath(imgPath)
+AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Build, const QDate& Date, const QUrl& Forum, const QUrl& Url, const QStringList& Category, const QStringList& Requires, const AvailableMod::installstate_t State, const QString imgPath, AvailableMod::context_t Context)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build, Context), Download(Url), State(State), ModIconLabel(NULL), ModButtonsWidget(NULL), ModStatus(NULL), InstallProgressBar(NULL), NumDownloaded(-1), Likes(-1), ModDownloadCountLabel(NULL), ModLikesLabel(NULL), ImgPath(imgPath)
 {
 	QLayout *l = new QHBoxLayout(this);
 
@@ -51,11 +51,15 @@ AvailableMod::AvailableMod(const QString& Key, const QString& DisplayName, const
 #endif
 //	NormalView->setLayout(compactModLayout);
 
+	QString colourtext("white");
+	if(Context == server)
+		colourtext = "yellow";
+
 	QLabel *modNameLabel = new QLabel(NormalView);
 	if(Forum.isEmpty())
-		modNameLabel->setText("<span style=\"text-decoration:none; font-weight: normal; color: white\">" + DisplayName + "</span>");
+		modNameLabel->setText("<span style=\"text-decoration:none; font-weight: normal; color: " + colourtext + "\">" + DisplayName + "</span>");
 	else
-		modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none; font-weight: bold; color: white\">" + DisplayName + "</a>");
+		modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none; font-weight: bold; color: " + colourtext + "\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -259,7 +263,10 @@ bool AvailableMod::sortDownloads(const Mod* m1, const Mod* m2)
 	const AvailableMod *im2 = dynamic_cast<const AvailableMod *>(m2);
 	Q_ASSERT(im1 != NULL && im2 != NULL);
 
-	return (im1->NumDownloaded > im2->NumDownloaded);
+	if(m1->context() == m2->context())
+		return (im1->NumDownloaded > im2->NumDownloaded);
+	else
+		return (m1->context() < m2->context());
 }
 
 bool AvailableMod::sortLikes(const Mod* m1, const Mod* m2)
@@ -268,7 +275,10 @@ bool AvailableMod::sortLikes(const Mod* m1, const Mod* m2)
 	const AvailableMod *im2 = dynamic_cast<const AvailableMod *>(m2);
 	Q_ASSERT(im1 != NULL && im2 != NULL);
 
-	return (im1->Likes > im2->Likes);
+	if(m1->context() == m2->context())
+		return (im1->Likes > im2->Likes);
+	else
+		return (m1->context() < m2->context());
 }
 
 void AvailableMod::setCount(int count)

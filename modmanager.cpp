@@ -58,19 +58,22 @@ ModManager::~ModManager()
 
 void ModManager::findInstalledMods()
 {
-	QDirIterator it(ModPath, QDirIterator::Subdirectories /*| QDirIterator::FollowSymlinks*/); // No symlinks, since PA doesn't support it anyway.
-	while (it.hasNext())
+	for(int i = 0; i < 2; i++)
 	{
-		QString filename = it.next();
-		if(QFileInfo(filename).fileName().compare("modinfo.json", Qt::CaseInsensitive) == 0)
+		QDirIterator it((i == 0 ? ModPath : ConfigPath + "/server_mods"), QDirIterator::Subdirectories /*| QDirIterator::FollowSymlinks*/); // No symlinks, since PA doesn't support it anyway.
+		while (it.hasNext())
 		{
-			InstalledMod *mod = parseJson(filename);
-			if(mod != NULL)
+			QString filename = it.next();
+			if(QFileInfo(filename).fileName().compare("modinfo.json", Qt::CaseInsensitive) == 0)
 			{
-				connect(mod, SIGNAL(modStateChanged()), SLOT(modstateChanged()));
-				connect(mod, SIGNAL(updateMe()), SLOT(downloadMod()));
-				connect(mod, SIGNAL(uninstallMe()), SLOT(uninstallMod()));
-				installedMods.append(mod);
+				InstalledMod *mod = parseJson(filename);
+				if(mod != NULL)
+				{
+					connect(mod, SIGNAL(modStateChanged()), SLOT(modstateChanged()));
+					connect(mod, SIGNAL(updateMe()), SLOT(downloadMod()));
+					connect(mod, SIGNAL(uninstallMe()), SLOT(uninstallMod()));
+					installedMods.append(mod);
+				}
 			}
 		}
 	}
@@ -109,9 +112,13 @@ InstalledMod *ModManager::parseJson(const QString filename)
 	if(!ok || priority == 0)
 		priority = 100;
 
+	Mod::context_t context = Mod::client;
+	if(result["context"].toString().compare("server", Qt::CaseInsensitive) == 0)
+		context = Mod::server;
+
 	InstalledMod *mod = new InstalledMod(
 		QFileInfo(filename).absoluteDir().dirName(),
-		result["context"].toString(),
+		context,
 		result["identifier"].toString(),
 		readLocaleField(result, "display_name").toString(),
 		readLocaleField(result, "description").toString(),
@@ -433,6 +440,9 @@ void ModManager::readAvailableModListJson(QString filename)
 		QString version = moddata["version"].toString();
 		QUrl forumlink = moddata["forum"].toUrl();
 		AvailableMod::installstate_t state = isInstalled(modentry.key(), version);
+		AvailableMod::context_t context = AvailableMod::client;
+		if(moddata["context"].toString().compare("server", Qt::CaseInsensitive) == 0)
+			context = AvailableMod::server;
 
 		AvailableMod *mod = new AvailableMod(
 			modentry.key(),
@@ -447,7 +457,8 @@ void ModManager::readAvailableModListJson(QString filename)
 			moddata["category"].toStringList(),
 			moddata["requires"].toStringList(),
 			state,
-			ImgPath
+			ImgPath,
+			context
 		);
 		availableMods.append(mod);
 		connect(mod, SIGNAL(installMe()), SLOT(downloadMod()));
@@ -491,12 +502,16 @@ void ModManager::readAvailableModListJson(QString filename)
 
 void ModManager::purgeFiles(AvailableMod* mod)
 {
-	recursiveRemove(QDir(ModPath + '/' + mod->key()));
-	if(!QDir(ModPath).rmdir(mod->key()))
+	QString path(ModPath);
+	if(mod->context() == Mod::server)
+		path = ConfigPath + "/server_mods/" + mod->key();
+
+	recursiveRemove(QDir(path + '/' + mod->key()));
+	if(!QDir(path).rmdir(mod->key()))
 	{
 		QMessageBox msgBox;
 		msgBox.setText(tr("Couldn't delete all of the old files."));
-		msgBox.setInformativeText(tr("See") + " \"" + ModPath + '/' + mod->key() + "\"");
+		msgBox.setInformativeText(tr("See") + " \"" + path + '/' + mod->key() + "\"");
 		msgBox.setIcon(QMessageBox::Warning);
 		msgBox.exec();
 	}
@@ -536,6 +551,10 @@ void ModManager::downloadMod()
 
 void ModManager::installMod(AvailableMod* mod, const QString& filename)
 {
+	QString path(ModPath);
+	if(mod->context() == Mod::server)
+		path = ConfigPath + "/server_mods/" + mod->key();
+
 	connect(this, SIGNAL(progress(int)), mod, SLOT(progress(int)));
 
 	// This is an update, so delete the old stuff first.
@@ -572,10 +591,10 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 			zip_fclose(zippedFile);
 
-			QFileInfo outFileInfo(ModPath + '/' + filename);
+			QFileInfo outFileInfo(path + '/' + filename);
 			if(QDir::root().mkpath(outFileInfo.absolutePath()))
 			{
-				QFile outFile(ModPath + '/' + filename);
+				QFile outFile(path + '/' + filename);
 				if(outFile.open(QIODevice::WriteOnly | QIODevice::Text))
 				{
 					outFile.write(data);
@@ -617,7 +636,7 @@ void ModManager::installMod(AvailableMod* mod, const QString& filename)
 
 	disconnect(this, SIGNAL(progress(int)), mod, SLOT(progress(int)));
 
-	InstalledMod *newmod = parseJson(ModPath + '/' + jsonfilename);
+	InstalledMod *newmod = parseJson(path + '/' + jsonfilename);
 	if(newmod)
 	{
 		// Remove the old outdated mod from the list
@@ -694,7 +713,11 @@ void ModManager::modstateChanged()
 	InstalledMod *mod = dynamic_cast<InstalledMod *>( sender() );
 	if(mod)
 	{
-		QFile modinfoJsonFile(ModPath + "/" + mod->key() + "/modinfo.json");
+		QString path(ModPath);
+		if(mod->context() == Mod::server)
+			path = ConfigPath + "/server_mods/" + mod->key();
+
+		QFile modinfoJsonFile(path + "/" + mod->key() + "/modinfo.json");
 		if(modinfoJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
 			QJson::Serializer serializer;
@@ -768,36 +791,39 @@ void ModManager::updateModCount()
 
 void ModManager::writeModsJson()
 {
-	QFile modsJsonFile(ModPath + "/mods.json");
-	if(!modsJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+	for(int i = 0; i < 2; i++)
 	{
-		return;
-	}
-	
-	QTextStream stream(&modsJsonFile);
-	
-	QList<Mod *> prioritySorted(installedMods);
-	qSort(prioritySorted.begin(), prioritySorted.end(), InstalledMod::sortPriority);
-	
-	stream << "{" << endl << "\t\"mount_order\":" << endl << "\t[" << endl;
-	bool firstpass = true;
-	for(QList<Mod *>::const_iterator mod = prioritySorted.begin(); mod != prioritySorted.end(); ++mod)
-	{
-		InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
-		Q_ASSERT(imod != NULL);
+		QFile modsJsonFile((i == 0 ? ModPath : (ConfigPath + "/server_mods")) + "/mods.json");
+		if(!modsJsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			return;
+		}
 
-		if(!imod->enabled())
-			continue;
-
-		if(firstpass)
-			firstpass = false;
-		else
-			stream << ',' << endl;
+		QTextStream stream(&modsJsonFile);
 		
-		stream << "\t\t\"" << imod->identifier() << "\"";
+		QList<Mod *> prioritySorted(installedMods);
+		qSort(prioritySorted.begin(), prioritySorted.end(), InstalledMod::sortPriority);
+
+		stream << "{" << endl << "\t\"mount_order\":" << endl << "\t[" << endl;
+		bool firstpass = true;
+		for(QList<Mod *>::const_iterator mod = prioritySorted.begin(); mod != prioritySorted.end(); ++mod)
+		{
+			InstalledMod *imod = dynamic_cast<InstalledMod *>(*mod);
+			Q_ASSERT(imod != NULL);
+
+			if(!imod->enabled() || imod->context() != (i == 0 ? Mod::client : Mod::server))
+				continue;
+
+			if(firstpass)
+				firstpass = false;
+			else
+				stream << ',' << endl;
+			
+			stream << "\t\t\"" << imod->identifier() << "\"";
+		}
+		stream << endl << "\t]" << endl << "}" << endl;
+		modsJsonFile.close();
 	}
-	stream << endl << "\t]" << endl << "}" << endl;
-	modsJsonFile.close();
 }
 
 void ModManager::writeModsListJson()
@@ -807,7 +833,7 @@ void ModManager::writeModsListJson()
 	{
 		return;
 	}
-	
+
 	QTextStream stream(&modsJsonFile);
 
 	stream << "{" << endl;
@@ -852,13 +878,17 @@ void ModManager::uninstallMod()
 	InstalledMod *mod = dynamic_cast<InstalledMod *>( sender() );
 	if(mod)
 	{
+		QString path(ModPath);
+		if(mod->context() == Mod::server)
+			path = ConfigPath + "/server_mods/" + mod->key();
+
 		installedMods.removeOne(mod);
-		recursiveRemove(QDir(ModPath + '/' + mod->key()));
+		recursiveRemove(QDir(path + '/' + mod->key()));
 		if(!QDir(ModPath).rmdir(mod->key()))
 		{
 			QMessageBox msgBox;
 			msgBox.setText(tr("Couldn't delete all of the files."));
-			msgBox.setInformativeText(tr("See") + " \"" + ModPath + '/' + mod->key() + "\"");
+			msgBox.setInformativeText(tr("See") + " \"" + path + '/' + mod->key() + "\"");
 			msgBox.setIcon(QMessageBox::Warning);
 			msgBox.exec();
 		}

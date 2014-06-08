@@ -63,8 +63,8 @@ const QStringList InstalledMod::KnownScenes = (QStringList() <<
 	"uberbar"
 	);
 
-InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build)
- : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build), Context(Context), Identifier(Identifier), Signature(Signature), Priority(Priority), Enabled(Enabled), Id(Id)
+InstalledMod::InstalledMod(const QString& Key, const Mod::context_t Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build)
+ : Mod(Key, DisplayName, Description, Author, Forum, Category, Version, Requires, Date, Build, Context), Context(Context), Identifier(Identifier), Signature(Signature), Priority(Priority), Enabled(Enabled), Id(Id)
 {
 	QGridLayout *modLayout = new QGridLayout(this);
 #ifdef __APPLE__
@@ -79,11 +79,15 @@ InstalledMod::InstalledMod(const QString& Key, const QString& Context, const QSt
 	ModCheckbox->setCheckState(Enabled ? Qt::Checked : Qt::Unchecked);
 	connect(ModCheckbox, SIGNAL(stateChanged(int)), this, SLOT(checkBoxStateChanged(int)));
 
+	QString colourtext("white");
+	if(Context == server)
+		colourtext = "yellow";
+
 	QLabel *modNameLabel = new QLabel(this);
 	if(Forum.isEmpty())
-		modNameLabel->setText("<span style=\"text-decoration:none; font-weight: normal; color: white\">" + DisplayName + "</span>");
+		modNameLabel->setText("<span style=\"text-decoration:none; font-weight: normal; color: " + colourtext + "\">" + DisplayName + "</span>");
 	else
-		modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none; font-weight: bold; color: white\">" + DisplayName + "</a>");
+		modNameLabel->setText("<a href=\"" + Forum.toString() + "\" style=\"text-decoration:none; font-weight: bold; color: " + colourtext + "\">" + DisplayName + "</a>");
 	modNameLabel->setOpenExternalLinks(true);
 	modNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 

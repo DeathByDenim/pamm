@@ -32,7 +32,9 @@ class Mod : public QWidget
     Q_OBJECT
 
 public:
-	Mod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QUrl& Forum, const QStringList& Category, const QString& Version, const QStringList& Requires, const QDate& Date, const QString& Build);
+	enum context_t{client, server};
+
+	Mod(const QString& Key, const QString& DisplayName, const QString& Description, const QString& Author, const QUrl& Forum, const QStringList& Category, const QString& Version, const QStringList& Requires, const QDate& Date, const QString& Build, context_t Context);
 	~Mod();
 
 	QString displayName() {return DisplayName;}
@@ -41,6 +43,7 @@ public:
 	QStringList category() {return Category;}
 	bool textContains(QString filtertext);
 	virtual void setCompactView(bool compact) = 0;
+	context_t context() const {return Context;}
 
 	static bool sortLastUpdated(const Mod *m1, const Mod *m2);
 	static bool sortTitle(const Mod *m1, const Mod *m2);
@@ -50,6 +53,7 @@ public:
 
 
 protected:
+	context_t Context;
 	const QString Key;
 	const QString DisplayName; // Name of Mod (avoid special characters, and be mindful of the length)
 	const QString Description; // Name of Mod (avoid special characters, and be mindful of the length)

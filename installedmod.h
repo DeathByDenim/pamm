@@ -32,9 +32,9 @@ class InstalledMod : public Mod
     Q_OBJECT
 
 public:
-    InstalledMod(const QString& Key, const QString &Context, const QString &Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString &Version, const QString &Signature, const unsigned int& Priority, const bool& Enabled, const QString &Id, const QUrl &Forum, const QStringList &Category, const QStringList &Requires, const QDate &Date, const QString &Build);
+    InstalledMod(const QString& Key, const context_t Context, const QString& Identifier, const QString& DisplayName, const QString& Description, const QString& Author, const QString& Version, const QString& Signature, const unsigned int& Priority, const bool& Enabled, const QString& Id, const QUrl& Forum, const QStringList& Category, const QStringList& Requires, const QDate& Date, const QString& Build);
     ~InstalledMod();
-	
+
 	static const QStringList KnownScenes;
 
 	QStringList getSceneList(QString scene);
